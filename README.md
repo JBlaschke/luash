@@ -247,11 +247,23 @@ Has the output:
 Note how `sh.popd()` returns to the previous directory. This way `pushd` and
 `popd` can be used to bracket commands -- eg:
 
-```luash
+```lua
 sh.pushd(my_dir) : my_cmd(my_args) : popd()
 ```
 
 ## Questions
+
+### The Lua Language Server Doesn't Recognize Shell Commands
+
+You're using the [Lua Language Server](https://github.com/sumneko/lua-language-server)
+within your favorite editor, but some `sh` commands still show up as incorrect?
+There are two possible solutions: i) you need to install `lsf`
+
+```
+luarocks install luafilesystem
+```
+
+and; ii) the lua lanague server support currently is a little buggy.
 
 ### Does this work on Windows?
 
