@@ -1,0 +1,7182 @@
+---@meta
+
+---@class sh.ReturnType : sh.Shell
+---@field __stdout string
+---@field __stderr string?
+---@field __input string?
+---@field __exitcode integer
+
+---@alias sh.CommandName
+---|'sshproxy.sh'
+---|'gc-ctrl.py'
+---|'_gcp_invokepython'
+---|'tablelist5.9'
+---|'gt_amd64'
+---|'etc'
+---|'globusconnect'
+---|'util'
+---|'globusconnectpersonal'
+---|'gc.py'
+---|'tclkit'
+---|'rst2html4.py'
+---|'ipcontroller'
+---|'hg-nbmerge'
+---|'torchrun'
+---|'jupyter-labextension'
+---|'jupyter-console'
+---|'rst2odt_prepstyles.py'
+---|'python3.10'
+---|'futurize'
+---|'cmark'
+---|'skivi'
+---|'tiffcomment'
+---|'jupyter-notebook'
+---|'pkginfo'
+---|'jupyter'
+---|'git-nbdifftool'
+---|'rst2latex.py'
+---|'jupyter-run'
+---|'ipython3'
+---|'f2py3.10'
+---|'jupyter-troubleshoot'
+---|'pelican-import'
+---|'rstpep2html.py'
+---|'pyro5-check-config'
+---|'jlpm'
+---|'rst2s5.py'
+---|'shiv'
+---|'pyro4-test-echoserver'
+---|'pyjson5'
+---|'qtpy'
+---|'nbshow'
+---|'rst2man.py'
+---|'fonttools'
+---|'jupyter-nbclassic-bundlerextension'
+---|'ipython'
+---|'pyro5-ns'
+---|'ipcluster'
+---|'isympy'
+---|'jupyter-bundlerextension'
+---|'pelican-plugins'
+---|'pyro4-nsc'
+---|'jupyter-kernel'
+---|'pip3.10'
+---|'jupyter-nbclassic-serverextension'
+---|'fortls'
+---|'unidecode'
+---|'rst2xml.py'
+---|'jupyter-lab'
+---|'pyro4-check-config'
+---|'jupyter-nbconvert'
+---|'keyring'
+---|'pyro4-flameserver'
+---|'wheel3'
+---|'lsm2bin'
+---|'git-nbdiffdriver'
+---|'cython'
+---|'hg-nbmergeweb'
+---|'jupyter-trust'
+---|'ipengine'
+---|'wheel'
+---|'pybabel'
+---|'ttx'
+---|'pip'
+---|'pelican-themes'
+---|'pyftsubset'
+---|'tifffile'
+---|'jupyter-kernelspec'
+---|'nbmerge'
+---|'virtualenv'
+---|'tqdm'
+---|'jupyter-nbclassic-extension'
+---|'rst2html5.py'
+---|'nbdiff-web'
+---|'convert-onnx-to-caffe2'
+---|'jupyter-qtconsole'
+---|'f2py'
+---|'jupyter-migrate'
+---|'chardetect'
+---|'rst2html.py'
+---|'jupyter-nbextension'
+---|'pip3'
+---|'jupyter-serverextension'
+---|'jupyter-execute'
+---|'pyro5-httpgateway'
+---|'pyro5-echoserver'
+---|'pyro4-ns'
+---|'imageio_download_bin'
+---|'wheel3.10'
+---|'cygdb'
+---|'rst2odt.py'
+---|'normalizer'
+---|'hg-nbdiff'
+---|'python'
+---|'git-nbmergetool'
+---|'pelican-quickstart'
+---|'pyro4-httpgateway'
+---|'f2py3'
+---|'pyro5-nsc'
+---|'nbdime'
+---|'tiff2fsspec'
+---|'cythonize'
+---|'hg-nbdiffweb'
+---|'imageio_remove_bin'
+---|'yt'
+---|'nbdiff'
+---|'rst2pseudoxml.py'
+---|'convert-caffe2-to-onnx'
+---|'shiv-info'
+---|'pasteurize'
+---|'send2trash'
+---|'python3'
+---|'rst2xetex.py'
+---|'git-nbmergedriver'
+---|'jupyter-server'
+---|'markdown_py'
+---|'pbr'
+---|'nbmerge-web'
+---|'jsonschema'
+---|'__pycache__'
+---|'docutils'
+---|'twine'
+---|'jupyter-labhub'
+---|'pyftmerge'
+---|'pelican'
+---|'iyt'
+---|'wsdump'
+---|'jupyter-nbclassic'
+---|'wheel-3.10'
+---|'jupyter-dejavu'
+---|'vf'
+---|'jrnl'
+---|'pygmentize'
+---|'fincore'
+---|'gp-display-html'
+---|'gperf'
+---|'makeconv'
+---|'lto-dump-11'
+---|'hwloc-annotate'
+---|'kadmin'
+---|'bzcat'
+---|'asn1Decoding'
+---|'captoinfo'
+---|'c++filt'
+---|'xmlcatalog'
+---|'msgen'
+---|'brew'
+---|'dumpsexp'
+---|'sphinx-autobuild'
+---|'gnutls-cli'
+---|'guile-tools'
+---|'c++-12'
+---|'hexyl'
+---|'db_checkpoint'
+---|'nghttp'
+---|'db_deadlock'
+---|'ul'
+---|'elfutils-elflint'
+---|'gettextize'
+---|'uname26'
+---|'chrt'
+---|'gcov-tool-12'
+---|'perl'
+---|'msgattrib'
+---|'hwloc-ps'
+---|'autopoint'
+---|'db_hotbackup'
+---|'corelist'
+---|'xsubpp'
+---|'ocsptool'
+---|'x86_64-pc-linux-gnu-gcc-11'
+---|'msguniq'
+---|'perlbug'
+---|'msginit'
+---|'pod2man'
+---|'2to3-3.11'
+---|'splain'
+---|'tset'
+---|'ngettext'
+---|'julia'
+---|'xmlsec1-config'
+---|'lslocks'
+---|'zipinfo'
+---|'rtmpdump'
+---|'exa'
+---|'libtool'
+---|'pkg-config'
+---|'x86_64-pc-linux-gnu-gcc-ar-11'
+---|'dllwrap'
+---|'gcc-ranlib-12'
+---|'getconf'
+---|'lsns'
+---|'ranlib'
+---|'elfutils-objdump'
+---|'idle3.9'
+---|'ld.gold'
+---|'zipdetails'
+---|'msgcat'
+---|'sotruss'
+---|'python3.10-config'
+---|'bison'
+---|'pcregrep'
+---|'elfutils-nm'
+---|'tic'
+---|'msgmerge'
+---|'gfortran'
+---|'gold'
+---|'z3'
+---|'bat'
+---|'acountry'
+---|'rtmpgw'
+---|'encguess'
+---|'asn1Coding'
+---|'hwloc-bind'
+---|'x86_64-pc-linux-gnu-g++-11'
+---|'gnutls-serv'
+---|'perlthanks'
+---|'xmlwf'
+---|'tabs'
+---|'gettext'
+---|'toe'
+---|'jeprof'
+---|'zstdless'
+---|'gcov-12'
+---|'scriptlive'
+---|'gdbm_load'
+---|'gcc-11'
+---|'isosize'
+---|'wall'
+---|'wdctl'
+---|'klist'
+---|'linux64'
+---|'ionice'
+---|'xzfgrep'
+---|'instmodsh'
+---|'mpmetis'
+---|'x86_64-pc-linux-gnu-gcc-nm-11'
+---|'xzgrep'
+---|'script'
+---|'hmac256'
+---|'typeprof'
+---|'ldapcompare'
+---|'clear'
+---|'blackd'
+---|'chmem'
+---|'umount'
+---|'pydoc3.9'
+---|'black'
+---|'lastb'
+---|'compile_et'
+---|'gcc-nm-11'
+---|'db_log_verify'
+---|'guild'
+---|'gcov-tool-11'
+---|'ld'
+---|'k5srvutil'
+---|'xzless'
+---|'strip'
+---|'msggrep'
+---|'brotli'
+---|'rename'
+---|'unzipsfx'
+---|'krb5-config'
+---|'lslogins'
+---|'lsblk'
+---|'perl5.36.0'
+---|'sphinx-build'
+---|'event_rpcgen.py'
+---|'elfutils-elfcompress'
+---|'rdoc'
+---|'lzfgrep'
+---|'guile'
+---|'db_tuner'
+---|'idle3.11'
+---|'bzip2'
+---|'ptardiff'
+---|'mountpoint'
+---|'db_stat'
+---|'elfutils-readelf'
+---|'gcc-nm-12'
+---|'elfutils-unstrip'
+---|'python3.9'
+---|'gprofng'
+---|'libtoolize'
+---|'choom'
+---|'taskset'
+---|'pcre-config'
+---|'column'
+---|'lsirq'
+---|'bundler'
+---|'asciidoctor-pdf'
+---|'gencat'
+---|'gcc-ar-11'
+---|'hwloc-distrib'
+---|'idle3'
+---|'msgcmp'
+---|'objcopy'
+---|'nettle-lfib-stream'
+---|'elfutils-addr2line'
+---|'hwloc-gather-topology'
+---|'flock'
+---|'funzip'
+---|'pcre2grep'
+---|'db_recover'
+---|'kswitch'
+---|'idle3.10'
+---|'rev'
+---|'elfutils-strip'
+---|'7z'
+---|'ncurses6-config'
+---|'g++-11'
+---|'ldapvc'
+---|'lsipc'
+---|'gcc-ar-12'
+---|'ldapurl'
+---|'ld.bfd'
+---|'lzmore'
+---|'sim_client'
+---|'mcookie'
+---|'xz'
+---|'7zr'
+---|'unlzma'
+---|'gpmetis'
+---|'xmllint'
+---|'gettext.sh'
+---|'adig'
+---|'utmpdump'
+---|'gfortran-12'
+---|'findmnt'
+---|'ldd'
+---|'lzcat'
+---|'asn1Parser'
+---|'lzmainfo'
+---|'kdestroy'
+---|'x86_64-pc-linux-gnu-c++-12'
+---|'logger'
+---|'elfutils-elfcmp'
+---|'reset'
+---|'glibtoolize'
+---|'elfutils-ranlib'
+---|'windmc'
+---|'lscpu'
+---|'db_printlog'
+---|'nghttpd'
+---|'icuexportdata'
+---|'cpan'
+---|'zdump'
+---|'xtrace'
+---|'gem'
+---|'nm'
+---|'bzgrep'
+---|'hardlink'
+---|'locale'
+---|'ipcrm'
+---|'last'
+---|'ptar'
+---|'irb'
+---|'pl2pm'
+---|'gdc-11'
+---|'setarch'
+---|'p11tool'
+---|'c++-11'
+---|'xzegrep'
+---|'unzstd'
+---|'sexp-conv'
+---|'windres'
+---|'irqtop'
+---|'curl-config'
+---|'cmpfillin'
+---|'msgfmt'
+---|'more'
+---|'idn2'
+---|'msgexec'
+---|'infocmp'
+---|'gendict'
+---|'streamzip'
+---|'ctest'
+---|'pip3.9'
+---|'localedef'
+---|'lzgrep'
+---|'gcc-ranlib-11'
+---|'genrb'
+---|'gfortran-11'
+---|'livereload'
+---|'derb'
+---|'bzless'
+---|'rbs'
+---|'msgfilter'
+---|'x86_64-pc-linux-gnu-c++-11'
+---|'xgettext'
+---|'gnutls-certtool'
+---|'pzstd'
+---|'xzcmp'
+---|'envsubst'
+---|'ruby'
+---|'c_rehash'
+---|'ri'
+---|'whereis'
+---|'ksu'
+---|'7za'
+---|'hwloc-compress-dir'
+---|'lstopo'
+---|'gpg-error'
+---|'sprof'
+---|'sqlite3'
+---|'xml2-config'
+---|'mesg'
+---|'getent'
+---|'2to3-3.9'
+---|'kinit'
+---|'scriptreplay'
+---|'zipgrep'
+---|'kvno'
+---|'enc2xs'
+---|'look'
+---|'unzip'
+---|'x86_64-pc-linux-gnu-gdc-11'
+---|'wheel3.9'
+---|'sphinx-apidoc'
+---|'ld.so'
+---|'nsenter'
+---|'python3.11'
+---|'graphchk'
+---|'black-primer'
+---|'libgcrypt-config'
+---|'setterm'
+---|'dlltool'
+---|'rdbg'
+---|'pcprofiledump'
+---|'icu-config'
+---|'gp-display-text'
+---|'x86_64-pc-linux-gnu-gcc-ar-12'
+---|'ipcmk'
+---|'podchecker'
+---|'json_pp'
+---|'xsltproc'
+---|'piconv'
+---|'srconv'
+---|'ldapsearch'
+---|'x86_64'
+---|'pcretest'
+---|'lzmadec'
+---|'pcre2-config'
+---|'lto-dump-12'
+---|'sclient'
+---|'lzless'
+---|'pydoc3.10'
+---|'ccmake'
+---|'g++-12'
+---|'hwloc-patch'
+---|'pod2text'
+---|'eject'
+---|'curl'
+---|'openssl'
+---|'trust'
+---|'mount'
+---|'x86_64-pc-linux-gnu-gcc-ranlib-12'
+---|'genbrk'
+---|'xzcat'
+---|'unlz4'
+---|'python3.9-config'
+---|'ktutil'
+---|'python3.11-config'
+---|'gpgrt-config'
+---|'nghttpx'
+---|'pip3.11'
+---|'hwloc-gather-cpuid'
+---|'gpg-error-config'
+---|'ldapexop'
+---|'makedb'
+---|'x86_64-pc-linux-gnu-gcc-ranlib-11'
+---|'patchelf'
+---|'setsid'
+---|'msgconv'
+---|'infotocap'
+---|'icuinfo'
+---|'gnutls-cli-debug'
+---|'rtmpsrv'
+---|'elfutils-make-debug-archive'
+---|'gdbm_dump'
+---|'ahost'
+---|'guile-config'
+---|'dmesg'
+---|'x86_64-pc-linux-gnu-gcc-12'
+---|'bundle'
+---|'ldapdelete'
+---|'gp-collect-app'
+---|'lsmem'
+---|'perldoc'
+---|'pkgdata'
+---|'objconv'
+---|'coffdump'
+---|'bzegrep'
+---|'asciidoctor'
+---|'nettle-pbkdf2'
+---|'cpp-12'
+---|'m4'
+---|'zstdmt'
+---|'i386'
+---|'db_archive'
+---|'uuidparse'
+---|'lz4cat'
+---|'rich'
+---|'elfutils-size'
+---|'msgcomm'
+---|'btop'
+---|'mongoose'
+---|'gcc-12'
+---|'uuclient'
+---|'renice'
+---|'pldd'
+---|'gencfu'
+---|'qprofdiff'
+---|'ncursesw6-config'
+---|'addr2line'
+---|'erb'
+---|'ldappasswd'
+---|'db_convert'
+---|'danetool'
+---|'gp-display-src'
+---|'psktool'
+---|'ar'
+---|'yacc'
+---|'elfedit'
+---|'unxz'
+---|'lstopo-no-graphics'
+---|'guile-snarf'
+---|'bzdiff'
+---|'pcre2test'
+---|'x86_64-pc-linux-gnu-g++-12'
+---|'mtrace'
+---|'fallocate'
+---|'ldapmodrdn'
+---|'col'
+---|'duf'
+---|'dwp'
+---|'gcov-11'
+---|'zstdcat'
+---|'xzdec'
+---|'bzip2recover'
+---|'gencnval'
+---|'tput'
+---|'ndmetis'
+---|'tzselect'
+---|'hwloc-diff'
+---|'colcrt'
+---|'rtmpsuck'
+---|'unshare'
+---|'bzmore'
+---|'ptargrep'
+---|'xslt-config'
+---|'ccache-swig'
+---|'pkcs1-conv'
+---|'zstd'
+---|'db_replicate'
+---|'cpp-11'
+---|'jemalloc-config'
+---|'x86_64-pc-linux-gnu-gfortran-11'
+---|'colrm'
+---|'gdbmtool'
+---|'git2_cli'
+---|'lzma'
+---|'h2ph'
+---|'elfutils-findtextrel'
+---|'uuidgen'
+---|'pydoc3'
+---|'perlivp'
+---|'objdump'
+---|'m2gmetis'
+---|'prove'
+---|'lzcmp'
+---|'libnetcfg'
+---|'lzegrep'
+---|'sysdump'
+---|'h2xs'
+---|'db_dump'
+---|'x86_64-pc-linux-gnu-gcc-nm-12'
+---|'kpasswd'
+---|'cmake'
+---|'racc'
+---|'p11-kit'
+---|'hwloc-ls'
+---|'lz4c'
+---|'size'
+---|'hwloc-calc'
+---|'sphinx-autogen'
+---|'bzfgrep'
+---|'prlimit'
+---|'gcov-dump-12'
+---|'elfutils-elfclassify'
+---|'db_upgrade'
+---|'rstcheck'
+---|'strings'
+---|'elfutils-ar'
+---|'iconv'
+---|'xzmore'
+---|'pod2html'
+---|'ipcs'
+---|'elfutils-strings'
+---|'recode-sr-latin'
+---|'rake'
+---|'2to3-3.10'
+---|'gss-client'
+---|'mpicalc'
+---|'wheel3.11'
+---|'db_load'
+---|'uclampset'
+---|'msgunfmt'
+---|'namei'
+---|'readelf'
+---|'xmlsec1'
+---|'xzdiff'
+---|'ldapmodify'
+---|'getopt'
+---|'swig'
+---|'elfutils-stack'
+---|'sphinx-quickstart'
+---|'bunzip2'
+---|'ldapadd'
+---|'h2load'
+---|'gprof'
+---|'hexdump'
+---|'ldapwhoami'
+---|'cpack'
+---|'gp-archive'
+---|'zstdgrep'
+---|'srptool'
+---|'jemalloc.sh'
+---|'2to3'
+---|'hwloc-info'
+---|'linux32'
+---|'lzdiff'
+---|'lsfd'
+---|'pod2usage'
+---|'as'
+---|'db_verify'
+---|'lz4'
+---|'yat2m'
+---|'pydoc3.11'
+---|'bzcmp'
+---|'uconv'
+---|'x86_64-pc-linux-gnu-gfortran-12'
+---|'shasum'
+---|'gcov-dump-11'
+---|'nettle-hash'
+---|'glibtool'
+---|'python3-config'
+---|'losetup'
+---|'uuserver'
+---|'chcpu'
+---|'kdb5_util'
+---|'slapschema'
+---|'partx'
+---|'ldattach'
+---|'gss-server'
+---|'resizepart'
+---|'fdisk'
+---|'zramctl'
+---|'kadmin.local'
+---|'mkfs'
+---|'iconvconfig'
+---|'swapon'
+---|'sim_server'
+---|'kadmind'
+---|'slapauth'
+---|'hwloc-dump-hwdata'
+---|'agetty'
+---|'ctrlaltdel'
+---|'rfkill'
+---|'slapcat'
+---|'unbound-control-setup'
+---|'delpart'
+---|'nscd'
+---|'krb5-send-pr'
+---|'fsck.minix'
+---|'sulogin'
+---|'fstrim'
+---|'fsfreeze'
+---|'sln'
+---|'escapesrc'
+---|'addpart'
+---|'slapdn'
+---|'blkid'
+---|'findfs'
+---|'mkfs.bfs'
+---|'zic'
+---|'blockdev'
+---|'unbound'
+---|'blkzone'
+---|'genccode'
+---|'uuidd'
+---|'unbound-checkconf'
+---|'unbound-anchor'
+---|'switch_root'
+---|'ldconfig'
+---|'gensprep'
+---|'hwclock'
+---|'unbound-control'
+---|'mkfs.minix'
+---|'gennorm2'
+---|'kpropd'
+---|'kprop'
+---|'icupkg'
+---|'mkfs.cramfs'
+---|'swapoff'
+---|'swaplabel'
+---|'blkdiscard'
+---|'slapadd'
+---|'slapacl'
+---|'krb5kdc'
+---|'rtcwake'
+---|'slapindex'
+---|'sfdisk'
+---|'slappasswd'
+---|'readprofile'
+---|'fsck'
+---|'nologin'
+---|'mkswap'
+---|'slaptest'
+---|'slapmodify'
+---|'unbound-host'
+---|'kproplog'
+---|'cfdisk'
+---|'pivot_root'
+---|'gencmn'
+---|'sserver'
+---|'wipefs'
+---|'fsck.cramfs'
+---|'spack-tmpconfig'
+---|'sbang'
+---|'spack-python'
+---|'spack'
+---|'flask'
+---|'sh.autogen'
+---|'croissant'
+---|'nsys'
+---|'nsys-ui'
+---|'cryptsetup'
+---|'ip'
+---|'ippeveprinter'
+---|'locale-gen'
+---|'pvscan'
+---|'ownership'
+---|'pdata_tools'
+---|'mkfs.ext3'
+---|'groupdel'
+---|'apparmor_parser'
+---|'vgconvert'
+---|'rabbitmqctl'
+---|'pvcreate'
+---|'update-gsfontmap'
+---|'update-updmap'
+---|'ip6tables-apply'
+---|'mdmon'
+---|'dhclient'
+---|'genl'
+---|'iptables-nft'
+---|'dmidecode'
+---|'gdisk'
+---|'ifconfig'
+---|'lvrename'
+---|'ip6tables-legacy'
+---|'mkfs.ext4'
+---|'kbdrate'
+---|'update-grub'
+---|'logrotate'
+---|'accessdb'
+---|'ntfsclone'
+---|'iptables-restore-translate'
+---|'groupmod'
+---|'aa-remove-unknown'
+---|'thin_check'
+---|'ufw'
+---|'iptables-legacy-save'
+---|'casper-snapshot'
+---|'tzconfig'
+---|'mklost+found'
+---|'pvchange'
+---|'casper-stop'
+---|'e2label'
+---|'telinit'
+---|'rmt-tar'
+---|'plipconfig'
+---|'setvtrgb'
+---|'ebtables-nft-restore'
+---|'remove-default-wordlist'
+---|'sync-available'
+---|'update-java-alternatives'
+---|'arptables-restore'
+---|'mount.ntfs-3g'
+---|'iptunnel'
+---|'key.dns_resolver'
+---|'select-default-wordlist'
+---|'update-inetd'
+---|'sysctl'
+---|'mii-tool'
+---|'rabbitmq-server'
+---|'thin_delta'
+---|'mke2fs'
+---|'fsck.ext2'
+---|'lvmdump'
+---|'installkernel'
+---|'update-catalog'
+---|'mount.cifs'
+---|'brltty-setup'
+---|'ipmaddr'
+---|'mkntfs'
+---|'dmstats'
+---|'anacron'
+---|'cupsaccept'
+---|'visudo'
+---|'aspell-autobuildhash'
+---|'route'
+---|'start-stop-daemon'
+---|'lpinfo'
+---|'iptables-nft-save'
+---|'mount.fuse'
+---|'pvs'
+---|'mkhomedir_helper'
+---|'update-dictcommon-hunspell'
+---|'ebtables-save'
+---|'mdadm'
+---|'lvdisplay'
+---|'gnome-menus-blacklist'
+---|'lsmod'
+---|'fstab-decode'
+---|'mkfs.ext2'
+---|'dhclient-script'
+---|'cracklib-packer'
+---|'netplan'
+---|'fsck.ext3'
+---|'nameif'
+---|'applygnupgdefaults'
+---|'dcb'
+---|'e2mmpstatus'
+---|'badblocks'
+---|'grpck'
+---|'vgimportclone'
+---|'filefrag'
+---|'newusers'
+---|'chat'
+---|'getty'
+---|'partprobe'
+---|'casper-login'
+---|'fsck.ext4'
+---|'iwpriv'
+---|'sgdisk'
+---|'update-dictcommon-aspell'
+---|'blkdeactivate'
+---|'e4defrag'
+---|'openvpn'
+---|'mkfs.ntfs'
+---|'cache_restore'
+---|'fsck.msdos'
+---|'update-secureboot-policy'
+---|'resize2fs'
+---|'arptables-save'
+---|'update-texmf'
+---|'devlink'
+---|'getweb'
+---|'ethtool'
+---|'update-grub-gfxpayload'
+---|'rabbitmq-queues'
+---|'pvremove'
+---|'pppoe-discovery'
+---|'grub-macbless'
+---|'wpa_action'
+---|'thin_dump'
+---|'grub-set-default'
+---|'grub-probe'
+---|'lvmsar'
+---|'pam_extrausers_chkpwd'
+---|'getpcaps'
+---|'cache_check'
+---|'avahi-autoipd'
+---|'vgimport'
+---|'init'
+---|'lvmsadc'
+---|'update-initramfs'
+---|'alsa-info'
+---|'wpa_supplicant'
+---|'avahi-daemon'
+---|'update-shells'
+---|'faillock'
+---|'biosdecode'
+---|'unix_chkpwd'
+---|'xtables-monitor'
+---|'update-default-wordlist'
+---|'lvconvert'
+---|'update-xmlcatalog'
+---|'era_restore'
+---|'vipw'
+---|'arp'
+---|'killall5'
+---|'slattach'
+---|'cppw'
+---|'arptables-nft'
+---|'tc'
+---|'ebtables'
+---|'cache_metadata_size'
+---|'pppdump'
+---|'grpconv'
+---|'vgmerge'
+---|'thin_repair'
+---|'vgcfgrestore'
+---|'install-sgmlcatalog'
+---|'arptables-nft-restore'
+---|'mysqld'
+---|'e2image'
+---|'deluser'
+---|'alsactl'
+---|'on_ac_power'
+---|'thin_metadata_size'
+---|'casper-new-uuid'
+---|'shutdown'
+---|'make-ssl-cert'
+---|'irqbalance-ui'
+---|'vgchange'
+---|'lvcreate'
+---|'update-fonts-dir'
+---|'update-language-def'
+---|'vgs'
+---|'iptables-save'
+---|'iptables-nft-restore'
+---|'laptop_mode'
+---|'arpd'
+---|'ispell-autobuildhash'
+---|'vgexport'
+---|'cracklib-unpacker'
+---|'lmt-config-gui'
+---|'add-shell'
+---|'pvresize'
+---|'vgcfgbackup'
+---|'cpgr'
+---|'pwunconv'
+---|'gdm3'
+---|'dumpe2fs'
+---|'pam_extrausers_update'
+---|'pccardctl'
+---|'lpadmin'
+---|'useradd'
+---|'rarp'
+---|'alsa'
+---|'update-cracklib'
+---|'update-rc.d'
+---|'update-fmtutil'
+---|'tarcat'
+---|'dpkg-preconfigure'
+---|'dkms'
+---|'ip6tables-translate'
+---|'cifs.upcall'
+---|'vigr'
+---|'pppstats'
+---|'chgpasswd'
+---|'runc'
+---|'usbmuxd'
+---|'addgnupghome'
+---|'iwconfig'
+---|'fsadm'
+---|'cupsreject'
+---|'update-language-dat'
+---|'vgremove'
+---|'groupmems'
+---|'vgmknodes'
+---|'rabbitmq-upgrade'
+---|'thin_rmap'
+---|'validlocale'
+---|'aa-teardown'
+---|'xtables-legacy-multi'
+---|'upgrade-from-grub-legacy'
+---|'remove-shell'
+---|'grub-mkconfig'
+---|'hdparm'
+---|'iptables-legacy-restore'
+---|'setcap'
+---|'apparmor_status'
+---|'paperconfig'
+---|'ip6tables-legacy-save'
+---|'rsyslogd'
+---|'ebtables-nft-save'
+---|'getcap'
+---|'veritysetup'
+---|'thin_restore'
+---|'ip6tables-legacy-restore'
+---|'e4crypt'
+---|'mount.fuse3'
+---|'usb_modeswitch_dispatcher'
+---|'thermald'
+---|'rmmod'
+---|'e2fsck'
+---|'select-default-ispell'
+---|'ip6tables-nft-save'
+---|'lvscan'
+---|'mkfs.vfat'
+---|'capsh'
+---|'sshd'
+---|'pam_getenv'
+---|'lvmpolld'
+---|'shadowconfig'
+---|'dmsetup'
+---|'seccompagent'
+---|'iptables-translate'
+---|'update-default-ispell'
+---|'ntfsundelete'
+---|'iwspy'
+---|'runuser'
+---|'tipc'
+---|'update-tl-stacked-conffile'
+---|'era_dump'
+---|'pptpsetup'
+---|'dmeventd'
+---|'update-grub2'
+---|'arptables'
+---|'nfnl_osf'
+---|'sssd'
+---|'sudo_sendlog'
+---|'integritysetup'
+---|'pptp'
+---|'cupsenable'
+---|'update-language'
+---|'cgdisk'
+---|'vgcreate'
+---|'vcstime'
+---|'spice-vdagentd'
+---|'update-fonts-alias'
+---|'rabbitmq-diagnostics'
+---|'dosfslabel'
+---|'ipp-usb'
+---|'update-locale'
+---|'update-texmf-config'
+---|'update-info-dir'
+---|'iptables-legacy'
+---|'iwevent'
+---|'unix_update'
+---|'acpid'
+---|'arptables-nft-save'
+---|'pvdisplay'
+---|'reboot'
+---|'vgreduce'
+---|'fixparts'
+---|'debugfs'
+---|'ip6tables-nft'
+---|'grpunconv'
+---|'cache_dump'
+---|'lpc'
+---|'tune2fs'
+---|'setvesablank'
+---|'NetworkManager'
+---|'ip6tables-restore'
+---|'ldconfig.real'
+---|'thin_ls'
+---|'rabbitmq-plugins'
+---|'mkdosfs'
+---|'parted'
+---|'lpmove'
+---|'iucode_tool'
+---|'vgrename'
+---|'nft'
+---|'runlevel'
+---|'chpasswd'
+---|'pwconv'
+---|'addgroup'
+---|'sd-helper'
+---|'cracklib-check'
+---|'ntfscp'
+---|'poweroff'
+---|'netscsid'
+---|'lvremove'
+---|'cupsfilter'
+---|'cracklib-format'
+---|'bluetoothd'
+---|'mkfs.msdos'
+---|'recvtty'
+---|'vgextend'
+---|'casper-getty'
+---|'lm-syslog-setup'
+---|'vdpa'
+---|'era_check'
+---|'update-icon-caches'
+---|'lvmconfig'
+---|'iptables-restore'
+---|'kerneloops'
+---|'thin_trim'
+---|'cupsd'
+---|'adduser'
+---|'ebtables-restore'
+---|'pam_timestamp_check'
+---|'fanctl'
+---|'umount.udisks2'
+---|'chroot'
+---|'groupadd'
+---|'cupsctl'
+---|'lmt-config-gui-pkexec'
+---|'logsave'
+---|'dosfsck'
+---|'update-default-aspell'
+---|'pvck'
+---|'fatlabel'
+---|'lvresize'
+---|'depmod'
+---|'ebtables-nft'
+---|'lvchange'
+---|'halt'
+---|'request-key'
+---|'rtacct'
+---|'ip6tables-save'
+---|'alsabat-test'
+---|'vgsplit'
+---|'ntfslabel'
+---|'iwlist'
+---|'create-cracklib-dict'
+---|'lvs'
+---|'vgscan'
+---|'u-d-c-print-pci-ids'
+---|'rmt'
+---|'mount.lowntfs-3g'
+---|'e2freefrag'
+---|'ip6tables'
+---|'cron'
+---|'grub-bios-setup'
+---|'cryptsetup-reencrypt'
+---|'userdel'
+---|'iucode-tool'
+---|'aptd'
+---|'xtables-nft-multi'
+---|'update-ca-certificates'
+---|'powertop'
+---|'fsck.fat'
+---|'grub-mkdevicemap'
+---|'cupsdisable'
+---|'lvm'
+---|'vgck'
+---|'mkinitramfs'
+---|'era_invalidate'
+---|'wpa_cli'
+---|'remove-default-ispell'
+---|'mount.ntfs'
+---|'service'
+---|'fsck.vfat'
+---|'update-language-lua'
+---|'ntfsresize'
+---|'rtkitctl'
+---|'plymouthd'
+---|'modprobe'
+---|'pam-auth-update'
+---|'e2undo'
+---|'lvextend'
+---|'usb_modeswitch'
+---|'cifs.idmap'
+---|'bridge'
+---|'usermod'
+---|'iptables'
+---|'iwgetid'
+---|'sudo_logsrvd'
+---|'update-pciids'
+---|'dpkg-reconfigure'
+---|'cryptsetup-ssh'
+---|'e2scrub_all'
+---|'grub-reboot'
+---|'cups-browsed'
+---|'lvreduce'
+---|'vgdisplay'
+---|'cache_writeback'
+---|'mount.smb3'
+---|'ModemManager'
+---|'ip6tables-restore-translate'
+---|'update-passwd'
+---|'irqbalance'
+---|'fanatic'
+---|'iptables-apply'
+---|'delgroup'
+---|'aa-status'
+---|'grub-install'
+---|'update-fonts-scale'
+---|'saned'
+---|'update-mime'
+---|'insmod'
+---|'pwck'
+---|'vpddecode'
+---|'lm-profiler'
+---|'brctl'
+---|'mkfs.fat'
+---|'cache_repair'
+---|'dnsmasq'
+---|'lvmdiskscan'
+---|'invoke-rc.d'
+---|'ip6tables-nft-restore'
+---|'lspcmcia'
+---|'modinfo'
+---|'pvmove'
+---|'brltty'
+---|'e2scrub'
+---|'rtmon'
+---|'fc-pattern'
+---|'x86_64-linux-gnu-qmake'
+---|'x11perfcomp'
+---|'simpdftex'
+---|'ppmtompeg'
+---|'mt'
+---|'ssh-import-id'
+---|'gnome-power-statistics'
+---|'assistant'
+---|'py3rsa-sign'
+---|'bash'
+---|'git-upload-archive'
+---|'syslinux2ansi'
+---|'localectl'
+---|'mpif77.mpich'
+---|'ping6'
+---|'valgrind'
+---|'gcov-9'
+---|'aspell-import'
+---|'gnome-www-browser'
+---|'systemd-sysusers'
+---|'geqn'
+---|'bdftopcf'
+---|'spctoppm'
+---|'aconnect'
+---|'psidtopgm'
+---|'acpi_listen'
+---|'pnmtotiffcmyk'
+---|'sh'
+---|'dpkg-deb'
+---|'opalcc'
+---|'hdfview'
+---|'ssh-argv0'
+---|'ssh-keyscan'
+---|'xinit'
+---|'pkttyagent'
+---|'qpdldecode'
+---|'tgatoppm'
+---|'gsdj'
+---|'ps2epsi'
+---|'nspr-config'
+---|'nyxt'
+---|'gpgtar'
+---|'fprintd-list'
+---|'qdbusviewer'
+---|'wine-preloader'
+---|'mfplain'
+---|'systemd-escape'
+---|'gnome-session-custom-session'
+---|'apport-unpack'
+---|'mattrib'
+---|'pamstack'
+---|'pw-cli'
+---|'intel-virtual-output'
+---|'openvt'
+---|'unpack200'
+---|'bundle3.0'
+---|'libreoffice'
+---|'oem-getlogs'
+---|'ppmdither'
+---|'ppmmix'
+---|'cancel'
+---|'rview'
+---|'join'
+---|'rhythmbox'
+---|'mdel'
+---|'readlink'
+---|'gnome-font-viewer'
+---|'ssh-keygen'
+---|'vi'
+---|'luac5.3'
+---|'linux-version'
+---|'sbverify'
+---|'gsdj500'
+---|'sort'
+---|'pngfix'
+---|'mrd'
+---|'nisdomainname'
+---|'debconf-apt-progress'
+---|'pdfclose'
+---|'x86_64-linux-gnu-pkg-config'
+---|'pdfsig'
+---|'ftp'
+---|'mpiCC.openmpi'
+---|'xdg-email'
+---|'mpicc.mpich'
+---|'gtk4-builder-tool'
+---|'wopl2ofm'
+---|'ppmtotga'
+---|'tclsh8.6'
+---|'growisofs'
+---|'ibus-table-createdb'
+---|'ppdpo'
+---|'unicode_start'
+---|'afm2tfm'
+---|'quirks-handler'
+---|'svn-multi'
+---|'cc'
+---|'qmlscene'
+---|'h52gif'
+---|'sudoreplay'
+---|'update-alternatives'
+---|'ibus'
+---|'rstartd'
+---|'pnmshear'
+---|'xkbvleds'
+---|'rhythmbox-client'
+---|'nvim'
+---|'vmstat'
+---|'troff'
+---|'mysqlanalyze'
+---|'expr'
+---|'lpoptions'
+---|'gst-discoverer-1.0'
+---|'fc-scan'
+---|'atobm'
+---|'x86_64-linux-gnu-gcc-ar-9'
+---|'spdsend'
+---|'gpic'
+---|'gcc-ranlib'
+---|'gnome-text-editor'
+---|'foo2zjs-icc2ps'
+---|'orte-server'
+---|'fig2ps2tex'
+---|'pbmtomda'
+---|'x86_64-linux-gnu-gcc-12'
+---|'evince'
+---|'xwininfo'
+---|'calibrate_ppa'
+---|'debconf-mergetemplate'
+---|'mkfontdir'
+---|'gtk-query-settings'
+---|'sha384sum'
+---|'chgrp'
+---|'x86_64-linux-gnu-strings'
+---|'spa-resample'
+---|'gpgsplit'
+---|'lexgrog'
+---|'latex-wordcount'
+---|'nmcli'
+---|'smbinfo'
+---|'ppmquantall'
+---|'plog'
+---|'xelatex-dev'
+---|'tex'
+---|'mpirun'
+---|'ppmtorgb3'
+---|'aclocal-1.16'
+---|'pic2tpic'
+---|'l2ping'
+---|'tgz'
+---|'remmina-gnome'
+---|'h5redeploy'
+---|'ex'
+---|'iecset'
+---|'journalctl'
+---|'vimdiff'
+---|'foo2oak'
+---|'POST'
+---|'docker-proxy'
+---|'x86_64-linux-gnu-gold'
+---|'txixml2texi'
+---|'uname'
+---|'tar'
+---|'wine64-preloader'
+---|'mformat'
+---|'docker-init'
+---|'isovfy'
+---|'avahi-resolve-address'
+---|'GET'
+---|'ppmntsc'
+---|'pango-view'
+---|'xbmtopbm'
+---|'socat'
+---|'montage'
+---|'rctest'
+---|'ssh-agent'
+---|'showconsolefont'
+---|'winepath'
+---|'rcp'
+---|'bib2gls'
+---|'grub-mkimage'
+---|'gnome-shell-perf-tool'
+---|'ctwill-refsort'
+---|'xdg-desktop-icon'
+---|'linkicc'
+---|'ppmflash'
+---|'mpif90'
+---|'hp-setup'
+---|'gpgv'
+---|'luarocks-5.3'
+---|'strace'
+---|'xargs'
+---|'upower'
+---|'x86_64-linux-gnu-gcov-11'
+---|'gcr-viewer'
+---|'dc'
+---|'mcomp'
+---|'luajithbtex'
+---|'grub-ntldr-img'
+---|'gnulib-tool'
+---|'ortecc'
+---|'pbmtext'
+---|'sensible-browser'
+---|'x86_64-linux-gnu-cpp'
+---|'nnslog'
+---|'pdfdetach'
+---|'ctstat'
+---|'sed'
+---|'ri3.0'
+---|'grub-mkfont'
+---|'libwacom-update-db'
+---|'ebb'
+---|'oomctl'
+---|'gtbl'
+---|'foo2lava-wrapper'
+---|'kbxutil'
+---|'ompi-server'
+---|'fusermount3'
+---|'efibootdump'
+---|'qmllint'
+---|'xdg-screensaver'
+---|'foo2hbpl2-wrapper'
+---|'rstart'
+---|'mtype'
+---|'b2sum'
+---|'display-im6.q16'
+---|'user-setup'
+---|'lowntfs-3g'
+---|'avahi-resolve-host-name'
+---|'env'
+---|'stty'
+---|'luarocks-admin-5.3'
+---|'xvinfo'
+---|'wofm2opl'
+---|'winecfg'
+---|'xmessage'
+---|'localc'
+---|'ppmtopgm'
+---|'ppmtopi1'
+---|'pdftops'
+---|'uptime'
+---|'sudoedit'
+---|'mkfontscale'
+---|'dvilj4'
+---|'ps2pdf12'
+---|'rmid'
+---|'mysqldump'
+---|'dpkg-realpath'
+---|'nohup'
+---|'t1binary'
+---|'pacmd'
+---|'telnet'
+---|'setmetamode'
+---|'x86_64-linux-gnu-gcc-nm-9'
+---|'grub-glue-efi'
+---|'sha1sum'
+---|'zbarcam'
+---|'expiry'
+---|'mft'
+---|'dv2dt'
+---|'jjs'
+---|'ntfs-3g.probe'
+---|'m2400w'
+---|'ctwill'
+---|'wineg++'
+---|'fwupdmgr'
+---|'man'
+---|'epspdf'
+---|'grep-status'
+---|'containerd-shim-runc-v2'
+---|'cd-iccdump'
+---|'h5mkgrp'
+---|'write.ul'
+---|'parkill'
+---|'hp-doctor'
+---|'amidi'
+---|'h5stat'
+---|'gtk4-encode-symbolic-svg'
+---|'sha1pass'
+---|'rungs'
+---|'mendex'
+---|'ltx2crossrefxml'
+---|'ppmqvga'
+---|'ua'
+---|'pass'
+---|'uptex'
+---|'ckbcomp'
+---|'isoinfo'
+---|'loweb'
+---|'mflua'
+---|'apport-collect'
+---|'pnmtopalm'
+---|'systemd-sysext'
+---|'ppmtomap'
+---|'dfu-tool'
+---|'xditview'
+---|'dpkg-source'
+---|'automake-1.16'
+---|'zcat'
+---|'yelp'
+---|'qtplugininfo'
+---|'ppmdist'
+---|'pkcheck'
+---|'wish'
+---|'chvt'
+---|'gnome-characters'
+---|'ptx'
+---|'spd-say'
+---|'tree'
+---|'pfb2pfa'
+---|'mag'
+---|'pgmtexture'
+---|'bioradtopgm'
+---|'xmlpatterns'
+---|'ppmcie'
+---|'false'
+---|'typeprof3.0'
+---|'x86_64-linux-gnu-gcc-9'
+---|'trash-restore'
+---|'ncurses5-config'
+---|'pbmtomgr'
+---|'lwp-dump'
+---|'zoom'
+---|'m2300w-wrapper'
+---|'mysqlimport'
+---|'texi2any'
+---|'rake3.0'
+---|'pw-dot'
+---|'ntfssecaudit'
+---|'cg_annotate'
+---|'chardet'
+---|'xmore'
+---|'simple-scan'
+---|'pstree.x11'
+---|'x86_64-linux-gnu-gcc-ar'
+---|'fusermount'
+---|'hd'
+---|'chsh'
+---|'ntfscat'
+---|'foo2qpdl'
+---|'stat'
+---|'ppmlabel'
+---|'gtk-builder-tool'
+---|'zgrep'
+---|'peekfd'
+---|'wpa_passphrase'
+---|'pnmarith'
+---|'pnmtoddif'
+---|'conjure-im6'
+---|'gouldtoppm'
+---|'pbmmask'
+---|'uz'
+---|'dbus-run-session'
+---|'dpkg-trigger'
+---|'orte-info'
+---|'py3compile'
+---|'ppmtoxpm'
+---|'update-desktop-database'
+---|'ppdi'
+---|'lsinitramfs'
+---|'gtk-launch'
+---|'fprintd-delete'
+---|'x86_64-linux-gnu-ar'
+---|'pbmtogo'
+---|'add-apt-repository'
+---|'pbmclean'
+---|'zipsplit'
+---|'gdialog'
+---|'systemd-cgls'
+---|'ppmcolors'
+---|'lesspipe'
+---|'page'
+---|'afm2pl'
+---|'xkbbell'
+---|'dviselect'
+---|'pkexec'
+---|'texluajit'
+---|'printer-profile'
+---|'mktexlsr'
+---|'unattended-upgrade'
+---|'compare-im6.q16'
+---|'mdeltree'
+---|'ppmtopj'
+---|'df'
+---|'cheese'
+---|'rpl8'
+---|'pstoedit'
+---|'glib-genmarshal'
+---|'oclock'
+---|'gtk4-launch'
+---|'pbmlife'
+---|'pdb3.10'
+---|'mpic++.openmpi'
+---|'pbmtoepson'
+---|'apt-config'
+---|'grep-debtags'
+---|'ppmrainbow'
+---|'pulseaudio'
+---|'eqn'
+---|'ilbmtoppm'
+---|'findrule'
+---|'soelim'
+---|'setlogcons'
+---|'pnmpsnr'
+---|'fstopgm'
+---|'mpiCC'
+---|'glxinfo.x86_64-linux-gnu'
+---|'spa-json-dump'
+---|'ppmchange'
+---|'h5import'
+---|'system-config-printer'
+---|'pax11publish'
+---|'etex'
+---|'fish'
+---|'xorrecord'
+---|'apt-key'
+---|'ps'
+---|'fc-query'
+---|'pnmpad'
+---|'os-prober'
+---|'ruby3.0'
+---|'file-roller'
+---|'ctie'
+---|'m2300w'
+---|'gnome-todo'
+---|'autoupdate'
+---|'gcc-ar'
+---|'pnmfile'
+---|'pigz'
+---|'sdptool'
+---|'gcc-ar-9'
+---|'select-editor'
+---|'pbmtozinc'
+---|'oshcxx'
+---|'rdiffdir'
+---|'link'
+---|'gnome-language-selector'
+---|'pamcut'
+---|'gjs-console'
+---|'lupdate'
+---|'dpkg-split'
+---|'designer'
+---|'foo2ddst'
+---|'shmemcxx'
+---|'apturl'
+---|'groups'
+---|'lesskey'
+---|'dvilj2p'
+---|'xrdb'
+---|'cpio'
+---|'ms_print'
+---|'cpp-9'
+---|'dvipdft'
+---|'git-lfs'
+---|'qmltestrunner'
+---|'groff'
+---|'lsattr'
+---|'systemd-id128'
+---|'ntfscluster'
+---|'alsaloop'
+---|'bluetooth-sendto'
+---|'rbash'
+---|'alsabat'
+---|'remmina-file-wrapper'
+---|'zfgrep'
+---|'bootctl'
+---|'orca-dm-wrapper'
+---|'mflua-nowin'
+---|'qmlmin'
+---|'gnome-calendar'
+---|'hp-timedate'
+---|'hydra_pmi_proxy'
+---|'mtoolstest'
+---|'pw-link'
+---|'httexi'
+---|'fc-conflist'
+---|'mgrtopbm'
+---|'edit'
+---|'xdg-open'
+---|'xvidtune'
+---|'aggregate_profile'
+---|'eglinfo'
+---|'ps2txt'
+---|'winemine'
+---|'dirsplit'
+---|'sum'
+---|'pw-dsdplay'
+---|'gzip'
+---|'py3rsa-verify'
+---|'xdg-desktop-menu'
+---|'['
+---|'pbmpage'
+---|'linux-update-symlinks'
+---|'gnome-disks'
+---|'x86_64-linux-gnu-lto-dump-11'
+---|'xcalc'
+---|'qmleasing'
+---|'pdfopen'
+---|'pnmtosgi'
+---|'ntfsfix'
+---|'gnome-session'
+---|'prezip-bin'
+---|'gcov-dump'
+---|'h5unjam'
+---|'pgmtolispm'
+---|'xdvi'
+---|'grog'
+---|'convert-im6'
+---|'dpkg-statoverride'
+---|'psfstriptable'
+---|'ctangle'
+---|'xgc'
+---|'bibtex.original'
+---|'c89'
+---|'x86_64-linux-gnu-gcc-ranlib-12'
+---|'py3clean'
+---|'luahbtex'
+---|'dpkg-scansources'
+---|'gcore'
+---|'c99-gcc'
+---|'winicontoppm'
+---|'xclip'
+---|'x86_64-linux-gnu-gcc-nm-11'
+---|'nvidia-detector'
+---|'lnstat'
+---|'pbmtoatk'
+---|'grotty'
+---|'thunderbird'
+---|'gftopk'
+---|'loginctl'
+---|'shuf'
+---|'pdffonts'
+---|'pdb3'
+---|'gemtopnm'
+---|'ciptool'
+---|'gdmflexiserver'
+---|'gpasswd'
+---|'pasuspender'
+---|'monitor-sensor'
+---|'usbreset'
+---|'nc.openbsd'
+---|'pbmtopgm'
+---|'ptex'
+---|'rm'
+---|'gpgcompose'
+---|'c++'
+---|'showkey'
+---|'zenity'
+---|'gio'
+---|'systemd-notify'
+---|'gedit'
+---|'pnmnlfilt'
+---|'animate-im6.q16'
+---|'jpgicc'
+---|'tee'
+---|'xwdtopnm'
+---|'mtr-packet'
+---|'mkocp'
+---|'qdbus'
+---|'gjs'
+---|'dvitomp'
+---|'tload'
+---|'pdfseparate'
+---|'animate'
+---|'conjure'
+---|'winebuild'
+---|'scanimage'
+---|'ping'
+---|'cd-it8'
+---|'mkdiskimage'
+---|'pw-record'
+---|'chkdvifont'
+---|'hp-scan'
+---|'xsm'
+---|'gpgsm'
+---|'qtattributionsscanner'
+---|'c99'
+---|'pnmflip'
+---|'usb_printerid'
+---|'mysqldumpslow'
+---|'fish_key_reader'
+---|'compose'
+---|'pnmenlarge'
+---|'mxtar'
+---|'unity-scope-loader'
+---|'qtpaths'
+---|'gnuplot'
+---|'snmpc'
+---|'dvips'
+---|'pgmenhance'
+---|'ghostscript'
+---|'xconsole'
+---|'yuvtoppm'
+---|'gkbd-keyboard-display'
+---|'x86_64-linux-gnu-gcc-ranlib-11'
+---|'grub-mkpasswd-pbkdf2'
+---|'gpg-wks-server'
+---|'ppmdim'
+---|'tnftp'
+---|'steamdeps'
+---|'mysqld_safe'
+---|'bbl2bib'
+---|'mpicxx'
+---|'grub-mknetdir'
+---|'git-upload-pack'
+---|'chown'
+---|'static-sh'
+---|'systemd-analyze'
+---|'slogin'
+---|'make'
+---|'pgmkernel'
+---|'ybmtopbm'
+---|'telnet.netkit'
+---|'pg_config'
+---|'dvibook'
+---|'appres'
+---|'texi2pdf'
+---|'pnmtile'
+---|'mcheck'
+---|'dviluatex'
+---|'wget'
+---|'gpu-manager'
+---|'qmlplugindump'
+---|'ntfsdecrypt'
+---|'xsetpointer'
+---|'gcov-tool'
+---|'callgrind_annotate'
+---|'nm-connection-editor'
+---|'lua5.3'
+---|'gpg2'
+---|'sort-dctrl'
+---|'newgrp'
+---|'gnome-control-center'
+---|'ubuntu-advantage'
+---|'preconv'
+---|'sha512sum'
+---|'gnuplot-qt'
+---|'mysqlslap'
+---|'pbmtolj'
+---|'rdoc3.0'
+---|'xrandr'
+---|'qdoc'
+---|'rsync'
+---|'fmtutil'
+---|'autoconf'
+---|'rpcgen'
+---|'bibexport'
+---|'gsbj'
+---|'glib-mkenums'
+---|'t1asm'
+---|'ppmtv'
+---|'pwd'
+---|'sgitopnm'
+---|'sputoppm'
+---|'gunzip'
+---|'xcmsdb'
+---|'foomatic-rip'
+---|'pager'
+---|'mcat'
+---|'xorrisofs'
+---|'mdatopbm'
+---|'prepmx'
+---|'xvminitoppm'
+---|'pbmtocmuwm'
+---|'wbmptopbm'
+---|'valgrind-listener'
+---|'gdbus-codegen'
+---|'mmcli'
+---|'pnmdepth'
+---|'qml'
+---|'xlsatoms'
+---|'python3-pasteurize'
+---|'delv'
+---|'systemd-cgtop'
+---|'odvicopy'
+---|'nmtui-edit'
+---|'ppmhist'
+---|'identify'
+---|'ifnames'
+---|'evince-previewer'
+---|'ppmtoilbm'
+---|'xstdcmap'
+---|'python3-futurize'
+---|'uniq'
+---|'whiptail'
+---|'mdu'
+---|'trash-empty'
+---|'login'
+---|'mpirun.openmpi'
+---|'foo2slx-wrapper'
+---|'gcc-nm-9'
+---|'hp-makeuri'
+---|'apt-sortpkgs'
+---|'xwud'
+---|'qlalr'
+---|'apport-bug'
+---|'irb3.0'
+---|'foo2lava'
+---|'pbmtopsg3'
+---|'jexec'
+---|'mysqlrepair'
+---|'pdftex'
+---|'top'
+---|'bmtoa'
+---|'transfig'
+---|'ppmtomitsu'
+---|'gpg-connect-agent'
+---|'dh_autotools-dev_restoreconfig'
+---|'resizecons'
+---|'pbmmake'
+---|'ibd2sdi'
+---|'myisamchk'
+---|'dh_perl_openssl'
+---|'luarocks-admin-5.2'
+---|'msidb'
+---|'pslog'
+---|'uic3'
+---|'hp-align'
+---|'ppmtoyuvsplit'
+---|'neqn'
+---|'ssh-copy-id'
+---|'compare'
+---|'sfconv'
+---|'lua-any'
+---|'ss'
+---|'bibtex'
+---|'orte-clean'
+---|'sqfstar'
+---|'tac'
+---|'ubuntu-core-launcher'
+---|'linguist'
+---|'nm-applet'
+---|'netcat'
+---|'winefile'
+---|'setkeycodes'
+---|'gnome-session-inhibit'
+---|'display'
+---|'apt-mark'
+---|'sipcalc'
+---|'msxlint'
+---|'mysqlbinlog'
+---|'gofmt'
+---|'t1mac'
+---|'dockerd'
+---|'routel'
+---|'xcutsel'
+---|'pbmtoepsi'
+---|'latexmk'
+---|'x86_64-linux-gnu-as'
+---|'editor'
+---|'fmt'
+---|'skill'
+---|'dvd+rw-mediainfo'
+---|'getcifsacl'
+---|'glxdemo.x86_64-linux-gnu'
+---|'orted'
+---|'sushi'
+---|'xgamma'
+---|'gcov-tool-9'
+---|'whoopsie'
+---|'winemaker'
+---|'identify-im6'
+---|'py3versions'
+---|'mpiexec.hydra'
+---|'gst-play-1.0'
+---|'debconf-escape'
+---|'systemd-stdio-bridge'
+---|'pbmtextps'
+---|'dpkg-gencontrol'
+---|'pxelinux-options'
+---|'kmod'
+---|'systemd-inhibit'
+---|'software-properties-gtk'
+---|'vgdb'
+---|'exceltex'
+---|'aa-enabled'
+---|'texhash'
+---|'foo2zjs-pstops'
+---|'mesa-overlay-control.py'
+---|'pdfattach'
+---|'txiterm'
+---|'pnmscalefixed'
+---|'shmemCC'
+---|'tftopl'
+---|'systemd'
+---|'date'
+---|'cpufreq-aperf'
+---|'systemd-delta'
+---|'brushtopbm'
+---|'zbarimg'
+---|'ovf2ovp'
+---|'red'
+---|'gnome-system-monitor'
+---|'extractbb'
+---|'apt-cdrom'
+---|'wine'
+---|'dumpkeys'
+---|'xdvipdfmx'
+---|'write'
+---|'ibus-setup'
+---|'pinentry-x11'
+---|'jq'
+---|'mtvtoppm'
+---|'pkaction'
+---|'airscan-discover'
+---|'ln'
+---|'mv'
+---|'tex4ht'
+---|'watch'
+---|'axohelp'
+---|'ntfsmove'
+---|'pnmcomp'
+---|'glxheads'
+---|'mysqladmin'
+---|'gnome-logs'
+---|'dvipdfmx'
+---|'x-window-manager'
+---|'grdctl'
+---|'xclip-copyfile'
+---|'aplay'
+---|'iceauth'
+---|'setupcon'
+---|'pnmcolormap'
+---|'rgb3toppm'
+---|'lconvert'
+---|'gh'
+---|'zless'
+---|'lofromtemplate'
+---|'wmctrl'
+---|'shmemfort'
+---|'texi2dvi'
+---|'gregorio'
+---|'avahi-browse'
+---|'wine64-stable'
+---|'ddstdecode'
+---|'mpic++'
+---|'h5dump'
+---|'snapctl'
+---|'eptex'
+---|'unlink'
+---|'qrencode'
+---|'fzf-tmux'
+---|'mysqlreport'
+---|'kernel-install'
+---|'pgmhist'
+---|'rsh'
+---|'mtools'
+---|'mysqlcheck'
+---|'unicode_stop'
+---|'xclip-pastefile'
+---|'pbmreduce'
+---|'setpriv'
+---|'update-perl-sax-parsers'
+---|'snapfuse'
+---|'btattach'
+---|'xdg-mime'
+---|'cpufreq-info'
+---|'ubuntu-security-status'
+---|'vptovf'
+---|'ibus-daemon'
+---|'gnome-shell-extension-tool'
+---|'dpkg-shlibdeps'
+---|'dbus-update-activation-environment'
+---|'qvkgen'
+---|'kpsewhich'
+---|'check-module'
+---|'innochecksum'
+---|'xdvi.bin'
+---|'xdg-user-dirs-update'
+---|'shmemcc'
+---|'ucf'
+---|'py3rsa-keygen'
+---|'grub-mkstandalone'
+---|'initex'
+---|'aspell'
+---|'mawk'
+---|'ppmtolss16'
+---|'id'
+---|'xkbwatch'
+---|'view'
+---|'ppm3d'
+---|'grep-aptavail'
+---|'watchgnupg'
+---|'systemd-mount'
+---|'mkisofs'
+---|'busybox'
+---|'libwacom-show-stylus'
+---|'X'
+---|'lwp-download'
+---|'fzf'
+---|'pnmcat'
+---|'pdvitomp'
+---|'zjsdecode'
+---|'unpigz'
+---|'texdoc'
+---|'apgbfm'
+---|'mktexfmt'
+---|'wl-copy'
+---|'kpsestat'
+---|'pw-midiplay'
+---|'shmemc++'
+---|'updmap-user'
+---|'sg'
+---|'fwupdagent'
+---|'perl5.34-x86_64-linux-gnu'
+---|'foo2hp'
+---|'caf.openmpi'
+---|'cvtsudoers'
+---|'erlc'
+---|'systemd-detect-virt'
+---|'mpijavac'
+---|'ippfind'
+---|'dbus-monitor'
+---|'lessecho'
+---|'cautious-launcher'
+---|'cg_merge'
+---|'start_embedded'
+---|'makejvf'
+---|'ps2ps'
+---|'pygettext3'
+---|'ppmbrighten'
+---|'pnmtoplainpnm'
+---|'mysql_secure_installation'
+---|'oshc++'
+---|'hp-levels'
+---|'xhlatex'
+---|'mysql_config'
+---|'dpkg-vendor'
+---|'fmtutil-sys'
+---|'ctr'
+---|'ppmfade'
+---|'pw-v4l2'
+---|'pnmtofits'
+---|'h5repart'
+---|'perror'
+---|'laptop-detect'
+---|'checkcites'
+---|'cachepic'
+---|'bundler3.0'
+---|'ubuntu-distro-info'
+---|'head'
+---|'kmodsign'
+---|'ipod-time-sync'
+---|'qhelpgenerator'
+---|'glib-gettextize'
+---|'makeindex'
+---|'ppmmake'
+---|'showrgb'
+---|'ppmquant'
+---|'tclsh'
+---|'run-mailcap'
+---|'texlua'
+---|'eglinfo.x86_64-linux-gnu'
+---|'faillog'
+---|'vstp'
+---|'prezip'
+---|'gfortran-9'
+---|'helpztags'
+---|'x86_64-linux-gnu-dwp'
+---|'pw-top'
+---|'grops'
+---|'dtplite'
+---|'bmptoppm'
+---|'xdvi-xaw'
+---|'wineserver'
+---|'run_erl'
+---|'ppmtopuzz'
+---|'devdump'
+---|'lispmtopgm'
+---|'test'
+---|'uic'
+---|'hp-config_usb_printer'
+---|'widl'
+---|'pnm2ppa'
+---|'qmake'
+---|'h5repack'
+---|'cdrecord'
+---|'pkill'
+---|'pactl'
+---|'gnome-session-properties'
+---|'dh_autotools-dev_updateconfig'
+---|'ps2pdf13'
+---|'ttf2afm'
+---|'anytopnm'
+---|'nroff'
+---|'dpkg-mergechangelogs'
+---|'x86_64-linux-gnu-gcov-dump-12'
+---|'bashbug'
+---|'mpexpand'
+---|'montage-im6'
+---|'poff'
+---|'lss16toppm'
+---|'lsb_release'
+---|'bluemoon'
+---|'gs'
+---|'pygettext3.10'
+---|'ssh-add'
+---|'hciconfig'
+---|'aa-features-abi'
+---|'json_xs'
+---|'rendercheck'
+---|'ofm2opl'
+---|'pico'
+---|'mshortname'
+---|'mpif77'
+---|'update_rubygems'
+---|'containerd-shim'
+---|'gipddecode'
+---|'gemtopbm'
+---|'xfd'
+---|'dd'
+---|'mbadblocks'
+---|'latex'
+---|'tsort'
+---|'osirrox'
+---|'pbmtogem'
+---|'texluac'
+---|'which'
+---|'luarocks'
+---|'gpg'
+---|'mpicc.openmpi'
+---|'psicc'
+---|'ptftopl'
+---|'vim'
+---|'apropos'
+---|'fgrep'
+---|'composite-im6'
+---|'pw-mon'
+---|'xprop'
+---|'dpkg-parsechangelog'
+---|'gnome-terminal.wrapper'
+---|'debconf-copydb'
+---|'lz'
+---|'uncompress'
+---|'deb-systemd-helper'
+---|'plymouth'
+---|'makedtx'
+---|'X11'
+---|'base32'
+---|'su'
+---|'mptopdf'
+---|'amuFormat.sh'
+---|'gcc-ranlib-9'
+---|'qmljs'
+---|'desktop-file-install'
+---|'rawtopgm'
+---|'shred'
+---|'apturl-gtk'
+---|'spa-acp-tool'
+---|'dvi2tty'
+---|'mpicxx.mpich'
+---|'wl-paste'
+---|'pdfimages'
+---|'dh_installtex'
+---|'which.debianutils'
+---|'tcldocstrip'
+---|'gdbtui'
+---|'splitindex'
+---|'mathspic'
+---|'xsetmode'
+---|'dh_bash-completion'
+---|'lspci'
+---|'luarocks-admin-5.4'
+---|'open'
+---|'pbmtopi3'
+---|'foo2ddst-wrapper'
+---|'mf-nowin'
+---|'regedit'
+---|'mpif77.openmpi'
+---|'driverless-fax'
+---|'ispell-wrapper'
+---|'ppmtoeyuv'
+---|'bibdoiadd'
+---|'es2gears_x11.x86_64-linux-gnu'
+---|'uppltotf'
+---|'omfonts'
+---|'basenc'
+---|'Xephyr'
+---|'nautilus'
+---|'tty'
+---|'gcalccmd'
+---|'pinentry'
+---|'gethostip'
+---|'mapscrn'
+---|'pnmsplit'
+---|'chrome-gnome-shell'
+---|'txtconv'
+---|'listres'
+---|'ppltotf'
+---|'gdbus'
+---|'hydra_nameserver'
+---|'rasttopnm'
+---|'x86_64-linux-gnu-gcc-ar-11'
+---|'brltty-trtxt'
+---|'l2test'
+---|'x86_64-linux-gnu-ld.gold'
+---|'upmendex'
+---|'convertgls2bib'
+---|'notepad'
+---|'pgmbentley'
+---|'pidwait'
+---|'passwd'
+---|'texdoctk'
+---|'ucfr'
+---|'x-terminal-emulator'
+---|'hp-probe'
+---|'xlogo'
+---|'dh_installxmlcatalogs'
+---|'x86_64-linux-gnu-objdump'
+---|'t1unmac'
+---|'pstree'
+---|'desktop-file-validate'
+---|'dirmngr-client'
+---|'stream-im6.q16'
+---|'gtk4-query-settings'
+---|'mpichversion'
+---|'hcitool'
+---|'dircolors'
+---|'update-mime-database'
+---|'tl-paper'
+---|'gdb'
+---|'apt-extracttemplates'
+---|'aseqnet'
+---|'gst-tester-1.0'
+---|'xkeystone'
+---|'clear_console'
+---|'pamfile'
+---|'pdfunite'
+---|'alsamixer'
+---|'chage'
+---|'zeisstopnm'
+---|'dpkg-checkbuilddeps'
+---|'sha256sum'
+---|'mpost'
+---|'leaftoppm'
+---|'gem3.0'
+---|'x86_64-linux-gnu-gcov'
+---|'xrefresh'
+---|'lrelease'
+---|'debconf-show'
+---|'htlatex'
+---|'lualatex-dev'
+---|'snap'
+---|'vim.tiny'
+---|'hp-firmware'
+---|'winedump'
+---|'bmptopnm'
+---|'lpstat'
+---|'enchant-2'
+---|'glxdemo'
+---|'arecordmidi'
+---|'ppmrelief'
+---|'x86_64-linux-gnu-gcc-nm-12'
+---|'gresource'
+---|'fprintd-enroll'
+---|'minfo'
+---|'mysqld_multi'
+---|'pnmindex'
+---|'sirtopnm'
+---|'h5clear'
+---|'run-with-aspell'
+---|'xelatex'
+---|'sbsiglist'
+---|'md5sum'
+---|'less'
+---|'rsync-ssl'
+---|'hostname'
+---|'mpijavac.pl'
+---|'pnminterp'
+---|'avahi-resolve'
+---|'es2gears_wayland'
+---|'wayland-scanner'
+---|'lsusb'
+---|'erb3.0'
+---|'cweave'
+---|'gsnd'
+---|'ppdhtml'
+---|'pmap'
+---|'luarocks-5.1'
+---|'lessfile'
+---|'gnome-terminal'
+---|'atktopbm'
+---|'pbmtonokia'
+---|'xev'
+---|'pnmhistmap'
+---|'mktextfm'
+---|'rrsync'
+---|'nnsd'
+---|'luajittex'
+---|'gnome-keyring-3'
+---|'xcursorgen'
+---|'gzexe'
+---|'sbvarsign'
+---|'ctwill-twinx'
+---|'qmlcachegen'
+---|'dvilualatex-dev'
+---|'grep'
+---|'my_print_defaults'
+---|'ipod-read-sysinfo-extended'
+---|'mk4ht'
+---|'gftype'
+---|'qml1plugindump'
+---|'dvilj6'
+---|'procan'
+---|'pnmgamma'
+---|'do-release-upgrade'
+---|'urlbst'
+---|'killall'
+---|'qmlprofiler'
+---|'gcc-nm'
+---|'basename'
+---|'notify-send'
+---|'autoreconf'
+---|'qcollectiongenerator'
+---|'updvitomp'
+---|'mdig'
+---|'oshmem_info'
+---|'ipcalc'
+---|'ipptool'
+---|'valgrind-di-server'
+---|'apg'
+---|'x86_64-linux-gnu-gcc-11'
+---|'erl'
+---|'grub-mkrescue'
+---|'infobrowser'
+---|'wineboot'
+---|'gsettings'
+---|'mpartition'
+---|'pdf2dsc'
+---|'readom'
+---|'lpr'
+---|'foo2oak-wrapper'
+---|'btcflash'
+---|'isohybrid'
+---|'r-mpost'
+---|'libpng-config'
+---|'wine64'
+---|'opl2ofm'
+---|'mpicxx.openmpi'
+---|'mpifort.openmpi'
+---|'translit'
+---|'lshw'
+---|'hostid'
+---|'docker'
+---|'pf2afm'
+---|'debconf-getlang'
+---|'duplicity'
+---|'convert'
+---|'gdb-add-index'
+---|'luac'
+---|'whoami'
+---|'dnsdomainname'
+---|'filan'
+---|'grub-file'
+---|'stream-im6'
+---|'batcat'
+---|'systemd-path'
+---|'gnome-thumbnail-font'
+---|'networkd-dispatcher'
+---|'ntfstruncate'
+---|'systemd-cat'
+---|'csplit'
+---|'rgrep'
+---|'tbl-dctrl'
+---|'x86_64-linux-gnu-gcov-12'
+---|'loadunimap'
+---|'ubuntu-drivers'
+---|'timeout'
+---|'gpg-agent'
+---|'foo2qpdl-wrapper'
+---|'glxheads.x86_64-linux-gnu'
+---|'nss-config'
+---|'codepage'
+---|'hp-info'
+---|'lpq'
+---|'zcmp'
+---|'pr'
+---|'xdg-dbus-proxy'
+---|'dvd+rw-booktype'
+---|'browse'
+---|'mksquashfs'
+---|'ompi_info'
+---|'JxrEncApp'
+---|'mokutil'
+---|'teckit_compile'
+---|'pgmtoppm'
+---|'install'
+---|'ntfsfallocate'
+---|'systemctl'
+---|'vpe'
+---|'mpiexec.openmpi'
+---|'shotwell'
+---|'loadkeys'
+---|'dviconcat'
+---|'mfluajit-nowin'
+---|'pnmtojpeg'
+---|'gpgconf'
+---|'screendump'
+---|'awk'
+---|'avahi-browse-domains'
+---|'dell-recovery'
+---|'mogrify-im6.q16'
+---|'file'
+---|'pixeltool'
+---|'cg_diff'
+---|'comm'
+---|'pipewire'
+---|'pnmtofiasco'
+---|'mpifort.mpich'
+---|'print'
+---|'x86_64-linux-gnu-cpp-12'
+---|'gcov-dump-9'
+---|'JxrDecApp'
+---|'pbmtoppa'
+---|'stream'
+---|'domainname'
+---|'linux-boot-prober'
+---|'mpiexec'
+---|'go'
+---|'check-language-support'
+---|'kbd_mode'
+---|'automake'
+---|'apt-add-repository'
+---|'qmlbundle'
+---|'dvd-ram-control'
+---|'setpci'
+---|'debconf-loadtemplate'
+---|'sha224sum'
+---|'memdiskfind'
+---|'sos'
+---|'fc-cache'
+---|'rcc'
+---|'pgrep'
+---|'xdg-settings'
+---|'amixer'
+---|'gamma4scanimage'
+---|'transset'
+---|'make-first-existing-target'
+---|'hp-query'
+---|'ntfsls'
+---|'padsp'
+---|'tail'
+---|'caf'
+---|'display-im6'
+---|'l3build'
+---|'bc'
+---|'xwd'
+---|'select-default-iwrap'
+---|'giftopnm'
+---|'aptdcon'
+---|'mysqloptimize'
+---|'htxelatex'
+---|'mdir'
+---|'geteltorito'
+---|'grep-available'
+---|'ppmtoyuv'
+---|'arecord'
+---|'linux-check-removal'
+---|'composite'
+---|'mpif90.mpich'
+---|'broadwayd'
+---|'sos-collector'
+---|'bibzbladd'
+---|'sdiff'
+---|'chcon'
+---|'pbmtog3'
+---|'pfbtopfa'
+---|'yplan'
+---|'cifscreds'
+---|'updmap'
+---|'gamemoded'
+---|'apt-get'
+---|'disdvi'
+---|'slabtop'
+---|'pkcon'
+---|'avahi-set-host-name'
+---|'glxinfo'
+---|'xinput'
+---|'xmlpatternsvalidator'
+---|'zipnote'
+---|'debconf-get-selections'
+---|'vimtutor'
+---|'pw-reserve'
+---|'ps2pdfwr'
+---|'xqxdecode'
+---|'xhost'
+---|'autosp'
+---|'hp-logcapture'
+---|'dbxtool'
+---|'hp-clean'
+---|'montage-im6.q16'
+---|'gtk-encode-symbolic-svg'
+---|'pamstretch'
+---|'mktemp'
+---|'pnmscale'
+---|'pgmnoise'
+---|'pnmpaste'
+---|'slxdecode'
+---|'htcontext'
+---|'rawtoppm'
+---|'ps2ascii'
+---|'ntfsusermap'
+---|'ssh-import-id-lp'
+---|'gnome-extensions'
+---|'mimetype'
+---|'xmag'
+---|'ischroot'
+---|'ompi-clean'
+---|'spa-inspect'
+---|'mogrify-im6'
+---|'ninja'
+---|'run-parts'
+---|'fmtutil-user'
+---|'wovf2ovp'
+---|'xdg-user-dirs-gtk-update'
+---|'pgmslice'
+---|'egrep'
+---|'vdir'
+---|'pinky'
+---|'dpkg-repack'
+---|'st4topgm'
+---|'bmon'
+---|'multibibliography'
+---|'h5copy'
+---|'dpkg-genchanges'
+---|'ppdmerge'
+---|'Xorg'
+---|'ppmshadow'
+---|'esc-m'
+---|'git-receive-pack'
+---|'apt-ftparchive'
+---|'qrttoppm'
+---|'pnmremap'
+---|'htxetex'
+---|'x86_64-linux-gnu-cpp-11'
+---|'rtstat'
+---|'ncdu'
+---|'nm-online'
+---|'xorriso'
+---|'od'
+---|'ppdc'
+---|'git'
+---|'x86_64-linux-gnu-gcc-ranlib'
+---|'pbmtoxbm'
+---|'lprm'
+---|'gdk-pixbuf-pixdata'
+---|'cafrun'
+---|'sftp'
+---|'octave-cli'
+---|'whatis'
+---|'mcopy'
+---|'dbus-launch'
+---|'fc-list'
+---|'xeyes'
+---|'x86_64-linux-gnu-ld.bfd'
+---|'baobab'
+---|'outocp'
+---|'dh_numpy3'
+---|'rabbitmqadmin'
+---|'fwupdate'
+---|'mkzftree'
+---|'mysqlshow'
+---|'kerneloops-submit'
+---|'ppmtowinicon'
+---|'wish8.6'
+---|'pstopnm'
+---|'time'
+---|'pdfannotextractor'
+---|'sensible-editor'
+---|'pdflatex-dev'
+---|'dpkg-divert'
+---|'pjtoppm'
+---|'mpifort'
+---|'ssh'
+---|'py3rsa-priv2pub'
+---|'ls'
+---|'cafrun.openmpi'
+---|'pi3topbm'
+---|'fuser'
+---|'pw-cat'
+---|'routef'
+---|'getkeycodes'
+---|'pack200'
+---|'ovp2ovf'
+---|'es2tri'
+---|'mysql_tzinfo_to_sql'
+---|'hp-check'
+---|'mpicc'
+---|'octave'
+---|'pdvitype'
+---|'lspgpot'
+---|'dvilj'
+---|'es2gears_x11'
+---|'parec'
+---|'uptftopl'
+---|'tie'
+---|'tificc'
+---|'nautilus-autorun-software'
+---|'rmiregistry'
+---|'fitstopnm'
+---|'luarocks-admin-5.1'
+---|'aseqdump'
+---|'btmgmt'
+---|'systemd-socket-activate'
+---|'x86_64-linux-gnu-gcc-ar-12'
+---|'cmuwmtopbm'
+---|'qdoc3'
+---|'zip'
+---|'pamoil'
+---|'dt2dv'
+---|'xiterm+thai'
+---|'gapplication'
+---|'pbmupc'
+---|'apport-cli'
+---|'xsel'
+---|'dvihp'
+---|'speech-dispatcher'
+---|'cgi-fcgi'
+---|'arm2hpdl'
+---|'texluajitc'
+---|'hp-colorcal'
+---|'paplay'
+---|'hciattach'
+---|'httex'
+---|'luatex'
+---|'convert-im6.q16'
+---|'regsvr32'
+---|'kpseaccess'
+---|'pi1toppm'
+---|'bluetoothctl'
+---|'x86_64-linux-gnu-gprof'
+---|'lavadecode'
+---|'x86_64-linux-gnu-gcov-dump'
+---|'brave-browser'
+---|'mysql'
+---|'hp-pkservice'
+---|'mpirun.mpich'
+---|'xman'
+---|'dpkg-gensymbols'
+---|'sbkeysync'
+---|'glxgears'
+---|'grub-menulst2cfg'
+---|'dvicopy'
+---|'gmail-desktop'
+---|'xpmtoppm'
+---|'mkindex'
+---|'pnmrotate'
+---|'pro'
+---|'dconf'
+---|'dig'
+---|'debconf-communicate'
+---|'diff3'
+---|'makeinfo'
+---|'pnmcrop'
+---|'imagetops'
+---|'pnmnoraw'
+---|'callgrind_control'
+---|'pgmedge'
+---|'migrate-pubring-from-classic-gpg'
+---|'mimeopen'
+---|'xml2pmx'
+---|'pt'
+---|'x86_64-linux-gnu-gcov-dump-9'
+---|'logname'
+---|'printafm'
+---|'cpan5.34-i386-linux-gnu'
+---|'inputattach'
+---|'cat'
+---|'mmove'
+---|'snice'
+---|'updmap-sys'
+---|'switcherooctl'
+---|'foo2hp2600-wrapper'
+---|'glxgears.x86_64-linux-gnu'
+---|'see'
+---|'chattr'
+---|'bwrap'
+---|'scp'
+---|'fprintd-verify'
+---|'nproc'
+---|'loffice'
+---|'spa-monitor'
+---|'oshrun'
+---|'keyctl'
+---|'htop'
+---|'pnmtotiff'
+---|'dvipos'
+---|'xclock'
+---|'keytool'
+---|'lowriter'
+---|'function_grep.pl'
+---|'xdpyinfo'
+---|'dvipdfm'
+---|'znew'
+---|'lwarpmk'
+---|'mkfifo'
+---|'ppmtoleaf'
+---|'ttfdump'
+---|'gdk-pixbuf-thumbnailer'
+---|'r-upmpost'
+---|'vim.basic'
+---|'rygel'
+---|'man-recode'
+---|'jpegtopnm'
+---|'pbmtoicon'
+---|'grub-mklayout'
+---|'identify-im6.q16'
+---|'ppmtoneo'
+---|'f95'
+---|'to_erl'
+---|'fig2dev'
+---|'t4ht'
+---|'ps2ps2'
+---|'aplaymidi'
+---|'kpsereadlink'
+---|'imgtoppm'
+---|'install-info'
+---|'transicc'
+---|'x86_64-linux-gnu-addr2line'
+---|'htmex'
+---|'pbmto10x'
+---|'umax_pp'
+---|'xkill'
+---|'mmount'
+---|'deb-systemd-invoke'
+---|'bison.yacc'
+---|'gsftopk'
+---|'ypdomainname'
+---|'gdm-screenshot'
+---|'vkd3d-compiler'
+---|'btmon'
+---|'ximtoppm'
+---|'ntfsrecover'
+---|'gslp'
+---|'mscompress'
+---|'avinfo'
+---|'pnmtorle'
+---|'cpp'
+---|'ppmpat'
+---|'aleph'
+---|'rlogin'
+---|'grub-mount'
+---|'isodump'
+---|'glib-compile-schemas'
+---|'zegrep'
+---|'evince-thumbnailer'
+---|'hipstopgm'
+---|'dvilualatex'
+---|'pnmhisteq'
+---|'tangle'
+---|'nns'
+---|'tlmgr'
+---|'mktexpk'
+---|'rvim'
+---|'lastlog'
+---|'dvisvgm'
+---|'gstreamer-codec-install'
+---|'erl_call'
+---|'yuvsplittoppm'
+---|'dvipdf'
+---|'ijs_pxljr'
+---|'x-www-browser'
+---|'timedatectl'
+---|'x86_64-linux-gnu-gfortran'
+---|'x11perf'
+---|'hwe-support-status'
+---|'pngtopnm'
+---|'yes'
+---|'lodraw'
+---|'pipewire-media-session'
+---|'ubuntu-bug'
+---|'powerprofilesctl'
+---|'oakdecode'
+---|'eyuvtoppm'
+---|'xedit'
+---|'escript'
+---|'conjure-im6.q16'
+---|'dash'
+---|'git-shell'
+---|'du'
+---|'perl5.34-i386-linux-gnu'
+---|'pgmtofs'
+---|'isohybrid.pl'
+---|'pandoc'
+---|'hydra_persist'
+---|'nano'
+---|'mysql_upgrade'
+---|'g3topbm'
+---|'dvd+rw-format'
+---|'oshCC'
+---|'scor2prt'
+---|'host'
+---|'makeglossaries'
+---|'locale-check'
+---|'palmtopnm'
+---|'mkofm'
+---|'steam'
+---|'kill'
+---|'spice-vdagent'
+---|'printf'
+---|'setfont'
+---|'x86_64-linux-gnu-gcov-dump-11'
+---|'enchant-lsmod-2'
+---|'smb2-quota'
+---|'perli11ndoc'
+---|'systemd-hwdb'
+---|'rletopnm'
+---|'sdparm'
+---|'gnome-terminal.real'
+---|'pbmtobbnbg'
+---|'x86_64-linux-gnu-gcc-ranlib-9'
+---|'chmod'
+---|'weave'
+---|'savelog'
+---|'npx'
+---|'cpan5.34-x86_64-linux-gnu'
+---|'x86_64-linux-gnu-gcov-tool'
+---|'mkpic'
+---|'ubuntu-report'
+---|'ppmtosixel'
+---|'opal_wrapper'
+---|'avahi-publish-address'
+---|'nslookup'
+---|'pw-profiler'
+---|'mzip'
+---|'411toppm'
+---|'pn2pdf'
+---|'x86_64-linux-gnu-gfortran-11'
+---|'x86_64-linux-gnu-readelf'
+---|'inimf'
+---|'ping4'
+---|'mutter'
+---|'brltty-ttb'
+---|'dpkg-genbuildinfo'
+---|'es2_info.x86_64-linux-gnu'
+---|'xlsfonts'
+---|'pacat'
+---|'iptables-xml'
+---|'pdftohtml'
+---|'dbus-daemon'
+---|'netstat'
+---|'grub-editenv'
+---|'foo2zjs-wrapper'
+---|'orterun'
+---|'x86_64-linux-gnu-gcc'
+---|'avahi-publish-service'
+---|'gobject-query'
+---|'h5debug'
+---|'luit'
+---|'opalc++'
+---|'apt-cache'
+---|'node'
+---|'winegcc'
+---|'pdf2ps'
+---|'avahi-publish'
+---|'fc-cat'
+---|'sas_disk_blink'
+---|'xset'
+---|'grep-dctrl'
+---|'fwupdtool'
+---|'gtk-update-icon-cache'
+---|'synctex'
+---|'texindex'
+---|'epspdftk'
+---|'driverless'
+---|'sbsign'
+---|'h5jam'
+---|'mt-gnu'
+---|'gnome-calculator'
+---|'bibtexu'
+---|'x86_64-linux-gnu-gcov-tool-11'
+---|'es2_info'
+---|'tr'
+---|'pk2bm'
+---|'xetex'
+---|'session-migration'
+---|'systemd-cryptenroll'
+---|'hp-testpage'
+---|'devnag'
+---|'xclipboard'
+---|'gcc-9'
+---|'pnmtorast'
+---|'rdma'
+---|'fiascotopnm'
+---|'pnmtops'
+---|'paste'
+---|'qhelpconverter'
+---|'ntfs-3g'
+---|'grub-kbdcomp'
+---|'dpkg-architecture'
+---|'aclocal'
+---|'mpivars'
+---|'sss_ssh_authorizedkeys'
+---|'lcf'
+---|'pod2texi'
+---|'sane-find-scanner'
+---|'google-chrome'
+---|'ntfsinfo'
+---|'moc'
+---|'pic'
+---|'sqlite'
+---|'kbdinfo'
+---|'sldtoppm'
+---|'npm'
+---|'png-fix-itxt'
+---|'who'
+---|'trash-rm'
+---|'truncate'
+---|'valgrind.bin'
+---|'hipercdecode'
+---|'getfacl'
+---|'odvitype'
+---|'apt'
+---|'preunzip'
+---|'sss_ssh_knownhostsproxy'
+---|'gnome-keyring'
+---|'qgltf'
+---|'finalrd'
+---|'dvilj4l'
+---|'join-dctrl'
+---|'totem'
+---|'free'
+---|'asciitopgm'
+---|'x86_64-linux-gnu-gcc-nm'
+---|'ed'
+---|'isdv4-serial-debugger'
+---|'r-pmpost'
+---|'trash-put'
+---|'gnome-keyring-daemon'
+---|'dirname'
+---|'import-im6'
+---|'runcon'
+---|'catman'
+---|'editres'
+---|'zmore'
+---|'pbibtex'
+---|'gtester-report'
+---|'fgconsole'
+---|'qmlimportscanner'
+---|'rbs3.0'
+---|'pkmon'
+---|'g++'
+---|'mousetweaks'
+---|'pnmcut'
+---|'google-chrome-stable'
+---|'im-launch'
+---|'numfmt'
+---|'pgmramp'
+---|'cvt'
+---|'dpkg-buildpackage'
+---|'listbib'
+---|'x86_64-linux-gnu-g++'
+---|'upbibtex'
+---|'ppmtobmp'
+---|'ncursesw5-config'
+---|'psfaddtable'
+---|'pbmtoybm'
+---|'gawk'
+---|'min12xxw'
+---|'foo2hiperc-wrapper'
+---|'nmtui-connect'
+---|'bitmap'
+---|'dpkg-maintscript-helper'
+---|'gatttool'
+---|'vlna'
+---|'pgmtopbm'
+---|'gnome-shell'
+---|'pnmmargin'
+---|'shmemrun'
+---|'xbrlapi'
+---|'luarocks-admin'
+---|'viewres'
+---|'appstreamcli'
+---|'x86_64-linux-gnu-c++filt'
+---|'ppmtogif'
+---|'mysql_config_editor'
+---|'nawk'
+---|'transmission-gtk'
+---|'qtconfig'
+---|'myisampack'
+---|'xauth'
+---|'containerd-stress'
+---|'spd-conf'
+---|'lomath'
+---|'updvitype'
+---|'dbus-cleanup-sockets'
+---|'x86_64-linux-gnu-lto-dump-12'
+---|'gdk-pixbuf-csource'
+---|'dell-restore-system'
+---|'cksum'
+---|'install-printerdriver'
+---|'cp'
+---|'ucfq'
+---|'scsi_ch_swp'
+---|'h5diff'
+---|'udisksctl'
+---|'llvm-omp-device-info-14'
+---|'nstat'
+---|'gst-inspect-1.0'
+---|'true'
+---|'pw-mididump'
+---|'pooltype'
+---|'es2gears_wayland.x86_64-linux-gnu'
+---|'pnmquant'
+---|'pon'
+---|'touch'
+---|'x86_64-linux-gnu-ranlib'
+---|'systemd-tty-ask-password-agent'
+---|'patgen'
+---|'users'
+---|'im-config'
+---|'totem-video-thumbnailer'
+---|'pnmtoxwd'
+---|'psfgettable'
+---|'icontopbm'
+---|'info'
+---|'grub-script-check'
+---|'gcc'
+---|'ssh-import-id-gh'
+---|'lp'
+---|'libwacom-list-devices'
+---|'containerd-shim-runc-v1'
+---|'pktogf'
+---|'dvitype'
+---|'xkbprint'
+---|'msiexec'
+---|'thumbpdf'
+---|'tpic2pdftex'
+---|'split'
+---|'mysql_migrate_keyring'
+---|'systemd-ask-password'
+---|'trash'
+---|'mf'
+---|'grub-mkrelpath'
+---|'gst-typefind-1.0'
+---|'fonttosfnt'
+---|'h5perf_serial'
+---|'sensible-pager'
+---|'gnome-session-quit'
+---|'i686-linux-gnu-pkg-config'
+---|'pamdice'
+---|'h5ls'
+---|'mogrify'
+---|'pbmtowbmp'
+---|'start-pulseaudio-x11'
+---|'remmina'
+---|'mren'
+---|'file2brl'
+---|'udevadm'
+---|'ppmforge'
+---|'brave-browser-stable'
+---|'isdv4-serial-inputattach'
+---|'ppmtopict'
+---|'gio-querymodules'
+---|'cupstestppd'
+---|'bzexe'
+---|'py3rsa-decrypt'
+---|'gcov'
+---|'fc-validate'
+---|'pw-dump'
+---|'mysqlpump'
+---|'lsof'
+---|'pmpost'
+---|'dvitodvi'
+---|'x86_64-linux-gnu-cpp-9'
+---|'tikztosvg'
+---|'pinentry-curses'
+---|'es2tri.x86_64-linux-gnu'
+---|'wrc'
+---|'gtf'
+---|'mshowfat'
+---|'gtk4-update-icon-cache'
+---|'fig4latex'
+---|'xdg-user-dir'
+---|'glib-compile-resources'
+---|'mandb'
+---|'eps2eps'
+---|'manpath'
+---|'boltctl'
+---|'seahorse'
+---|'splitfont'
+---|'x86_64-linux-gnu-objcopy'
+---|'debian-distro-info'
+---|'smproxy'
+---|'pamdeinterlace'
+---|'pnmtosir'
+---|'deallocvt'
+---|'lp_solve'
+---|'cpufreq-set'
+---|'optex'
+---|'bibmradd'
+---|'gmake'
+---|'mfluajit'
+---|'lwp-mirror'
+---|'mpif90.openmpi'
+---|'alsaucm'
+---|'ntfswipe'
+---|'foo2hiperc'
+---|'mktexmf'
+---|'md5sum.textutils'
+---|'ps2pdf14'
+---|'pbmtox10bm'
+---|'nmtui'
+---|'mkmanifest'
+---|'nl'
+---|'crontab'
+---|'tracepath'
+---|'xbiff'
+---|'dpkg'
+---|'grub-render-label'
+---|'cut'
+---|'unsquashfs'
+---|'mkdir'
+---|'ucs2any'
+---|'x86_64-linux-gnu-gcov-tool-9'
+---|'gnome-help'
+---|'unattended-upgrades'
+---|'sessreg'
+---|'vftovp'
+---|'qtchooser'
+---|'hp-plugin-ubuntu'
+---|'mpiexec.mpich'
+---|'genisoimage'
+---|'xkbcomp'
+---|'system-config-printer-applet'
+---|'sbigtopgm'
+---|'seq'
+---|'usb-creator-gtk'
+---|'java'
+---|'strace-log-merge'
+---|'pbmpscale'
+---|'pnmsmooth'
+---|'ppmtouil'
+---|'gpgparsemail'
+---|'ppmtolj'
+---|'pbmtoascii'
+---|'makeglossaries-lite'
+---|'l4p-tmpl'
+---|'latex-dev'
+---|'pphs'
+---|'colormgr'
+---|'x86_64-linux-gnu-strip'
+---|'pdftocairo'
+---|'setleds'
+---|'resolvectl'
+---|'speaker-test'
+---|'rnano'
+---|'x86_64-linux-gnu-g++-11'
+---|'pnminvert'
+---|'nsupdate'
+---|'pltotf'
+---|'pbmtoplot'
+---|'alsatplg'
+---|'pgmnorm'
+---|'wovp2ovf'
+---|'msexpand'
+---|'pamstretch-gen'
+---|'grub-syslinux2cfg'
+---|'pdftexi2dvi'
+---|'wodim'
+---|'deja-dup'
+---|'sbattach'
+---|'base64'
+---|'dpkg-query'
+---|'brltty-ctb'
+---|'libwacom-list-local-devices'
+---|'unexpand'
+---|'loimpress'
+---|'ppmtojpeg'
+---|'pgmcrater'
+---|'gif2h5'
+---|'qtdiag'
+---|'libpng16-config'
+---|'dpkg-buildflags'
+---|'gtester'
+---|'luaotfload-tool'
+---|'t1ascii'
+---|'oshcc'
+---|'pbmtoptx'
+---|'gst-launch-1.0'
+---|'xlsclients'
+---|'pango-segmentation'
+---|'expand'
+---|'tbl'
+---|'x86_64-linux-gnu-elfedit'
+---|'fold'
+---|'xdg-icon-resource'
+---|'epmd'
+---|'x86_64-linux-gnu-python3-config'
+---|'cd-create-profile'
+---|'detex'
+---|'trash-list'
+---|'pinentry-gnome3'
+---|'thinkjettopbm'
+---|'x86_64-linux-gnu-size'
+---|'soffice'
+---|'cmp'
+---|'gftodvi'
+---|'opldecode'
+---|'import'
+---|'unmkinitramfs'
+---|'paperconf'
+---|'racc3.0'
+---|'pdfatfi'
+---|'rmdir'
+---|'otp2ocp'
+---|'precat'
+---|'ps2pk'
+---|'pnmtopng'
+---|'pgmoil'
+---|'x86_64-linux-gnu-nm'
+---|'pdftotext'
+---|'pdftosrc'
+---|'nc'
+---|'perltex'
+---|'x86_64-linux-gnu-gcov-tool-12'
+---|'printenv'
+---|'pnmconvol'
+---|'dirmngr'
+---|'tempfile'
+---|'pdflatex'
+---|'containerd'
+---|'pw-midirecord'
+---|'eutp'
+---|'word-list-compress'
+---|'animate-im6'
+---|'profile2mat'
+---|'nmtui-hostname'
+---|'chfn'
+---|'setcifsacl'
+---|'gnome-disk-image-mounter'
+---|'desktop-file-edit'
+---|'wmc'
+---|'gslj'
+---|'orca'
+---|'repc'
+---|'ppmspread'
+---|'diff'
+---|'pnmalias'
+---|'xload'
+---|'pbmtomacp'
+---|'autoheader'
+---|'hostnamectl'
+---|'prtstat'
+---|'eog'
+---|'fish_indent'
+---|'arch'
+---|'nautilus-sendto'
+---|'pktype'
+---|'foo2hbpl2'
+---|'bibtex8'
+---|'w'
+---|'pdfetex'
+---|'chacl'
+---|'luarocks-5.2'
+---|'qdbuscpp2xml'
+---|'usb-devices'
+---|'grub-fstest'
+---|'mcd'
+---|'systemd-umount'
+---|'foo2slx'
+---|'euptex'
+---|'webquiz'
+---|'f77'
+---|'macptopbm'
+---|'xdriinfo'
+---|'lwp-request'
+---|'pango-list'
+---|'ttf2tfm'
+---|'dh_dkms'
+---|'obexctl'
+---|'mknod'
+---|'myisamlog'
+---|'foo2zjs'
+---|'canberra-gtk-play'
+---|'compare-im6'
+---|'nice'
+---|'dbus-uuidgen'
+---|'myisam_ftdump'
+---|'foo2xqx-wrapper'
+---|'otangle'
+---|'x86_64-linux-gnu-gfortran-9'
+---|'ntfscmp'
+---|'md5pass'
+---|'mk_modmap'
+---|'xmodmap'
+---|'patch'
+---|'HEAD'
+---|'find'
+---|'sudo'
+---|'upmpost'
+---|'pa-info'
+---|'ppmtoicr'
+---|'networkctl'
+---|'biber'
+---|'hbpldecode'
+---|'xsetroot'
+---|'authorindex'
+---|'sosreport'
+---|'systemd-tmpfiles'
+---|'pathchk'
+---|'sqfscat'
+---|'pnminterp-gen'
+---|'zforce'
+---|'bdftruncate'
+---|'mlabel'
+---|'perl5.34.0'
+---|'dvispc'
+---|'mtr'
+---|'debconf'
+---|'biburl2doi'
+---|'pcxtoppm'
+---|'pw-metadata'
+---|'update-notifier'
+---|'winecpp'
+---|'lualatex'
+---|'gst-device-monitor-1.0'
+---|'setxkbmap'
+---|'py3rsa-encrypt'
+---|'zipcloak'
+---|'dbus-send'
+---|'autoscan'
+---|'mako-render'
+---|'debconf-set-selections'
+---|'pamon'
+---|'tracker3'
+---|'ginstall-info'
+---|'pidof'
+---|'t1disasm'
+---|'update-manager'
+---|'luarocks-5.4'
+---|'scp-dbus-service'
+---|'pwdx'
+---|'pnmnorm'
+---|'factor'
+---|'psfxtable'
+---|'lua'
+---|'rfcomm'
+---|'x86_64-linux-gnu-gcov-9'
+---|'foo2xqx'
+---|'ppmtopcx'
+---|'gpg-zip'
+---|'mclasserase'
+---|'ppmnorm'
+---|'efibootmgr'
+---|'import-im6.q16'
+---|'cd-fix-profile'
+---|'dir'
+---|'sync'
+---|'neotoppm'
+---|'qdbusxml2cpp'
+---|'ps2pdf'
+---|'ppmshift'
+---|'systemd-machine-id-setup'
+---|'wakeonlan'
+---|'autom4te'
+---|'startx'
+---|'pw-play'
+---|'unopkg'
+---|'x86_64-pc-linux-gnu-pkg-config'
+---|'hp-plugin'
+---|'realpath'
+---|'echo'
+---|'composite-im6.q16'
+---|'tcpdump'
+---|'fc-match'
+---|'wineconsole'
+---|'tifftopnm'
+---|'xsetwacom'
+---|'vmwarectrl'
+---|'oshfort'
+---|'pmxab'
+---|'zdiff'
+---|'axfer'
+---|'busctl'
+---|'x-session-manager'
+---|'hex2hcd'
+---|'dpkg-distaddfile'
+---|'gst-stats-1.0'
+---|'whoopsie-preferences'
+---|'wc'
+---|'ppmcolormask'
+---|'Xwayland'
+---|'systemd-run'
+---|'getmapdl'
+---|'xkbevd'
+---|'sleep'
+---|'xxd'
+---|'parecord'
+---|'usbhid-dump'
+---|'stdbuf'
+---|'dpkg-scanpackages'
+---|'qmlviewer'
+---|'ppmtoacad'
+---|'pw-loopback'
+---|'epstool'
+---|'ico'
+---|'mmd'
+---|'pdfinfo'
+---|'ttf2pk'
+---|'dpkg-name'
+---|'xclip-cutfile'
+---|'pdftoppm'
+---|'xfontsel'
+---|'x86_64-linux-gnu-ld'
+---|'distro-info'
+---|'mysql_ssl_rsa_setup'
+---|'aa-exec'
+---|'setfacl'
+---|'winedbg'
+---|'c89-gcc'
+---|'tex2aspc'
+---|'x86_64-linux-gnu-python3.10-config'
+---|'pnmmontage'
+---|'ht'
+---|'gnome-mines'
+---|'sol'
+---|'gnome-mahjongg'
+---|'gnome-sudoku'
+---|'gamemoderun'
+---|'gamemode-simulate-game'
+---|'cups.reject'
+---|'cups.lpc'
+---|'snap-store.ubuntu-software'
+---|'cups.lpinfo'
+---|'slack'
+---|'cups.cupsenable'
+---|'firefox'
+---|'snap-store.ubuntu-software-local-file'
+---|'geckodriver'
+---|'obs-studio'
+---|'discord'
+---|'cups.lp'
+---|'cups.lpoptions'
+---|'skype'
+---|'cups.cupsfilter'
+---|'cups.cupsctl'
+---|'firefox.geckodriver'
+---|'cups.driverless'
+---|'cups.cancel'
+---|'cups.lpr'
+---|'obs-studio.srt-live-transmit'
+---|'code.url-handler'
+---|'snap-store'
+---|'obs-studio.srt-file-transmit'
+---|'cups.ippfind'
+---|'cups.gs'
+---|'authy'
+---|'chromium.chromedriver'
+---|'vlc'
+---|'cups.accept'
+---|'inkscape'
+---|'cups.lpq'
+---|'obs-studio.eglinfo'
+---|'obs-studio.ffprobe'
+---|'teams'
+---|'cups.cupsreject'
+---|'obs-studio.ffmpeg'
+---|'canonical-livepatch'
+---|'cups.lpadmin'
+---|'telegram-desktop'
+---|'cups.cupsdisable'
+---|'cups.cupsaccept'
+---|'cups.ippeveprinter'
+---|'obs-studio.srt-ffplay'
+---|'obs-studio.ffplay'
+---|'cups.cupstestppd'
+---|'gimp'
+---|'obs-studio.srt-tunnel'
+---|'xournalpp'
+---|'bitwarden'
+---|'obs-studio.vainfo'
+---|'cups.lpstat'
+---|'obs-studio.vdpauinfo'
+---|'obs-studio.glxinfo'
+---|'chromium'
+---|'code'
+---|'inkscape.viewer'
+---|'cups.ipptool'
+---|'obs-studio.vulkaninfo'
+---|'cups.lprm'
+
+---@class sh.Shell
+---@field ['sshproxy.sh'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gc-ctrl.py'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['_gcp_invokepython'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tablelist5.9'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gt_amd64'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['etc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['globusconnect'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['util'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['globusconnectpersonal'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gc.py'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tclkit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rst2html4.py'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ipcontroller'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hg-nbmerge'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['torchrun'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jupyter-labextension'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jupyter-console'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rst2odt_prepstyles.py'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['python3.10'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['futurize'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cmark'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['skivi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tiffcomment'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jupyter-notebook'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pkginfo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jupyter'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['git-nbdifftool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rst2latex.py'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jupyter-run'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ipython3'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['f2py3.10'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jupyter-troubleshoot'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pelican-import'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rstpep2html.py'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pyro5-check-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jlpm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rst2s5.py'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['shiv'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pyro4-test-echoserver'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pyjson5'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qtpy'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nbshow'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rst2man.py'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fonttools'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jupyter-nbclassic-bundlerextension'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ipython'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pyro5-ns'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ipcluster'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['isympy'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jupyter-bundlerextension'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pelican-plugins'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pyro4-nsc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jupyter-kernel'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pip3.10'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jupyter-nbclassic-serverextension'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fortls'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['unidecode'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rst2xml.py'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jupyter-lab'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pyro4-check-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jupyter-nbconvert'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['keyring'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pyro4-flameserver'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wheel3'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lsm2bin'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['git-nbdiffdriver'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cython'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hg-nbmergeweb'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jupyter-trust'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ipengine'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wheel'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pybabel'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ttx'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pip'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pelican-themes'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pyftsubset'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tifffile'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jupyter-kernelspec'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nbmerge'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['virtualenv'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tqdm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jupyter-nbclassic-extension'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rst2html5.py'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nbdiff-web'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['convert-onnx-to-caffe2'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jupyter-qtconsole'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['f2py'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jupyter-migrate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['chardetect'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rst2html.py'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jupyter-nbextension'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pip3'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jupyter-serverextension'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jupyter-execute'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pyro5-httpgateway'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pyro5-echoserver'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pyro4-ns'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['imageio_download_bin'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wheel3.10'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cygdb'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rst2odt.py'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['normalizer'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hg-nbdiff'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['python'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['git-nbmergetool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pelican-quickstart'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pyro4-httpgateway'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['f2py3'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pyro5-nsc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nbdime'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tiff2fsspec'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cythonize'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hg-nbdiffweb'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['imageio_remove_bin'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['yt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nbdiff'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rst2pseudoxml.py'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['convert-caffe2-to-onnx'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['shiv-info'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pasteurize'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['send2trash'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['python3'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rst2xetex.py'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['git-nbmergedriver'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jupyter-server'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['markdown_py'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbr'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nbmerge-web'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jsonschema'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['__pycache__'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['docutils'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['twine'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jupyter-labhub'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pyftmerge'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pelican'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['iyt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wsdump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jupyter-nbclassic'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wheel-3.10'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jupyter-dejavu'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jrnl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pygmentize'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fincore'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gp-display-html'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gperf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['makeconv'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lto-dump-11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hwloc-annotate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['kadmin'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bzcat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['asn1Decoding'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['captoinfo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['c++filt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xmlcatalog'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['msgen'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['brew'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dumpsexp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sphinx-autobuild'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnutls-cli'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['guile-tools'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['c++-12'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hexyl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['db_checkpoint'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nghttp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['db_deadlock'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ul'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['elfutils-elflint'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gettextize'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['uname26'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['chrt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gcov-tool-12'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['perl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['msgattrib'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hwloc-ps'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['autopoint'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['db_hotbackup'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['corelist'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xsubpp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ocsptool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-pc-linux-gnu-gcc-11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['msguniq'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['perlbug'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['msginit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pod2man'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['2to3-3.11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['splain'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tset'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ngettext'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['julia'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xmlsec1-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lslocks'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['zipinfo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rtmpdump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['exa'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['libtool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pkg-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-pc-linux-gnu-gcc-ar-11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dllwrap'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gcc-ranlib-12'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['getconf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lsns'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ranlib'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['elfutils-objdump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['idle3.9'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ld.gold'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['zipdetails'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['msgcat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sotruss'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['python3.10-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bison'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pcregrep'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['elfutils-nm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tic'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['msgmerge'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gfortran'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gold'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['z3'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['acountry'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rtmpgw'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['encguess'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['asn1Coding'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hwloc-bind'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-pc-linux-gnu-g++-11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnutls-serv'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['perlthanks'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xmlwf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tabs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gettext'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['toe'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jeprof'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['zstdless'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gcov-12'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['scriptlive'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gdbm_load'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gcc-11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['isosize'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wall'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wdctl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['klist'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['linux64'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ionice'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xzfgrep'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['instmodsh'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpmetis'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-pc-linux-gnu-gcc-nm-11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xzgrep'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['script'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hmac256'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['typeprof'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ldapcompare'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['clear'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['blackd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['chmem'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['umount'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pydoc3.9'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['black'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lastb'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['compile_et'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gcc-nm-11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['db_log_verify'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['guild'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gcov-tool-11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ld'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['k5srvutil'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xzless'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['strip'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['msggrep'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['brotli'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rename'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['unzipsfx'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['krb5-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lslogins'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lsblk'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['perl5.36.0'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sphinx-build'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['event_rpcgen.py'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['elfutils-elfcompress'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rdoc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lzfgrep'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['guile'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['db_tuner'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['idle3.11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bzip2'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ptardiff'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mountpoint'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['db_stat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['elfutils-readelf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gcc-nm-12'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['elfutils-unstrip'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['python3.9'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gprofng'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['libtoolize'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['choom'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['taskset'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pcre-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['column'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lsirq'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bundler'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['asciidoctor-pdf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gencat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gcc-ar-11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hwloc-distrib'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['idle3'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['msgcmp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['objcopy'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nettle-lfib-stream'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['elfutils-addr2line'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hwloc-gather-topology'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['flock'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['funzip'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pcre2grep'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['db_recover'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['kswitch'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['idle3.10'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rev'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['elfutils-strip'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['7z'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ncurses6-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['g++-11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ldapvc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lsipc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gcc-ar-12'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ldapurl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ld.bfd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lzmore'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sim_client'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mcookie'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xz'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['7zr'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['unlzma'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gpmetis'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xmllint'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gettext.sh'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['adig'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['utmpdump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gfortran-12'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['findmnt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ldd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lzcat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['asn1Parser'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lzmainfo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['kdestroy'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-pc-linux-gnu-c++-12'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['logger'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['elfutils-elfcmp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['reset'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['glibtoolize'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['elfutils-ranlib'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['windmc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lscpu'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['db_printlog'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nghttpd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['icuexportdata'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cpan'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['zdump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xtrace'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gem'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bzgrep'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hardlink'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['locale'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ipcrm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['last'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ptar'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['irb'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pl2pm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gdc-11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['setarch'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['p11tool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['c++-11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xzegrep'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['unzstd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sexp-conv'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['windres'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['irqtop'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['curl-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cmpfillin'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['msgfmt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['more'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['idn2'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['msgexec'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['infocmp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gendict'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['streamzip'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ctest'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pip3.9'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['localedef'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lzgrep'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gcc-ranlib-11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['genrb'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gfortran-11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['livereload'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['derb'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bzless'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rbs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['msgfilter'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-pc-linux-gnu-c++-11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xgettext'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnutls-certtool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pzstd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xzcmp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['envsubst'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ruby'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['c_rehash'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ri'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['whereis'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ksu'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['7za'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hwloc-compress-dir'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lstopo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gpg-error'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sprof'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sqlite3'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xml2-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mesg'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['getent'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['2to3-3.9'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['kinit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['scriptreplay'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['zipgrep'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['kvno'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['enc2xs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['look'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['unzip'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-pc-linux-gnu-gdc-11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wheel3.9'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sphinx-apidoc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ld.so'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nsenter'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['python3.11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['graphchk'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['black-primer'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['libgcrypt-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['setterm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dlltool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rdbg'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pcprofiledump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['icu-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gp-display-text'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-pc-linux-gnu-gcc-ar-12'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ipcmk'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['podchecker'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['json_pp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xsltproc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['piconv'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['srconv'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ldapsearch'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pcretest'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lzmadec'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pcre2-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lto-dump-12'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sclient'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lzless'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pydoc3.10'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ccmake'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['g++-12'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hwloc-patch'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pod2text'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['eject'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['curl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['openssl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['trust'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mount'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-pc-linux-gnu-gcc-ranlib-12'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['genbrk'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xzcat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['unlz4'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['python3.9-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ktutil'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['python3.11-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gpgrt-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nghttpx'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pip3.11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hwloc-gather-cpuid'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gpg-error-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ldapexop'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['makedb'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-pc-linux-gnu-gcc-ranlib-11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['patchelf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['setsid'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['msgconv'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['infotocap'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['icuinfo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnutls-cli-debug'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rtmpsrv'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['elfutils-make-debug-archive'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gdbm_dump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ahost'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['guile-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dmesg'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-pc-linux-gnu-gcc-12'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bundle'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ldapdelete'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gp-collect-app'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lsmem'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['perldoc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pkgdata'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['objconv'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['coffdump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bzegrep'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['asciidoctor'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nettle-pbkdf2'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cpp-12'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['m4'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['zstdmt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['i386'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['db_archive'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['uuidparse'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lz4cat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rich'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['elfutils-size'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['msgcomm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['btop'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mongoose'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gcc-12'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['uuclient'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['renice'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pldd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gencfu'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qprofdiff'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ncursesw6-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['addr2line'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['erb'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ldappasswd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['db_convert'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['danetool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gp-display-src'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['psktool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ar'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['yacc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['elfedit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['unxz'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lstopo-no-graphics'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['guile-snarf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bzdiff'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pcre2test'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-pc-linux-gnu-g++-12'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mtrace'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fallocate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ldapmodrdn'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['col'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['duf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dwp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gcov-11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['zstdcat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xzdec'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bzip2recover'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gencnval'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tput'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ndmetis'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tzselect'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hwloc-diff'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['colcrt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rtmpsuck'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['unshare'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bzmore'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ptargrep'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xslt-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ccache-swig'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pkcs1-conv'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['zstd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['db_replicate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cpp-11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jemalloc-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-pc-linux-gnu-gfortran-11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['colrm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gdbmtool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['git2_cli'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lzma'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['h2ph'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['elfutils-findtextrel'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['uuidgen'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pydoc3'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['perlivp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['objdump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['m2gmetis'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['prove'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lzcmp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['libnetcfg'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lzegrep'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sysdump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['h2xs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['db_dump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-pc-linux-gnu-gcc-nm-12'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['kpasswd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cmake'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['racc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['p11-kit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hwloc-ls'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lz4c'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['size'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hwloc-calc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sphinx-autogen'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bzfgrep'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['prlimit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gcov-dump-12'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['elfutils-elfclassify'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['db_upgrade'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rstcheck'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['strings'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['elfutils-ar'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['iconv'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xzmore'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pod2html'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ipcs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['elfutils-strings'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['recode-sr-latin'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rake'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['2to3-3.10'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gss-client'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpicalc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wheel3.11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['db_load'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['uclampset'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['msgunfmt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['namei'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['readelf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xmlsec1'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xzdiff'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ldapmodify'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['getopt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['swig'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['elfutils-stack'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sphinx-quickstart'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bunzip2'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ldapadd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['h2load'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gprof'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hexdump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ldapwhoami'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cpack'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gp-archive'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['zstdgrep'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['srptool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jemalloc.sh'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['2to3'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hwloc-info'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['linux32'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lzdiff'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lsfd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pod2usage'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['as'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['db_verify'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lz4'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['yat2m'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pydoc3.11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bzcmp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['uconv'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-pc-linux-gnu-gfortran-12'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['shasum'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gcov-dump-11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nettle-hash'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['glibtool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['python3-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['losetup'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['uuserver'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['chcpu'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['kdb5_util'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['slapschema'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['partx'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ldattach'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gss-server'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['resizepart'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fdisk'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['zramctl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['kadmin.local'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mkfs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['iconvconfig'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['swapon'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sim_server'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['kadmind'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['slapauth'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hwloc-dump-hwdata'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['agetty'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ctrlaltdel'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rfkill'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['slapcat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['unbound-control-setup'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['delpart'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nscd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['krb5-send-pr'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fsck.minix'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sulogin'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fstrim'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fsfreeze'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sln'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['escapesrc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['addpart'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['slapdn'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['blkid'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['findfs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mkfs.bfs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['zic'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['blockdev'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['unbound'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['blkzone'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['genccode'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['uuidd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['unbound-checkconf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['unbound-anchor'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['switch_root'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ldconfig'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gensprep'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hwclock'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['unbound-control'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mkfs.minix'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gennorm2'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['kpropd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['kprop'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['icupkg'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mkfs.cramfs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['swapoff'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['swaplabel'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['blkdiscard'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['slapadd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['slapacl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['krb5kdc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rtcwake'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['slapindex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sfdisk'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['slappasswd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['readprofile'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fsck'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nologin'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mkswap'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['slaptest'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['slapmodify'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['unbound-host'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['kproplog'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cfdisk'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pivot_root'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gencmn'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sserver'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wipefs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fsck.cramfs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['spack-tmpconfig'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sbang'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['spack-python'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['spack'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['flask'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sh.autogen'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['croissant'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nsys'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nsys-ui'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cryptsetup'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ip'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ippeveprinter'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['locale-gen'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pvscan'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ownership'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pdata_tools'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mkfs.ext3'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['groupdel'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['apparmor_parser'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vgconvert'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rabbitmqctl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pvcreate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-gsfontmap'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-updmap'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ip6tables-apply'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mdmon'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dhclient'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['genl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['iptables-nft'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dmidecode'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gdisk'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ifconfig'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lvrename'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ip6tables-legacy'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mkfs.ext4'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['kbdrate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-grub'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['logrotate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['accessdb'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ntfsclone'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['iptables-restore-translate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['groupmod'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['aa-remove-unknown'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['thin_check'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ufw'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['iptables-legacy-save'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['casper-snapshot'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tzconfig'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mklost+found'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pvchange'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['casper-stop'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['e2label'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['telinit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rmt-tar'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['plipconfig'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['setvtrgb'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ebtables-nft-restore'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['remove-default-wordlist'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sync-available'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-java-alternatives'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['arptables-restore'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mount.ntfs-3g'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['iptunnel'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['key.dns_resolver'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['select-default-wordlist'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-inetd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sysctl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mii-tool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rabbitmq-server'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['thin_delta'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mke2fs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fsck.ext2'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lvmdump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['installkernel'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-catalog'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mount.cifs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['brltty-setup'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ipmaddr'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mkntfs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dmstats'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['anacron'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cupsaccept'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['visudo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['aspell-autobuildhash'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['route'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['start-stop-daemon'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lpinfo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['iptables-nft-save'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mount.fuse'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pvs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mkhomedir_helper'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-dictcommon-hunspell'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ebtables-save'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mdadm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lvdisplay'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-menus-blacklist'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lsmod'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fstab-decode'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mkfs.ext2'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dhclient-script'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cracklib-packer'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['netplan'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fsck.ext3'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nameif'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['applygnupgdefaults'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dcb'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['e2mmpstatus'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['badblocks'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grpck'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vgimportclone'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['filefrag'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['newusers'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['chat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['getty'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['partprobe'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['casper-login'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fsck.ext4'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['iwpriv'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sgdisk'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-dictcommon-aspell'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['blkdeactivate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['e4defrag'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['openvpn'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mkfs.ntfs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cache_restore'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fsck.msdos'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-secureboot-policy'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['resize2fs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['arptables-save'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-texmf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['devlink'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['getweb'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ethtool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-grub-gfxpayload'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rabbitmq-queues'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pvremove'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pppoe-discovery'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grub-macbless'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wpa_action'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['thin_dump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grub-set-default'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grub-probe'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lvmsar'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pam_extrausers_chkpwd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['getpcaps'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cache_check'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['avahi-autoipd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vgimport'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['init'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lvmsadc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-initramfs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['alsa-info'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wpa_supplicant'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['avahi-daemon'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-shells'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['faillock'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['biosdecode'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['unix_chkpwd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xtables-monitor'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-default-wordlist'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lvconvert'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-xmlcatalog'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['era_restore'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vipw'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['arp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['killall5'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['slattach'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cppw'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['arptables-nft'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ebtables'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cache_metadata_size'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pppdump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grpconv'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vgmerge'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['thin_repair'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vgcfgrestore'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['install-sgmlcatalog'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['arptables-nft-restore'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mysqld'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['e2image'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['deluser'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['alsactl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['on_ac_power'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['thin_metadata_size'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['casper-new-uuid'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['shutdown'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['make-ssl-cert'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['irqbalance-ui'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vgchange'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lvcreate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-fonts-dir'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-language-def'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vgs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['iptables-save'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['iptables-nft-restore'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['laptop_mode'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['arpd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ispell-autobuildhash'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vgexport'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cracklib-unpacker'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lmt-config-gui'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['add-shell'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pvresize'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vgcfgbackup'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cpgr'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pwunconv'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gdm3'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dumpe2fs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pam_extrausers_update'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pccardctl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lpadmin'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['useradd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rarp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['alsa'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-cracklib'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-rc.d'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-fmtutil'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tarcat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dpkg-preconfigure'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dkms'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ip6tables-translate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cifs.upcall'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vigr'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pppstats'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['chgpasswd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['runc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['usbmuxd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['addgnupghome'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['iwconfig'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fsadm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cupsreject'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-language-dat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vgremove'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['groupmems'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vgmknodes'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rabbitmq-upgrade'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['thin_rmap'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['validlocale'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['aa-teardown'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xtables-legacy-multi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['upgrade-from-grub-legacy'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['remove-shell'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grub-mkconfig'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hdparm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['iptables-legacy-restore'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['setcap'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['apparmor_status'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['paperconfig'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ip6tables-legacy-save'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rsyslogd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ebtables-nft-save'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['getcap'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['veritysetup'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['thin_restore'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ip6tables-legacy-restore'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['e4crypt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mount.fuse3'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['usb_modeswitch_dispatcher'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['thermald'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rmmod'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['e2fsck'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['select-default-ispell'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ip6tables-nft-save'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lvscan'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mkfs.vfat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['capsh'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sshd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pam_getenv'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lvmpolld'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['shadowconfig'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dmsetup'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['seccompagent'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['iptables-translate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-default-ispell'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ntfsundelete'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['iwspy'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['runuser'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tipc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-tl-stacked-conffile'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['era_dump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pptpsetup'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dmeventd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-grub2'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['arptables'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nfnl_osf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sssd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sudo_sendlog'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['integritysetup'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pptp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cupsenable'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-language'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cgdisk'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vgcreate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vcstime'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['spice-vdagentd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-fonts-alias'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rabbitmq-diagnostics'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dosfslabel'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ipp-usb'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-locale'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-texmf-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-info-dir'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['iptables-legacy'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['iwevent'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['unix_update'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['acpid'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['arptables-nft-save'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pvdisplay'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['reboot'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vgreduce'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fixparts'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['debugfs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ip6tables-nft'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grpunconv'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cache_dump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lpc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tune2fs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['setvesablank'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['NetworkManager'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ip6tables-restore'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ldconfig.real'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['thin_ls'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rabbitmq-plugins'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mkdosfs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['parted'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lpmove'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['iucode_tool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vgrename'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nft'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['runlevel'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['chpasswd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pwconv'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['addgroup'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sd-helper'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cracklib-check'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ntfscp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['poweroff'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['netscsid'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lvremove'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cupsfilter'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cracklib-format'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bluetoothd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mkfs.msdos'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['recvtty'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vgextend'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['casper-getty'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lm-syslog-setup'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vdpa'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['era_check'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-icon-caches'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lvmconfig'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['iptables-restore'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['kerneloops'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['thin_trim'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cupsd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['adduser'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ebtables-restore'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pam_timestamp_check'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fanctl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['umount.udisks2'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['chroot'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['groupadd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cupsctl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lmt-config-gui-pkexec'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['logsave'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dosfsck'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-default-aspell'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pvck'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fatlabel'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lvresize'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['depmod'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ebtables-nft'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lvchange'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['halt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['request-key'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rtacct'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ip6tables-save'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['alsabat-test'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vgsplit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ntfslabel'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['iwlist'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['create-cracklib-dict'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lvs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vgscan'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['u-d-c-print-pci-ids'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rmt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mount.lowntfs-3g'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['e2freefrag'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ip6tables'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cron'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grub-bios-setup'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cryptsetup-reencrypt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['userdel'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['iucode-tool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['aptd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xtables-nft-multi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-ca-certificates'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['powertop'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fsck.fat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grub-mkdevicemap'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cupsdisable'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lvm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vgck'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mkinitramfs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['era_invalidate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wpa_cli'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['remove-default-ispell'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mount.ntfs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['service'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fsck.vfat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-language-lua'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ntfsresize'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rtkitctl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['plymouthd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['modprobe'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pam-auth-update'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['e2undo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lvextend'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['usb_modeswitch'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cifs.idmap'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bridge'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['usermod'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['iptables'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['iwgetid'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sudo_logsrvd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-pciids'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dpkg-reconfigure'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cryptsetup-ssh'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['e2scrub_all'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grub-reboot'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cups-browsed'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lvreduce'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vgdisplay'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cache_writeback'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mount.smb3'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ModemManager'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ip6tables-restore-translate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-passwd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['irqbalance'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fanatic'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['iptables-apply'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['delgroup'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['aa-status'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grub-install'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-fonts-scale'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['saned'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-mime'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['insmod'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pwck'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vpddecode'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lm-profiler'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['brctl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mkfs.fat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cache_repair'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dnsmasq'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lvmdiskscan'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['invoke-rc.d'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ip6tables-nft-restore'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lspcmcia'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['modinfo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pvmove'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['brltty'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['e2scrub'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rtmon'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fc-pattern'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-qmake'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x11perfcomp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['simpdftex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmtompeg'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ssh-import-id'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-power-statistics'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['assistant'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['py3rsa-sign'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bash'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['git-upload-archive'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['syslinux2ansi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['localectl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpif77.mpich'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ping6'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['valgrind'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gcov-9'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['aspell-import'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-www-browser'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['systemd-sysusers'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['geqn'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bdftopcf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['spctoppm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['aconnect'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['psidtopgm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['acpi_listen'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmtotiffcmyk'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sh'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dpkg-deb'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['opalcc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hdfview'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ssh-argv0'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ssh-keyscan'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xinit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pkttyagent'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qpdldecode'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tgatoppm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gsdj'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ps2epsi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nspr-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nyxt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gpgtar'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fprintd-list'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qdbusviewer'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wine-preloader'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mfplain'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['systemd-escape'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-session-custom-session'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['apport-unpack'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mattrib'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pamstack'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pw-cli'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['intel-virtual-output'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['openvt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['unpack200'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bundle3.0'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['libreoffice'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['oem-getlogs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmdither'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmmix'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cancel'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rview'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['join'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rhythmbox'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mdel'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['readlink'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-font-viewer'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ssh-keygen'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['luac5.3'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['linux-version'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sbverify'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gsdj500'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sort'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pngfix'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mrd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nisdomainname'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['debconf-apt-progress'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pdfclose'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-pkg-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pdfsig'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ftp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpiCC.openmpi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xdg-email'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpicc.mpich'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gtk4-builder-tool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wopl2ofm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmtotga'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tclsh8.6'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['growisofs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ibus-table-createdb'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppdpo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['unicode_start'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['afm2tfm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['quirks-handler'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['svn-multi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qmlscene'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['h52gif'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sudoreplay'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-alternatives'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ibus'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rstartd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmshear'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xkbvleds'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rhythmbox-client'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nvim'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vmstat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['troff'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mysqlanalyze'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['expr'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lpoptions'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gst-discoverer-1.0'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fc-scan'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['atobm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-gcc-ar-9'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['spdsend'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gpic'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gcc-ranlib'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-text-editor'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['foo2zjs-icc2ps'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['orte-server'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fig2ps2tex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmtomda'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-gcc-12'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['evince'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xwininfo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['calibrate_ppa'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['debconf-mergetemplate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mkfontdir'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gtk-query-settings'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sha384sum'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['chgrp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-strings'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['spa-resample'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gpgsplit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lexgrog'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['latex-wordcount'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nmcli'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['smbinfo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmquantall'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['plog'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xelatex-dev'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpirun'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmtorgb3'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['aclocal-1.16'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pic2tpic'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['l2ping'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tgz'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['remmina-gnome'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['h5redeploy'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['iecset'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['journalctl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vimdiff'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['foo2oak'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['POST'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['docker-proxy'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-gold'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['txixml2texi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['uname'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tar'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wine64-preloader'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mformat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['docker-init'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['isovfy'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['avahi-resolve-address'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['GET'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmntsc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pango-view'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xbmtopbm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['socat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['montage'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rctest'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ssh-agent'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['showconsolefont'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['winepath'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rcp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bib2gls'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grub-mkimage'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-shell-perf-tool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ctwill-refsort'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xdg-desktop-icon'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['linkicc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmflash'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpif90'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hp-setup'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gpgv'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['luarocks-5.3'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['strace'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xargs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['upower'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-gcov-11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gcr-viewer'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mcomp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['luajithbtex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grub-ntldr-img'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnulib-tool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ortecc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmtext'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sensible-browser'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-cpp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nnslog'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pdfdetach'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ctstat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sed'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ri3.0'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grub-mkfont'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['libwacom-update-db'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ebb'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['oomctl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gtbl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['foo2lava-wrapper'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['kbxutil'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ompi-server'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fusermount3'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['efibootdump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qmllint'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xdg-screensaver'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['foo2hbpl2-wrapper'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rstart'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mtype'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['b2sum'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['display-im6.q16'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['user-setup'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lowntfs-3g'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['avahi-resolve-host-name'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['env'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['stty'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['luarocks-admin-5.3'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xvinfo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wofm2opl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['winecfg'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xmessage'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['localc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmtopgm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmtopi1'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pdftops'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['uptime'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sudoedit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mkfontscale'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dvilj4'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ps2pdf12'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rmid'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mysqldump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dpkg-realpath'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nohup'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['t1binary'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pacmd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['telnet'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['setmetamode'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-gcc-nm-9'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grub-glue-efi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sha1sum'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['zbarcam'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['expiry'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mft'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dv2dt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jjs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ntfs-3g.probe'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['m2400w'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ctwill'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wineg++'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fwupdmgr'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['man'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['epspdf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grep-status'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['containerd-shim-runc-v2'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cd-iccdump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['h5mkgrp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['write.ul'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['parkill'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hp-doctor'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['amidi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['h5stat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gtk4-encode-symbolic-svg'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sha1pass'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rungs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mendex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ltx2crossrefxml'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmqvga'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ua'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pass'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['uptex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ckbcomp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['isoinfo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['loweb'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mflua'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['apport-collect'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmtopalm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['systemd-sysext'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmtomap'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dfu-tool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xditview'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dpkg-source'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['automake-1.16'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['zcat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['yelp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qtplugininfo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmdist'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pkcheck'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wish'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['chvt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-characters'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ptx'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['spd-say'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tree'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pfb2pfa'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mag'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pgmtexture'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bioradtopgm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xmlpatterns'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmcie'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['false'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['typeprof3.0'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-gcc-9'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['trash-restore'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ncurses5-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmtomgr'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lwp-dump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['zoom'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['m2300w-wrapper'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mysqlimport'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['texi2any'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rake3.0'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pw-dot'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ntfssecaudit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cg_annotate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['chardet'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xmore'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['simple-scan'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pstree.x11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-gcc-ar'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fusermount'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['chsh'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ntfscat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['foo2qpdl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['stat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmlabel'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gtk-builder-tool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['zgrep'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['peekfd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wpa_passphrase'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmarith'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmtoddif'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['conjure-im6'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gouldtoppm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmmask'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['uz'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dbus-run-session'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dpkg-trigger'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['orte-info'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['py3compile'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmtoxpm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-desktop-database'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppdi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lsinitramfs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gtk-launch'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fprintd-delete'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-ar'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmtogo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['add-apt-repository'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmclean'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['zipsplit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gdialog'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['systemd-cgls'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmcolors'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lesspipe'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['page'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['afm2pl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xkbbell'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dviselect'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pkexec'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['texluajit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['printer-profile'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mktexlsr'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['unattended-upgrade'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['compare-im6.q16'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mdeltree'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmtopj'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['df'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cheese'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rpl8'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pstoedit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['glib-genmarshal'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['oclock'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gtk4-launch'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmlife'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pdb3.10'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpic++.openmpi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmtoepson'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['apt-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grep-debtags'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmrainbow'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pulseaudio'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['eqn'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ilbmtoppm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['findrule'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['soelim'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['setlogcons'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmpsnr'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fstopgm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpiCC'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['glxinfo.x86_64-linux-gnu'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['spa-json-dump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmchange'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['h5import'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['system-config-printer'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pax11publish'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['etex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fish'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xorrecord'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['apt-key'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ps'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fc-query'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmpad'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['os-prober'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ruby3.0'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['file-roller'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ctie'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['m2300w'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-todo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['autoupdate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gcc-ar'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmfile'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pigz'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sdptool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gcc-ar-9'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['select-editor'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmtozinc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['oshcxx'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rdiffdir'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['link'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-language-selector'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pamcut'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gjs-console'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lupdate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dpkg-split'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['designer'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['foo2ddst'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['shmemcxx'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['apturl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['groups'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lesskey'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dvilj2p'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xrdb'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cpio'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ms_print'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cpp-9'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dvipdft'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['git-lfs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qmltestrunner'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['groff'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lsattr'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['systemd-id128'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ntfscluster'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['alsaloop'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bluetooth-sendto'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rbash'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['alsabat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['remmina-file-wrapper'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['zfgrep'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bootctl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['orca-dm-wrapper'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mflua-nowin'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qmlmin'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-calendar'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hp-timedate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hydra_pmi_proxy'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mtoolstest'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pw-link'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['httexi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fc-conflist'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mgrtopbm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['edit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xdg-open'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xvidtune'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['aggregate_profile'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['eglinfo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ps2txt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['winemine'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dirsplit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sum'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pw-dsdplay'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gzip'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['py3rsa-verify'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xdg-desktop-menu'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['['] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmpage'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['linux-update-symlinks'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-disks'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-lto-dump-11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xcalc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qmleasing'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pdfopen'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmtosgi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ntfsfix'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-session'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['prezip-bin'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gcov-dump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['h5unjam'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pgmtolispm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xdvi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grog'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['convert-im6'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dpkg-statoverride'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['psfstriptable'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ctangle'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xgc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bibtex.original'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['c89'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-gcc-ranlib-12'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['py3clean'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['luahbtex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dpkg-scansources'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gcore'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['c99-gcc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['winicontoppm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xclip'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-gcc-nm-11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nvidia-detector'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lnstat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmtoatk'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grotty'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['thunderbird'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gftopk'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['loginctl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['shuf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pdffonts'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pdb3'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gemtopnm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ciptool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gdmflexiserver'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gpasswd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pasuspender'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['monitor-sensor'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['usbreset'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nc.openbsd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmtopgm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ptex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gpgcompose'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['c++'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['showkey'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['zenity'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gio'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['systemd-notify'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gedit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmnlfilt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['animate-im6.q16'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jpgicc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tee'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xwdtopnm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mtr-packet'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mkocp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qdbus'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gjs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dvitomp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tload'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pdfseparate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['animate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['conjure'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['winebuild'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['scanimage'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ping'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cd-it8'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mkdiskimage'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pw-record'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['chkdvifont'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hp-scan'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xsm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gpgsm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qtattributionsscanner'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['c99'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmflip'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['usb_printerid'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mysqldumpslow'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fish_key_reader'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['compose'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmenlarge'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mxtar'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['unity-scope-loader'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qtpaths'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnuplot'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['snmpc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dvips'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pgmenhance'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ghostscript'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xconsole'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['yuvtoppm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gkbd-keyboard-display'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-gcc-ranlib-11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grub-mkpasswd-pbkdf2'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gpg-wks-server'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmdim'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tnftp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['steamdeps'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mysqld_safe'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bbl2bib'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpicxx'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grub-mknetdir'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['git-upload-pack'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['chown'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['static-sh'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['systemd-analyze'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['slogin'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['make'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pgmkernel'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ybmtopbm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['telnet.netkit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pg_config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dvibook'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['appres'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['texi2pdf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmtile'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mcheck'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dviluatex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wget'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gpu-manager'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qmlplugindump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ntfsdecrypt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xsetpointer'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gcov-tool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['callgrind_annotate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nm-connection-editor'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lua5.3'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gpg2'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sort-dctrl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['newgrp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-control-center'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ubuntu-advantage'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['preconv'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sha512sum'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnuplot-qt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mysqlslap'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmtolj'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rdoc3.0'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xrandr'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qdoc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rsync'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fmtutil'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['autoconf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rpcgen'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bibexport'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gsbj'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['glib-mkenums'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['t1asm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmtv'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pwd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sgitopnm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sputoppm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gunzip'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xcmsdb'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['foomatic-rip'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pager'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mcat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xorrisofs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mdatopbm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['prepmx'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xvminitoppm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmtocmuwm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wbmptopbm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['valgrind-listener'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gdbus-codegen'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mmcli'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmdepth'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qml'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xlsatoms'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['python3-pasteurize'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['delv'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['systemd-cgtop'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['odvicopy'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nmtui-edit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmhist'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['identify'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ifnames'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['evince-previewer'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmtoilbm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xstdcmap'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['python3-futurize'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['uniq'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['whiptail'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mdu'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['trash-empty'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['login'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpirun.openmpi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['foo2slx-wrapper'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gcc-nm-9'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hp-makeuri'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['apt-sortpkgs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xwud'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qlalr'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['apport-bug'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['irb3.0'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['foo2lava'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmtopsg3'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jexec'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mysqlrepair'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pdftex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['top'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bmtoa'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['transfig'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmtomitsu'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gpg-connect-agent'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dh_autotools-dev_restoreconfig'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['resizecons'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmmake'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ibd2sdi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['myisamchk'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dh_perl_openssl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['luarocks-admin-5.2'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['msidb'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pslog'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['uic3'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hp-align'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmtoyuvsplit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['neqn'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ssh-copy-id'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['compare'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sfconv'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lua-any'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ss'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bibtex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['orte-clean'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sqfstar'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tac'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ubuntu-core-launcher'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['linguist'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nm-applet'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['netcat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['winefile'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['setkeycodes'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-session-inhibit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['display'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['apt-mark'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sipcalc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['msxlint'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mysqlbinlog'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gofmt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['t1mac'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dockerd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['routel'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xcutsel'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmtoepsi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['latexmk'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-as'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['editor'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fmt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['skill'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dvd+rw-mediainfo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['getcifsacl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['glxdemo.x86_64-linux-gnu'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['orted'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sushi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xgamma'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gcov-tool-9'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['whoopsie'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['winemaker'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['identify-im6'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['py3versions'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpiexec.hydra'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gst-play-1.0'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['debconf-escape'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['systemd-stdio-bridge'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmtextps'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dpkg-gencontrol'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pxelinux-options'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['kmod'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['systemd-inhibit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['software-properties-gtk'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vgdb'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['exceltex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['aa-enabled'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['texhash'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['foo2zjs-pstops'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mesa-overlay-control.py'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pdfattach'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['txiterm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmscalefixed'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['shmemCC'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tftopl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['systemd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['date'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cpufreq-aperf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['systemd-delta'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['brushtopbm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['zbarimg'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ovf2ovp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['red'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-system-monitor'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['extractbb'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['apt-cdrom'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wine'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dumpkeys'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xdvipdfmx'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['write'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ibus-setup'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pinentry-x11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jq'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mtvtoppm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pkaction'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['airscan-discover'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ln'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mv'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tex4ht'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['watch'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['axohelp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ntfsmove'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmcomp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['glxheads'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mysqladmin'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-logs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dvipdfmx'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x-window-manager'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grdctl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xclip-copyfile'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['aplay'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['iceauth'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['setupcon'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmcolormap'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rgb3toppm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lconvert'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gh'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['zless'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lofromtemplate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wmctrl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['shmemfort'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['texi2dvi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gregorio'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['avahi-browse'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wine64-stable'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ddstdecode'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpic++'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['h5dump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['snapctl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['eptex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['unlink'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qrencode'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fzf-tmux'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mysqlreport'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['kernel-install'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pgmhist'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rsh'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mtools'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mysqlcheck'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['unicode_stop'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xclip-pastefile'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmreduce'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['setpriv'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-perl-sax-parsers'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['snapfuse'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['btattach'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xdg-mime'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cpufreq-info'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ubuntu-security-status'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vptovf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ibus-daemon'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-shell-extension-tool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dpkg-shlibdeps'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dbus-update-activation-environment'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qvkgen'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['kpsewhich'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['check-module'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['innochecksum'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xdvi.bin'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xdg-user-dirs-update'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['shmemcc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ucf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['py3rsa-keygen'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grub-mkstandalone'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['initex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['aspell'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mawk'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmtolss16'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['id'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xkbwatch'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['view'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppm3d'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grep-aptavail'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['watchgnupg'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['systemd-mount'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mkisofs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['busybox'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['libwacom-show-stylus'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['X'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lwp-download'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fzf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmcat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pdvitomp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['zjsdecode'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['unpigz'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['texdoc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['apgbfm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mktexfmt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wl-copy'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['kpsestat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pw-midiplay'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['shmemc++'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['updmap-user'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sg'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fwupdagent'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['perl5.34-x86_64-linux-gnu'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['foo2hp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['caf.openmpi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cvtsudoers'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['erlc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['systemd-detect-virt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpijavac'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ippfind'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dbus-monitor'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lessecho'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cautious-launcher'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cg_merge'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['start_embedded'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['makejvf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ps2ps'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pygettext3'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmbrighten'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmtoplainpnm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mysql_secure_installation'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['oshc++'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hp-levels'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xhlatex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mysql_config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dpkg-vendor'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fmtutil-sys'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ctr'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmfade'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pw-v4l2'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmtofits'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['h5repart'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['perror'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['laptop-detect'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['checkcites'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cachepic'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bundler3.0'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ubuntu-distro-info'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['head'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['kmodsign'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ipod-time-sync'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qhelpgenerator'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['glib-gettextize'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['makeindex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmmake'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['showrgb'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmquant'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tclsh'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['run-mailcap'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['texlua'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['eglinfo.x86_64-linux-gnu'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['faillog'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vstp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['prezip'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gfortran-9'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['helpztags'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-dwp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pw-top'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grops'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dtplite'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bmptoppm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xdvi-xaw'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wineserver'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['run_erl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmtopuzz'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['devdump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lispmtopgm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['test'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['uic'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hp-config_usb_printer'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['widl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnm2ppa'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qmake'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['h5repack'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cdrecord'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pkill'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pactl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-session-properties'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dh_autotools-dev_updateconfig'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ps2pdf13'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ttf2afm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['anytopnm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nroff'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dpkg-mergechangelogs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-gcov-dump-12'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bashbug'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpexpand'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['montage-im6'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['poff'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lss16toppm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lsb_release'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bluemoon'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pygettext3.10'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ssh-add'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hciconfig'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['aa-features-abi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['json_xs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rendercheck'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ofm2opl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pico'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mshortname'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpif77'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update_rubygems'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['containerd-shim'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gipddecode'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gemtopbm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xfd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mbadblocks'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['latex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tsort'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['osirrox'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmtogem'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['texluac'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['which'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['luarocks'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gpg'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpicc.openmpi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['psicc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ptftopl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vim'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['apropos'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fgrep'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['composite-im6'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pw-mon'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xprop'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dpkg-parsechangelog'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-terminal.wrapper'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['debconf-copydb'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lz'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['uncompress'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['deb-systemd-helper'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['plymouth'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['makedtx'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['X11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['base32'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['su'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mptopdf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['amuFormat.sh'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gcc-ranlib-9'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qmljs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['desktop-file-install'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rawtopgm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['shred'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['apturl-gtk'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['spa-acp-tool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dvi2tty'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpicxx.mpich'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wl-paste'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pdfimages'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dh_installtex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['which.debianutils'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tcldocstrip'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gdbtui'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['splitindex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mathspic'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xsetmode'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dh_bash-completion'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lspci'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['luarocks-admin-5.4'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['open'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmtopi3'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['foo2ddst-wrapper'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mf-nowin'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['regedit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpif77.openmpi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['driverless-fax'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ispell-wrapper'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmtoeyuv'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bibdoiadd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['es2gears_x11.x86_64-linux-gnu'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['uppltotf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['omfonts'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['basenc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['Xephyr'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nautilus'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tty'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gcalccmd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pinentry'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gethostip'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mapscrn'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmsplit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['chrome-gnome-shell'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['txtconv'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['listres'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppltotf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gdbus'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hydra_nameserver'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rasttopnm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-gcc-ar-11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['brltty-trtxt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['l2test'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-ld.gold'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['upmendex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['convertgls2bib'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['notepad'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pgmbentley'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pidwait'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['passwd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['texdoctk'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ucfr'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x-terminal-emulator'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hp-probe'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xlogo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dh_installxmlcatalogs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-objdump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['t1unmac'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pstree'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['desktop-file-validate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dirmngr-client'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['stream-im6.q16'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gtk4-query-settings'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpichversion'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hcitool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dircolors'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-mime-database'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tl-paper'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gdb'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['apt-extracttemplates'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['aseqnet'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gst-tester-1.0'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xkeystone'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['clear_console'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pamfile'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pdfunite'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['alsamixer'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['chage'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['zeisstopnm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dpkg-checkbuilddeps'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sha256sum'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpost'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['leaftoppm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gem3.0'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-gcov'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xrefresh'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lrelease'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['debconf-show'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['htlatex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lualatex-dev'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['snap'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vim.tiny'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hp-firmware'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['winedump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bmptopnm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lpstat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['enchant-2'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['glxdemo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['arecordmidi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmrelief'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-gcc-nm-12'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gresource'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fprintd-enroll'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['minfo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mysqld_multi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmindex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sirtopnm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['h5clear'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['run-with-aspell'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xelatex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sbsiglist'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['md5sum'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['less'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rsync-ssl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hostname'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpijavac.pl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnminterp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['avahi-resolve'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['es2gears_wayland'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wayland-scanner'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lsusb'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['erb3.0'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cweave'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gsnd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppdhtml'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pmap'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['luarocks-5.1'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lessfile'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-terminal'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['atktopbm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmtonokia'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xev'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmhistmap'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mktextfm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rrsync'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nnsd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['luajittex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-keyring-3'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xcursorgen'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gzexe'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sbvarsign'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ctwill-twinx'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qmlcachegen'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dvilualatex-dev'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grep'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['my_print_defaults'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ipod-read-sysinfo-extended'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mk4ht'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gftype'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qml1plugindump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dvilj6'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['procan'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmgamma'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['do-release-upgrade'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['urlbst'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['killall'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qmlprofiler'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gcc-nm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['basename'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['notify-send'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['autoreconf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qcollectiongenerator'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['updvitomp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mdig'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['oshmem_info'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ipcalc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ipptool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['valgrind-di-server'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['apg'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-gcc-11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['erl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grub-mkrescue'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['infobrowser'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wineboot'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gsettings'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpartition'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pdf2dsc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['readom'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lpr'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['foo2oak-wrapper'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['btcflash'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['isohybrid'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['r-mpost'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['libpng-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wine64'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['opl2ofm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpicxx.openmpi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpifort.openmpi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['translit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lshw'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hostid'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['docker'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pf2afm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['debconf-getlang'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['duplicity'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['convert'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gdb-add-index'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['luac'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['whoami'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dnsdomainname'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['filan'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grub-file'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['stream-im6'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['batcat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['systemd-path'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-thumbnail-font'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['networkd-dispatcher'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ntfstruncate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['systemd-cat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['csplit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rgrep'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tbl-dctrl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-gcov-12'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['loadunimap'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ubuntu-drivers'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['timeout'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gpg-agent'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['foo2qpdl-wrapper'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['glxheads.x86_64-linux-gnu'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nss-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['codepage'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hp-info'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lpq'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['zcmp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pr'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xdg-dbus-proxy'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dvd+rw-booktype'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['browse'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mksquashfs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ompi_info'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['JxrEncApp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mokutil'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['teckit_compile'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pgmtoppm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['install'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ntfsfallocate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['systemctl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vpe'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpiexec.openmpi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['shotwell'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['loadkeys'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dviconcat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mfluajit-nowin'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmtojpeg'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gpgconf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['screendump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['awk'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['avahi-browse-domains'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dell-recovery'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mogrify-im6.q16'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['file'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pixeltool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cg_diff'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['comm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pipewire'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmtofiasco'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpifort.mpich'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['print'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-cpp-12'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gcov-dump-9'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['JxrDecApp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmtoppa'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['stream'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['domainname'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['linux-boot-prober'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpiexec'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['go'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['check-language-support'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['kbd_mode'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['automake'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['apt-add-repository'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qmlbundle'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dvd-ram-control'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['setpci'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['debconf-loadtemplate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sha224sum'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['memdiskfind'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sos'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fc-cache'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rcc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pgrep'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xdg-settings'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['amixer'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gamma4scanimage'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['transset'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['make-first-existing-target'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hp-query'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ntfsls'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['padsp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tail'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['caf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['display-im6'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['l3build'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xwd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['select-default-iwrap'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['giftopnm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['aptdcon'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mysqloptimize'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['htxelatex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mdir'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['geteltorito'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grep-available'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmtoyuv'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['arecord'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['linux-check-removal'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['composite'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpif90.mpich'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['broadwayd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sos-collector'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bibzbladd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sdiff'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['chcon'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmtog3'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pfbtopfa'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['yplan'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cifscreds'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['updmap'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gamemoded'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['apt-get'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['disdvi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['slabtop'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pkcon'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['avahi-set-host-name'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['glxinfo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xinput'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xmlpatternsvalidator'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['zipnote'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['debconf-get-selections'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vimtutor'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pw-reserve'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ps2pdfwr'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xqxdecode'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xhost'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['autosp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hp-logcapture'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dbxtool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hp-clean'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['montage-im6.q16'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gtk-encode-symbolic-svg'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pamstretch'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mktemp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmscale'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pgmnoise'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmpaste'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['slxdecode'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['htcontext'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rawtoppm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ps2ascii'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ntfsusermap'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ssh-import-id-lp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-extensions'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mimetype'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xmag'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ischroot'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ompi-clean'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['spa-inspect'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mogrify-im6'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ninja'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['run-parts'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fmtutil-user'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wovf2ovp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xdg-user-dirs-gtk-update'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pgmslice'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['egrep'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vdir'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pinky'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dpkg-repack'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['st4topgm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bmon'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['multibibliography'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['h5copy'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dpkg-genchanges'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppdmerge'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['Xorg'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmshadow'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['esc-m'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['git-receive-pack'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['apt-ftparchive'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qrttoppm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmremap'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['htxetex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-cpp-11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rtstat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ncdu'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nm-online'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xorriso'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['od'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppdc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['git'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-gcc-ranlib'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmtoxbm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lprm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gdk-pixbuf-pixdata'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cafrun'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sftp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['octave-cli'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['whatis'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mcopy'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dbus-launch'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fc-list'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xeyes'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-ld.bfd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['baobab'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['outocp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dh_numpy3'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rabbitmqadmin'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fwupdate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mkzftree'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mysqlshow'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['kerneloops-submit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmtowinicon'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wish8.6'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pstopnm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['time'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pdfannotextractor'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sensible-editor'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pdflatex-dev'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dpkg-divert'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pjtoppm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpifort'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ssh'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['py3rsa-priv2pub'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ls'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cafrun.openmpi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pi3topbm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fuser'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pw-cat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['routef'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['getkeycodes'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pack200'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ovp2ovf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['es2tri'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mysql_tzinfo_to_sql'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hp-check'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpicc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['octave'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pdvitype'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lspgpot'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dvilj'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['es2gears_x11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['parec'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['uptftopl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tie'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tificc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nautilus-autorun-software'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rmiregistry'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fitstopnm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['luarocks-admin-5.1'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['aseqdump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['btmgmt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['systemd-socket-activate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-gcc-ar-12'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cmuwmtopbm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qdoc3'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['zip'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pamoil'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dt2dv'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xiterm+thai'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gapplication'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmupc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['apport-cli'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xsel'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dvihp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['speech-dispatcher'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cgi-fcgi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['arm2hpdl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['texluajitc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hp-colorcal'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['paplay'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hciattach'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['httex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['luatex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['convert-im6.q16'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['regsvr32'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['kpseaccess'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pi1toppm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bluetoothctl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-gprof'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lavadecode'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-gcov-dump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['brave-browser'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mysql'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hp-pkservice'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpirun.mpich'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xman'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dpkg-gensymbols'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sbkeysync'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['glxgears'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grub-menulst2cfg'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dvicopy'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gmail-desktop'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xpmtoppm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mkindex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmrotate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pro'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dconf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dig'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['debconf-communicate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['diff3'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['makeinfo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmcrop'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['imagetops'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmnoraw'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['callgrind_control'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pgmedge'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['migrate-pubring-from-classic-gpg'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mimeopen'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xml2pmx'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-gcov-dump-9'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['logname'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['printafm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cpan5.34-i386-linux-gnu'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['inputattach'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mmove'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['snice'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['updmap-sys'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['switcherooctl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['foo2hp2600-wrapper'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['glxgears.x86_64-linux-gnu'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['see'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['chattr'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bwrap'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['scp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fprintd-verify'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nproc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['loffice'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['spa-monitor'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['oshrun'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['keyctl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['htop'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmtotiff'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dvipos'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xclock'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['keytool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lowriter'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['function_grep.pl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xdpyinfo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dvipdfm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['znew'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lwarpmk'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mkfifo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmtoleaf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ttfdump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gdk-pixbuf-thumbnailer'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['r-upmpost'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vim.basic'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rygel'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['man-recode'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['jpegtopnm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmtoicon'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grub-mklayout'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['identify-im6.q16'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmtoneo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['f95'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['to_erl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fig2dev'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['t4ht'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ps2ps2'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['aplaymidi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['kpsereadlink'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['imgtoppm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['install-info'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['transicc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-addr2line'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['htmex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmto10x'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['umax_pp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xkill'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mmount'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['deb-systemd-invoke'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bison.yacc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gsftopk'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ypdomainname'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gdm-screenshot'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vkd3d-compiler'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['btmon'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ximtoppm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ntfsrecover'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gslp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mscompress'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['avinfo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmtorle'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cpp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmpat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['aleph'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rlogin'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grub-mount'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['isodump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['glib-compile-schemas'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['zegrep'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['evince-thumbnailer'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hipstopgm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dvilualatex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmhisteq'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tangle'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nns'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tlmgr'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mktexpk'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rvim'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lastlog'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dvisvgm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gstreamer-codec-install'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['erl_call'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['yuvsplittoppm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dvipdf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ijs_pxljr'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x-www-browser'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['timedatectl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-gfortran'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x11perf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hwe-support-status'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pngtopnm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['yes'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lodraw'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pipewire-media-session'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ubuntu-bug'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['powerprofilesctl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['oakdecode'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['eyuvtoppm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xedit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['escript'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['conjure-im6.q16'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dash'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['git-shell'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['du'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['perl5.34-i386-linux-gnu'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pgmtofs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['isohybrid.pl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pandoc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hydra_persist'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nano'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mysql_upgrade'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['g3topbm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dvd+rw-format'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['oshCC'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['scor2prt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['host'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['makeglossaries'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['locale-check'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['palmtopnm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mkofm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['steam'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['kill'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['spice-vdagent'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['printf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['setfont'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-gcov-dump-11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['enchant-lsmod-2'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['smb2-quota'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['perli11ndoc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['systemd-hwdb'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rletopnm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sdparm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-terminal.real'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmtobbnbg'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-gcc-ranlib-9'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['chmod'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['weave'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['savelog'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['npx'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cpan5.34-x86_64-linux-gnu'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-gcov-tool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mkpic'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ubuntu-report'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmtosixel'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['opal_wrapper'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['avahi-publish-address'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nslookup'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pw-profiler'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mzip'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['411toppm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pn2pdf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-gfortran-11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-readelf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['inimf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ping4'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mutter'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['brltty-ttb'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dpkg-genbuildinfo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['es2_info.x86_64-linux-gnu'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xlsfonts'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pacat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['iptables-xml'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pdftohtml'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dbus-daemon'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['netstat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grub-editenv'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['foo2zjs-wrapper'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['orterun'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-gcc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['avahi-publish-service'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gobject-query'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['h5debug'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['luit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['opalc++'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['apt-cache'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['node'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['winegcc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pdf2ps'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['avahi-publish'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fc-cat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sas_disk_blink'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xset'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grep-dctrl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fwupdtool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gtk-update-icon-cache'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['synctex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['texindex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['epspdftk'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['driverless'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sbsign'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['h5jam'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mt-gnu'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-calculator'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bibtexu'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-gcov-tool-11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['es2_info'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tr'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pk2bm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xetex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['session-migration'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['systemd-cryptenroll'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hp-testpage'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['devnag'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xclipboard'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gcc-9'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmtorast'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rdma'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fiascotopnm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmtops'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['paste'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qhelpconverter'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ntfs-3g'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grub-kbdcomp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dpkg-architecture'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['aclocal'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpivars'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sss_ssh_authorizedkeys'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lcf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pod2texi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sane-find-scanner'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['google-chrome'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ntfsinfo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['moc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pic'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sqlite'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['kbdinfo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sldtoppm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['npm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['png-fix-itxt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['who'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['trash-rm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['truncate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['valgrind.bin'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hipercdecode'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['getfacl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['odvitype'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['apt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['preunzip'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sss_ssh_knownhostsproxy'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-keyring'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qgltf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['finalrd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dvilj4l'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['join-dctrl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['totem'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['free'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['asciitopgm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-gcc-nm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ed'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['isdv4-serial-debugger'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['r-pmpost'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['trash-put'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-keyring-daemon'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dirname'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['import-im6'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['runcon'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['catman'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['editres'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['zmore'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbibtex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gtester-report'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fgconsole'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qmlimportscanner'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rbs3.0'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pkmon'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['g++'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mousetweaks'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmcut'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['google-chrome-stable'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['im-launch'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['numfmt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pgmramp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cvt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dpkg-buildpackage'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['listbib'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-g++'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['upbibtex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmtobmp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ncursesw5-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['psfaddtable'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmtoybm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gawk'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['min12xxw'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['foo2hiperc-wrapper'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nmtui-connect'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bitmap'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dpkg-maintscript-helper'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gatttool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vlna'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pgmtopbm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-shell'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmmargin'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['shmemrun'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xbrlapi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['luarocks-admin'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['viewres'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['appstreamcli'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-c++filt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmtogif'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mysql_config_editor'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nawk'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['transmission-gtk'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qtconfig'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['myisampack'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xauth'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['containerd-stress'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['spd-conf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lomath'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['updvitype'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dbus-cleanup-sockets'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-lto-dump-12'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gdk-pixbuf-csource'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dell-restore-system'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cksum'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['install-printerdriver'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ucfq'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['scsi_ch_swp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['h5diff'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['udisksctl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['llvm-omp-device-info-14'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nstat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gst-inspect-1.0'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['true'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pw-mididump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pooltype'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['es2gears_wayland.x86_64-linux-gnu'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmquant'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pon'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['touch'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-ranlib'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['systemd-tty-ask-password-agent'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['patgen'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['users'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['im-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['totem-video-thumbnailer'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmtoxwd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['psfgettable'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['icontopbm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['info'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grub-script-check'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gcc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ssh-import-id-gh'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['libwacom-list-devices'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['containerd-shim-runc-v1'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pktogf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dvitype'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xkbprint'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['msiexec'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['thumbpdf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tpic2pdftex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['split'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mysql_migrate_keyring'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['systemd-ask-password'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['trash'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grub-mkrelpath'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gst-typefind-1.0'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fonttosfnt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['h5perf_serial'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sensible-pager'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-session-quit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['i686-linux-gnu-pkg-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pamdice'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['h5ls'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mogrify'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmtowbmp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['start-pulseaudio-x11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['remmina'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mren'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['file2brl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['udevadm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmforge'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['brave-browser-stable'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['isdv4-serial-inputattach'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmtopict'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gio-querymodules'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cupstestppd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bzexe'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['py3rsa-decrypt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gcov'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fc-validate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pw-dump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mysqlpump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lsof'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pmpost'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dvitodvi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-cpp-9'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tikztosvg'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pinentry-curses'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['es2tri.x86_64-linux-gnu'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wrc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gtf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mshowfat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gtk4-update-icon-cache'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fig4latex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xdg-user-dir'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['glib-compile-resources'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mandb'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['eps2eps'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['manpath'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['boltctl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['seahorse'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['splitfont'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-objcopy'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['debian-distro-info'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['smproxy'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pamdeinterlace'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmtosir'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['deallocvt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lp_solve'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cpufreq-set'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['optex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bibmradd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gmake'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mfluajit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lwp-mirror'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpif90.openmpi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['alsaucm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ntfswipe'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['foo2hiperc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mktexmf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['md5sum.textutils'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ps2pdf14'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmtox10bm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nmtui'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mkmanifest'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['crontab'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tracepath'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xbiff'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dpkg'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grub-render-label'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cut'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['unsquashfs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mkdir'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ucs2any'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-gcov-tool-9'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-help'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['unattended-upgrades'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sessreg'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vftovp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qtchooser'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hp-plugin-ubuntu'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mpiexec.mpich'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['genisoimage'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xkbcomp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['system-config-printer-applet'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sbigtopgm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['seq'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['usb-creator-gtk'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['java'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['strace-log-merge'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmpscale'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmsmooth'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmtouil'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gpgparsemail'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmtolj'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmtoascii'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['makeglossaries-lite'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['l4p-tmpl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['latex-dev'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pphs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['colormgr'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-strip'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pdftocairo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['setleds'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['resolvectl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['speaker-test'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rnano'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-g++-11'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnminvert'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nsupdate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pltotf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmtoplot'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['alsatplg'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pgmnorm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wovp2ovf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['msexpand'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pamstretch-gen'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grub-syslinux2cfg'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pdftexi2dvi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wodim'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['deja-dup'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sbattach'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['base64'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dpkg-query'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['brltty-ctb'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['libwacom-list-local-devices'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['unexpand'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['loimpress'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmtojpeg'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pgmcrater'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gif2h5'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qtdiag'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['libpng16-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dpkg-buildflags'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gtester'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['luaotfload-tool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['t1ascii'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['oshcc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmtoptx'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gst-launch-1.0'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xlsclients'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pango-segmentation'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['expand'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tbl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-elfedit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fold'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xdg-icon-resource'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['epmd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-python3-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cd-create-profile'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['detex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['trash-list'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pinentry-gnome3'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['thinkjettopbm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-size'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['soffice'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cmp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gftodvi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['opldecode'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['import'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['unmkinitramfs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['paperconf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['racc3.0'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pdfatfi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rmdir'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['otp2ocp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['precat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ps2pk'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmtopng'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pgmoil'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-nm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pdftotext'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pdftosrc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['perltex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-gcov-tool-12'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['printenv'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmconvol'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dirmngr'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tempfile'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pdflatex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['containerd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pw-midirecord'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['eutp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['word-list-compress'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['animate-im6'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['profile2mat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nmtui-hostname'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['chfn'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['setcifsacl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-disk-image-mounter'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['desktop-file-edit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wmc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gslj'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['orca'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['repc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmspread'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['diff'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmalias'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xload'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pbmtomacp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['autoheader'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hostnamectl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['prtstat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['eog'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fish_indent'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['arch'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nautilus-sendto'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pktype'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['foo2hbpl2'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bibtex8'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['w'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pdfetex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['chacl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['luarocks-5.2'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qdbuscpp2xml'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['usb-devices'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['grub-fstest'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mcd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['systemd-umount'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['foo2slx'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['euptex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['webquiz'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['f77'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['macptopbm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xdriinfo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lwp-request'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pango-list'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ttf2tfm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dh_dkms'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['obexctl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mknod'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['myisamlog'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['foo2zjs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['canberra-gtk-play'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['compare-im6'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['nice'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dbus-uuidgen'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['myisam_ftdump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['foo2xqx-wrapper'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['otangle'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-gfortran-9'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ntfscmp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['md5pass'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mk_modmap'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xmodmap'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['patch'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['HEAD'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['find'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sudo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['upmpost'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pa-info'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmtoicr'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['networkctl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['biber'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hbpldecode'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xsetroot'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['authorindex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sosreport'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['systemd-tmpfiles'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pathchk'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sqfscat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnminterp-gen'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['zforce'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bdftruncate'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mlabel'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['perl5.34.0'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dvispc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mtr'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['debconf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['biburl2doi'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pcxtoppm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pw-metadata'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-notifier'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['winecpp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lualatex'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gst-device-monitor-1.0'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['setxkbmap'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['py3rsa-encrypt'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['zipcloak'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dbus-send'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['autoscan'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mako-render'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['debconf-set-selections'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pamon'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tracker3'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ginstall-info'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pidof'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['t1disasm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['update-manager'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['luarocks-5.4'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['scp-dbus-service'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pwdx'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmnorm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['factor'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['psfxtable'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['lua'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['rfcomm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-gcov-9'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['foo2xqx'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmtopcx'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gpg-zip'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mclasserase'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmnorm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['efibootmgr'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['import-im6.q16'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cd-fix-profile'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dir'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sync'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['neotoppm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qdbusxml2cpp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ps2pdf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmshift'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['systemd-machine-id-setup'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wakeonlan'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['autom4te'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['startx'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pw-play'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['unopkg'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-pc-linux-gnu-pkg-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hp-plugin'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['realpath'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['echo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['composite-im6.q16'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tcpdump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['fc-match'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wineconsole'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tifftopnm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xsetwacom'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vmwarectrl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['oshfort'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pmxab'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['zdiff'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['axfer'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['busctl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x-session-manager'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['hex2hcd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dpkg-distaddfile'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gst-stats-1.0'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['whoopsie-preferences'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['wc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmcolormask'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['Xwayland'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['systemd-run'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['getmapdl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xkbevd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sleep'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xxd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['parecord'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['usbhid-dump'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['stdbuf'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dpkg-scanpackages'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['qmlviewer'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ppmtoacad'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pw-loopback'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['epstool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ico'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mmd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pdfinfo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ttf2pk'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['dpkg-name'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xclip-cutfile'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pdftoppm'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xfontsel'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-ld'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['distro-info'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['mysql_ssl_rsa_setup'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['aa-exec'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['setfacl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['winedbg'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['c89-gcc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['tex2aspc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['x86_64-linux-gnu-python3.10-config'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['pnmmontage'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['ht'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-mines'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['sol'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-mahjongg'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gnome-sudoku'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gamemoderun'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gamemode-simulate-game'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cups.reject'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cups.lpc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['snap-store.ubuntu-software'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cups.lpinfo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['slack'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cups.cupsenable'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['firefox'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['snap-store.ubuntu-software-local-file'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['geckodriver'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['obs-studio'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['discord'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cups.lp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cups.lpoptions'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['skype'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cups.cupsfilter'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cups.cupsctl'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['firefox.geckodriver'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cups.driverless'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cups.cancel'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cups.lpr'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['obs-studio.srt-live-transmit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['code.url-handler'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['snap-store'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['obs-studio.srt-file-transmit'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cups.ippfind'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cups.gs'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['authy'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['chromium.chromedriver'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['vlc'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cups.accept'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['inkscape'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cups.lpq'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['obs-studio.eglinfo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['obs-studio.ffprobe'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['teams'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cups.cupsreject'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['obs-studio.ffmpeg'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['canonical-livepatch'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cups.lpadmin'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['telegram-desktop'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cups.cupsdisable'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cups.cupsaccept'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cups.ippeveprinter'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['obs-studio.srt-ffplay'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['obs-studio.ffplay'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cups.cupstestppd'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['gimp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['obs-studio.srt-tunnel'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['xournalpp'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['bitwarden'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['obs-studio.vainfo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cups.lpstat'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['obs-studio.vdpauinfo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['obs-studio.glxinfo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['chromium'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['code'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['inkscape.viewer'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cups.ipptool'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['obs-studio.vulkaninfo'] fun(...: string | sh.ReturnType): sh.ReturnType
+---@field ['cups.lprm'] fun(...: string | sh.ReturnType): sh.ReturnType
+
