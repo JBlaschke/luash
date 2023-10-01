@@ -32,15 +32,14 @@ function Stack:Create()
 
     -- pop a value from the stack
     function t:pop(num)
-
         -- get num values from stack
-        local num = num or 1
+        num = num or 1
 
         -- return table
         local entries = {}
 
         -- get values into entries
-        for i = 1, num do
+        for _ = 1, num do
             -- get last entry
             if #self._et ~= 0 then
                 table.insert(entries, self._et[#self._et])
@@ -83,7 +82,7 @@ local function popen3(path, ...)
 
     assert((r1 ~= nil or r2 ~= nil or r3 ~= nil), "pipe() failed")
 
-    local pid, err = posix.fork()
+    local pid, _ = posix.fork()
     assert(pid ~= nil, "fork() failed")
     if pid == 0 then
         posix.close(w1)
@@ -96,7 +95,7 @@ local function popen3(path, ...)
         posix.close(w2)
         posix.close(w3)
 
-        local ret, err, errno = posix.execp(path, table.unpack({...}))
+        local ret, _, _ = posix.execp(path, table.unpack({...}))
         assert(ret ~= nil, "execp() failed")
 
         posix._exit(1)
@@ -171,7 +170,7 @@ local function pipe_simple(input, cmd, ...)
     local read_stderr = coroutine.create(function () read_async(e, bufsize, timeout) end)
     while true do
         if not stdout_ended then
-            local cstatus, pstatus, ended, buf, pcode = coroutine.resume(read_stdout)
+            local _, pstatus, ended, buf, _ = coroutine.resume(read_stdout)
             if pstatus == 1 then
                 stdout_ended = ended
                 if not stdout_ended then
@@ -181,7 +180,7 @@ local function pipe_simple(input, cmd, ...)
         end
 
         if not stderr_ended then
-            local cstatus, pstatus, ended, buf, pcode = coroutine.resume(read_stderr)
+            local _, pstatus, ended, buf, _ = coroutine.resume(read_stderr)
             if pstatus == 1 then
                 stderr_ended = ended
                 if not stderr_ended then
