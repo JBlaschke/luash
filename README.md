@@ -1,7 +1,5 @@
 # sh (formerly called luash)
 
-[![Build Status](https://travis-ci.org/zserge/luash.svg)](https://travis-ci.org/zserge/luash)
-
 Tiny library for shell scripting with Lua (inspired by
 [Python's sh module](https://pypi.org/project/sh/)). This is a rewrite of
 [luash](https://github.com/zserge/luash) to use Lua's POSIX bindings
