@@ -1,4 +1,38 @@
-package.path = package.path .. ";../?.lua;tests/?.lua"
+--------------------------------------------------------------------------------
+-- INITIALIZE PROJECT PATHS
+--------------------------------------------------------------------------------
+local function init()
+    -- function to prepend `pth` the the package search path, using `pth` as a
+    -- key to prevent duplicates
+
+    local function prepend_path(pth)
+        ---@diagnostic disable-next-line: undefined-field
+        if package.user_modules and (true == package.user_modules[pth]) then
+            return
+        end
+        -- prepend to path
+        package.path = pth .. ";" .. package.path
+        -- add key to user modules
+        if not package.user_modules then package.user_modules = {} end
+        package.user_modules[pth] = true
+    end
+
+    local pth = debug.getinfo(2).source:match("@?(.*)/")
+    -- if this program is called within the current directory then the path
+    -- won't contain '/', returning (nil)
+    if nil == pth then pth = "." end
+    -- remember to remove the traling slash
+    prepend_path(pth .. "/?.lua")
+    prepend_path(pth .. "/../?.lua")
+    return pth
+end
+
+local pth = init()
+print("Operating in: " .. pth)
+
+--------------------------------------------------------------------------------
+-- INITIALIZE TEST HARNESS
+--------------------------------------------------------------------------------
 local test = require('gambiarra')
 
 local tests_passed = 0
@@ -16,9 +50,20 @@ require('gambiarra')(function(e, test, msg)
 	end
 end)
 
+--------------------------------------------------------------------------------
+-- INITIALIZE SH
+--------------------------------------------------------------------------------
 local sh = require('sh')
 sh.install()
 sh.__raise_errors = false
+
+--------------------------------------------------------------------------------
+-- RUN TESTS
+--------------------------------------------------------------------------------
+test('Check Version', function()
+    print(sh.version)
+	ok(sh.version == 'Automatic Shell Bindings for Lua / LuaSH 1.3.0')
+end)
 
 test('Check command output', function()
 	ok(tostring(seq(1, 5)) == '1\n2\n3\n4\n5', 'seq 1 5')
@@ -72,11 +117,26 @@ end)
 
 test('Check command with table args', function()
 	local r = stat('/bin', {format='%a %n'})
-	ok(tostring(r) == "'777 /bin'", 'stat --format "%a %n" /bin')
+	ok(tostring(r) == "777 /bin", 'stat --format "%a %n" /bin')
 end)
 
 test('Check concatenation', function()
 	ok(echo("te ").."st" == "test" and "te"..echo(" st") == "test")
+end)
+
+test('Check listing directory', function()
+    local files = tostring(ls(pth))
+    local matches = {}
+    matches["gambiarra.lua"] = false
+    matches["test.lua"]      = false
+    for f in string.gmatch(files, "[^\n]+") do
+        matches[f] = true
+    end
+    check = function ()
+        for _, v in pairs(matches) do if false == v then return false end end
+        return true
+    end
+	ok(check())
 end)
 
 if tests_failed > 0 then os.exit(1) end
