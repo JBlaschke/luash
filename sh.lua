@@ -138,6 +138,8 @@ local function read_async(p, bufsize, timeout)
     end
 end
 
+M.__verbose = false
+
 --
 -- Pipe input into cmd + optional arguments and wait for completion and then
 -- return status code, stdout and stderr from cmd.
@@ -175,6 +177,100 @@ local function pipe_simple(input, cmd, ...)
                 stdout_ended = ended
                 if not stdout_ended then
                     stdout[#stdout + 1] = buf
+                    if M.__verbose then print(buf:sub(1, -2)) end
+                end
+            end
+        end
+
+        if not stderr_ended then
+            local _, pstatus, ended, buf, _ = coroutine.resume(read_stderr)
+            if pstatus == 1 then
+                stderr_ended = ended
+                if not stderr_ended then
+                    stderr[#stderr + 1] = buf
+                    if M.__verbose then print(buf:sub(1, -2)) end
+                end
+            end
+        end
+
+        if stdout_ended and stderr_ended then break end
+    end
+
+    --
+    -- Clean-up child (no zombies) and get return status
+    --
+    local _, wait_cause, wait_status = posix.wait(pid)
+    posix.close(r)
+    posix.close(e)
+
+    return wait_status, wait_cause, table.concat(stdout), table.concat(stderr)
+end
+
+
+M.PIPES = {}
+
+local function launch_pipe_simple(input, cmd, ...)
+    --
+    -- Launch child process
+    --
+    local pid, w, r, e = popen3(cmd, table.unpack({...}))
+    assert(pid ~= nil, "pipe_simple() unable to popen3()")
+
+    --
+    -- Write to popen3's stdin, important to close it as some (most?) proccess
+    -- block until the stdin pipe is closed
+    --
+    posix.write(w, input)
+    posix.close(w)
+
+    local bufsize = 4096
+    local timeout = 100
+
+    M.PIPES[#M.PIPES+1] = {
+        cmd = cmd,
+        out = coroutine.create(function () read_async(r, bufsize, timeout) end),
+        err = coroutine.create(function () read_async(e, bufsize, timeout) end),
+        out_pipe = r,
+        err_pipe = e,
+        pid = pid,
+        out_active = true,
+        err_active = true
+    }
+end
+
+M.launch_pipe_simple = launch_pipe_simple
+
+
+local function collect_pipes()
+    --
+    -- Read popen3's stdout and stderr simultanously via Posix file handle
+    --
+    local stdout = {}
+    local stderr = {}
+    local stdout_ended = false
+    local stderr_ended = false
+
+    local outputs = {}
+
+    while true do
+        for k, v in pairs (M.PIPES) do
+            local pipe = M.PIPES[k]
+            if not pipe.stdout_active then
+                local _, pstatus, ended, buf, _ = coroutine.resume(pipe.out)
+                if pstatus == 1 then
+                    stdout_ended = ended
+                    if not stdout_ended then
+                        stdout[#stdout + 1] = buf
+                    end
+                end
+            end
+        end
+        if not stdout_ended then
+            local _, pstatus, ended, buf, _ = coroutine.resume(read_stdout)
+            if pstatus == 1 then
+                stdout_ended = ended
+                if not stdout_ended then
+                    stdout[#stdout + 1] = buf
                 end
             end
         end
@@ -202,12 +298,15 @@ local function pipe_simple(input, cmd, ...)
     return wait_status, wait_cause, table.concat(stdout), table.concat(stderr)
 end
 
+M.collect_pipes = collect_pipes
+
+
 --
 -- converts key and it's argument to "-k" or "-k=v" or just ""
 --
 local function arg(k, a)
     if not a then return k end
-    if type(a) == "string" and #a > 0 then return k .. "=\'" .. a .. "\'" end
+    if type(a) == "string" and #a > 0 then return k .. "=" .. a end
     if type(a) == "number" then return k .. "=" .. _lua_tostring(a) end
     if type(a) == "boolean" and a == true then return k end
     error("invalid argument type: " .. type(a), a)
