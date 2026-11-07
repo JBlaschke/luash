@@ -50,10 +50,15 @@ end
 local test = require("gambiarra")
 
 local passed, failed = 0, 0
+-- checks that may fail while it is set: test name -> start of the message
+local allowed = {}
 test(function(e, t, msg)
+    local prefix = allowed[t]
     if e == "pass" then
         passed = passed + 1
         print("\27[32m✔\27[0m " .. t .. ": " .. msg)
+    elseif e == "fail" and prefix and msg:sub(1, #prefix) == prefix then
+        print("note: allowed to fail here: " .. t .. ": " .. msg)
     elseif e == "fail" or e == "except" then
         failed = failed + 1
         print("\27[31m✘\27[0m " .. t .. ": " .. msg)
@@ -140,6 +145,21 @@ local function one_line(s)
     return (s:gsub("\n", " "))
 end
 
+-- Whether io.popen alone runs a command line that holds input and 8 KiB
+-- more. The 8 KiB covers what basic adds around the input and the margin
+-- the backend keeps below the system's limit.
+local function system_accepts(input)
+    local cmd = (
+        "printf '%s' " .. quote(input) .. " | wc -c # "
+        .. string.rep("x", 8192)
+    )
+    local h = io.popen(cmd, "r")
+    if not h then return false end
+    local out = h:read("*a") or ""
+    h:close()
+    return tonumber(out:match("%d+")) == #input
+end
+
 -- The interpreter running this file: the lowest index of arg, which is
 -- arg[-1] only when no option precedes the script.
 local function interpreter()
@@ -222,24 +242,20 @@ local strategies = B.available_strategies()
 print("available strategies: " .. table.concat(strategies, " "))
 
 -- The contract sends 340 KB of input through cat. basic puts the input on
--- the command line, which Linux caps at 128 KiB per argument.
-local contract_skip = {}
-if contains(strategies, "basic") then
-    B.configure({ strategy = "basic" })
-    local input = string.rep("0123456789abcdef\n", 20000)
-    local r     = B.run({"cat"}, input, {})
-    if r.cause == "failed" then
-        contract_skip.basic = one_line(r.stderr)
-    end
-end
+-- the command line, which Linux caps at 32 pages per argument (128 KiB
+-- with 4 KiB pages). That one check may fail for basic, but only where
+-- io.popen alone cannot run a command line that long; the test "basic"
+-- below checks that the backend then reports a start failure.
+local CONTRACT_INPUT = string.rep("0123456789abcdef\n", 20000)
+local big_refused    = not system_accepts(CONTRACT_INPUT)
 
 for _, s in ipairs(strategies) do
     B.configure({ strategy = s })
-    if contract_skip[s] then
-        print("note: contract for " .. s .. " skipped: " .. contract_skip[s])
-    else
-        run_contract(B, "popen", s)
+    if s == "basic" and big_refused then
+        allowed.stdin = "cat echoes 340 KB input: "
     end
+    run_contract(B, "popen", s)
+    allowed.stdin = nil
 end
 B.configure({})
 
@@ -313,6 +329,30 @@ test("minimal and basic", function()
         B.run({"cat"}, bytes, {}).stdout == bytes,
         "basic passes every byte value, each before a backslash"
     )
+
+    -- more than a pipe buffer (64 KiB), less than Linux's 128 KiB
+    local medium = string.rep("0123456789abcdef\n", 6000)
+    ok(
+        B.run({"cat"}, medium, {}).stdout == medium,
+        "basic passes 102 KB of input"
+    )
+    local big = B.run({"cat"}, CONTRACT_INPUT, {})
+    if big_refused then
+        ok(
+            big.cause == "failed" and big.exitcode == 127
+            and big.stdout == ""
+            and big.stderr:find("longer than the system accepts", 1, true),
+            "basic: 340 KB, which this system refuses, is a start failure: "
+            .. one_line(big.stderr)
+        )
+    else
+        ok(
+            big.cause == "exited" and big.stdout == CONTRACT_INPUT,
+            "basic passes 340 KB, which this system accepts: "
+            .. one_line(big.stderr)
+        )
+    end
+
     local r = B.run({"sh", "-c", "exit 3"}, "", {})
     if close_status then
         ok(r.exitcode == 3, "basic: exit status from h:close()")
