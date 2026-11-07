@@ -18,6 +18,34 @@ local function init()
         package.user_modules[pth] = true
     end
 
+    -- The first file that `template` (a package.path entry) names for each
+    -- of `names`, or nil when none exists.
+    local function existing(template, names)
+        local sep = package.config:sub(1, 1)
+        for _, name in ipairs(names) do
+            local file = template:gsub("%?", (name:gsub("%.", sep)))
+            local f    = io.open(file, "r")
+            if f then
+                f:close()
+                return file
+            end
+        end
+        return nil
+    end
+
+    -- Removes every package.path entry that finds `sh` or `sh.command` (in
+    -- sh/, at the repository root), so that only standalone/sh.lua can
+    -- provide the modules.
+    local function drop_sh_sources()
+        local kept = {}
+        for template in package.path:gmatch("[^;]+") do
+            if not existing(template, { "sh", "sh.command" }) then
+                kept[#kept + 1] = template
+            end
+        end
+        package.path = table.concat(kept, ";")
+    end
+
     local pth = debug.getinfo(2).source:match("@?(.*)/")
     -- if this program is called within the current directory then the path
     -- won't contain '/', returning (nil)
@@ -25,19 +53,35 @@ local function init()
     -- remember to remove the traling slash
     prepend_path(pth .. "/?.lua")
     prepend_path(pth .. "/../?.lua")
-    return pth
+    -- LUASH_STANDALONE tests the single-file build instead of sh/ (make
+    -- standalone builds it). Its modules are preloaded by standalone/sh.lua,
+    -- and none may come from sh/ instead.
+    local standalone = os.getenv("LUASH_STANDALONE")
+    if standalone and standalone ~= "" then
+        drop_sh_sources()
+        prepend_path(pth .. "/../standalone/?.lua")
+    else
+        prepend_path(pth .. "/../?/init.lua")
+    end
+    local found = nil
+    for template in package.path:gmatch("[^;]+") do
+        found = found or existing(template, { "sh" })
+    end
+    return pth, found
 end
 
-local pth = init()
+local pth, sh_file = init()
 print("Operating in: " .. pth)
+print("Library: " .. tostring(sh_file))
 
 --------------------------------------------------------------------------------
 -- INITIALIZE TEST HARNESS
 --------------------------------------------------------------------------------
 local test = require('gambiarra')
 
-local tests_passed = 0
-local tests_failed = 0
+local tests_passed  = 0
+local tests_failed  = 0
+local tests_skipped = 0
 ---@diagnostic disable-next-line: redefined-local
 require('gambiarra')(function(e, test, msg)
     if e == 'pass' then
@@ -52,10 +96,44 @@ require('gambiarra')(function(e, test, msg)
     end
 end)
 
+-- Records that test `name` did not run. The line must not start with
+-- "SKIP:": tests/run_all.sh reports a file with such a line as skipped.
+local function skip(name, why)
+    print("- " .. name .. ": skipped, " .. why)
+    tests_skipped = tests_skipped + 1
+end
+
 --------------------------------------------------------------------------------
 -- INITIALIZE SH
 --------------------------------------------------------------------------------
 local sh = require('sh')
+
+-- LUASH_BACKEND names the backend to test (tests/run_all.sh sets it). A
+-- backend this interpreter cannot use, such as posix without luaposix,
+-- skips the whole file.
+local wanted = os.getenv("LUASH_BACKEND")
+if wanted and wanted ~= "" and wanted ~= "auto" then
+    local found = false
+    for _, name in ipairs(sh.available_backends()) do
+        if name == wanted then found = true end
+    end
+    if not found then
+        print("SKIP: backend " .. wanted .. " unavailable")
+        local _, why = pcall(sh.backend_name)
+        print("Reason: " .. tostring(why))
+        os.exit(0)
+    end
+end
+
+local caps = sh.capabilities()
+local caps_text = {}
+for key, value in pairs(caps) do
+    caps_text[#caps_text + 1] = key .. " = " .. tostring(value)
+end
+table.sort(caps_text)
+print("Backend: " .. sh.backend_name())
+print("Capabilities: " .. table.concat(caps_text, ", "))
+
 sh.install()
 sh.__raise_errors = false
 
@@ -64,30 +142,38 @@ sh.__raise_errors = false
 --------------------------------------------------------------------------------
 test('Check Version', function()
     print(sh.version)
-    ok(sh.version == 'Automatic Shell Bindings for Lua / LuaSH 1.3.0')
+    ok(sh.version == 'Automatic Shell Bindings for Lua / LuaSH 2.0.0')
 end)
 
 test('Check command output', function()
     ok(tostring(seq(1, 5)) == '1\n2\n3\n4\n5', 'seq 1 5')
 end)
 
-test('Check command input', function()
-    local r = grep('a.*b', {
-        __input = 'arc\narabic\nabbey\n'
-    })
-    ok(tostring(r) == 'arabic\nabbey', 'grep a.*b')
-end)
+-- Tests that pass input to a command run only on a backend that can.
+local no_stdin = "the backend cannot pass input (capabilities().stdin)"
 
-test('Check command pipeline', function()
-    local r = wc(seq(1, 10), '-l')
-    ok(tonumber(tostring(r)) == 10, 'seq 1 10 | wc -l')
+if caps.stdin then
+    test('Check command input', function()
+        local r = grep('a.*b', {
+            __input = 'arc\narabic\nabbey\n'
+        })
+        ok(tostring(r) == 'arabic\nabbey', 'grep a.*b')
+    end)
 
-    local r = seq(1, 10) : wc('-l')
-    ok(tonumber(tostring(r)) == 10, 'seq 1 10 | wc -l')
+    test('Check command pipeline', function()
+        local r = wc(seq(1, 10), '-l')
+        ok(tonumber(tostring(r)) == 10, 'seq 1 10 | wc -l')
 
-    local r = wc(seq(1, 10), seq(20, 25), '-l')
-    ok(tonumber(tostring(r)) == 16, '(seq 1 10 ; seq 20 25) | wc -l')
-end)
+        local r = seq(1, 10) : wc('-l')
+        ok(tonumber(tostring(r)) == 10, 'seq 1 10 | wc -l')
+
+        local r = wc(seq(1, 10), seq(20, 25), '-l')
+        ok(tonumber(tostring(r)) == 16, '(seq 1 10 ; seq 20 25) | wc -l')
+    end)
+else
+    skip('Check command input', no_stdin)
+    skip('Check command pipeline', no_stdin)
+end
 
 test('Check command structure', function()
     local r = seq(1, 3)
@@ -147,4 +233,10 @@ test('Check listing directory', function()
     ok(CHECK())
 end)
 
-if tests_failed > 0 then os.exit(1) end
+print(string.format(
+    "%d passed, %d failed, %d skipped",
+    tests_passed, tests_failed, tests_skipped
+))
+-- error() rather than os.exit(1): the interpreter then closes the Lua state,
+-- which lets the popen backend remove its private temp directory.
+if tests_failed > 0 then error("some tests failed", 0) end
