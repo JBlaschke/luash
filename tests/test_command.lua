@@ -94,25 +94,57 @@ end
 -- A fake Result as sh/init.lua makes them; no metatable needed here.
 local function result(out, pipeline)
     return {
-        __input  = out, __stdout = out, __stderr = "",
+        __input = out, __stdout = out, __stderr = "",
         __exitcode = 0, __signal = 0, __pipeline = pipeline,
     }
+end
+
+local SOURCE = debug.getinfo(1, "S").short_src
+
+-- Whether pairs() calls __pairs: Lua 5.2 and newer do, LuaJIT only when
+-- built with its Lua 5.2 extensions.
+local HONOURS_PAIRS = false
+for _ in pairs(setmetatable({}, {
+    __pairs = function(t)
+        HONOURS_PAIRS = true
+        return next, t, nil
+    end,
+})) do
+end
+
+-- Whether f() raises an error whose position is the line that defines f,
+-- and the error. f is a one-line function that calls the function under
+-- test as a statement, not as a tail call (`return g()`), so that its
+-- caller is f.
+local function raises_here(f)
+    local err   = raises(f)
+    local where = SOURCE .. ":" .. debug.getinfo(f, "S").linedefined .. ":"
+    return err ~= nil and err:sub(1, #where) == where, tostring(err)
 end
 
 --------------------------------------------------------------------------------
 -- LOAD THE MODULE
 --------------------------------------------------------------------------------
 local globals_before = {}
+local loaded_before  = {}
 for k in pairs(_G) do
     globals_before[k] = true
+end
+for k in pairs(package.loaded) do
+    loaded_before[k] = true
 end
 
 local command = require("sh.command")
 
 local new_globals = {}
+local new_loaded  = {}
 for k in pairs(_G) do
     if not globals_before[k] then new_globals[#new_globals + 1] = k end
 end
+for k in pairs(package.loaded) do
+    if not loaded_before[k] then new_loaded[#new_loaded + 1] = k end
+end
+table.sort(new_loaded)
 
 local Command  = command.Command
 local Pipeline = command.Pipeline
@@ -125,6 +157,10 @@ local quote    = command.quote
 test("Module shape", function()
     ok(type(command) == "table", "require returns a table")
     ok(eq(show(new_globals), "{}"), "loading creates no globals")
+    ok(
+        eq(show(new_loaded), show({ "sh.command" })),
+        "loading requires no other module"
+    )
     local functions = {
         "parse", "quote", "Command", "Pipeline", "set_runner", "render",
         "is_command", "is_pipeline",
@@ -141,8 +177,10 @@ test("parse: positional arguments", function()
     ok(eq(#p.sources, 0), "no sources")
     ok(eq(p.fields.__stdout, ""), "fields.__stdout empty")
     ok(eq(p.fields.__stderr, ""), "fields.__stderr empty")
-    ok(p.fields.__exitcode == nil and p.fields.__signal == nil,
-        "fields.__exitcode and __signal unset")
+    ok(
+        p.fields.__exitcode == nil and p.fields.__signal == nil,
+        "fields.__exitcode and __signal unset"
+    )
 
     local p = parse("a", nil, false, "b", { false, "c" })
     ok(eq(show(p.args), show({ "a", "b", "c" })), "nil and false skipped")
@@ -150,8 +188,24 @@ test("parse: positional arguments", function()
     ok(eq(show(parse(2.5, -1).args), show({ "2.5", "-1" })), "numbers")
 
     local p = parse({ "-c", "type type", v = true })
-    ok(eq(show(p.args), show({ "-c", "type type", "-v" })),
-        "array entries before the flags of the same table")
+    ok(
+        eq(show(p.args), show({ "-c", "type type", "-v" })),
+        "array entries before the flags of the same table"
+    )
+
+    local p = parse({ "a", nil, "c" })
+    ok(eq(show(p.args), show({ "a", "c" })), "{a, nil, c} keeps c")
+    local sparse = {}
+    sparse[10] = "z"
+    sparse[1]  = "a"
+    sparse[5]  = "e"
+    sparse[3]  = "c"
+    ok(
+        eq(show(parse(sparse).args), show({ "a", "c", "e", "z" })),
+        "entries after a hole follow in key order"
+    )
+    local p = parse({ [0] = "zero", [-1] = "neg", [1.5] = "half", "one" })
+    ok(eq(show(p.args), show({ "one" })), "keys below 1 and fractions ignored")
 end)
 
 test("parse: invalid positional arguments", function()
@@ -163,34 +217,72 @@ test("parse: invalid positional arguments", function()
     t[2] = t
     ok(contains(raises(parse, t), "contains itself"), "a cyclic table raises")
     local shared = { "x" }
-    ok(eq(show(parse(shared, { shared }).args), show({ "x", "x" })),
-        "the same table twice is not a cycle")
+    ok(
+        eq(show(parse(shared, { shared }).args), show({ "x", "x" })),
+        "the same table twice is not a cycle"
+    )
 end)
 
 test("parse: flags", function()
     local p = parse({ format = "%a", v = true, q = false, n = 3, e = "" })
     -- DESIGN.md section 7: sorted keys, one-character keys give -k.
-    ok(eq(show(p.args), show({ "-e=", "--format=%a", "-n=3", "-v" })),
-        "sorted; q = false absent; e = '' gives -e=")
-    ok(eq(show(parse({ empty = "" }).args), show({ "--empty=" })),
-        "empty string value of a long key gives --key=")
+    ok(
+        eq(show(p.args), show({ "-e=", "--format=%a", "-n=3", "-v" })),
+        "sorted; q = false absent; e = '' gives -e="
+    )
+    ok(
+        eq(show(parse({ empty = "" }).args), show({ "--empty=" })),
+        "empty string value of a long key gives --key="
+    )
     ok(eq(show(parse({ l = false }).args), "{}"), "{l = false} emits nothing")
 
     local p = parse({ zeta = 1, alpha = true, m = "x", beta = true, a = 1 })
-    ok(eq(show(p.args),
-        show({ "-a=1", "--alpha", "--beta", "-m=x", "--zeta=1" })),
-        "flag order is the sorted key order")
+    ok(
+        eq(show(p.args), show({
+            "-a=1", "--alpha", "--beta", "-m=x", "--zeta=1"
+        })),
+        "flag order is the sorted key order"
+    )
+
+    -- Byte order, whatever the collation locale: upper case first.
+    local mixed    = { B = true, a = true, Z = 1, ["a-b"] = 1, ab = 1 }
+    local expected = show({ "-B", "-Z=1", "-a", "--a-b=1", "--ab=1" })
+    ok(eq(show(parse(mixed).args), expected), "mixed case in byte order")
+    local collate = os.setlocale(nil, "collate")
+    local locale  = os.setlocale("en_US.UTF-8", "collate")
+    local args    = show(parse(mixed).args)
+    os.setlocale(collate, "collate")
+    if locale then
+        ok(eq(args, expected), "byte order under " .. locale .. " collation")
+    else
+        ok(true, "note: no en_US.UTF-8 locale; collation not checked")
+    end
+
+    if HONOURS_PAIRS then
+        local backing = { v = true, n = 3 }
+        local proxy   = setmetatable({}, {
+            __pairs = function() return next, backing, nil end,
+        })
+        ok(
+            eq(show(parse(proxy).args), show({ "-n=3", "-v" })),
+            "flags of a __pairs proxy"
+        )
+    end
 
     local p = parse({ _private = 1, __other = 2, [2.5] = "x", [true] = 1 })
     ok(eq(show(p.args), "{}"), "_ keys and non-string keys ignored")
 
     local err = raises(parse, { callback = function() end })
-    ok(contains(err, "callback") and contains(err, "function"),
-        "a function value raises an error naming the key: " .. tostring(err))
+    ok(
+        contains(err, "callback") and contains(err, "function"),
+        "a function value raises an error naming the key: " .. tostring(err)
+    )
     local err = raises(parse, { opts = {} })
     ok(contains(err, "opts"), "a table value raises an error naming the key")
-    ok(contains(raises(parse, { [""] = true }), "empty flag name"),
-        "an empty key raises")
+    ok(
+        contains(raises(parse, { [""] = true }), "empty flag name"),
+        "an empty key raises"
+    )
 end)
 
 test("parse: input, sources and fields", function()
@@ -218,20 +310,29 @@ test("parse: input, sources and fields", function()
     r2.__exitcode = 5
     local p = parse(r, "-l", { r2 })
     ok(eq(p.input, "op"), "two Results: input in order")
-    ok(#p.sources == 2 and rawequal(p.sources[1], pl)
-        and rawequal(p.sources[2], pl2), "two Results: sources in order")
+    ok(
+        #p.sources == 2 and rawequal(p.sources[1], pl)
+            and rawequal(p.sources[2], pl2),
+        "two Results: sources in order"
+    )
     ok(eq(p.fields.__stdout, "op"), "fields.__stdout concatenated")
     ok(eq(p.fields.__stderr, "ef"), "fields.__stderr concatenated")
     ok(eq(p.fields.__exitcode, 5), "fields.__exitcode is the last seen")
     ok(eq(show(p.args), show({ "-l" })), "positional among Results")
 
     local p = parse(result("z", nil))
-    ok(eq(p.input, "z") and #p.sources == 0,
-        "a Result without __pipeline adds input, no source")
+    ok(
+        eq(p.input, "z") and #p.sources == 0,
+        "a Result without __pipeline adds input, no source"
+    )
     local p = parse({ __input = "q", __pipeline = pl })
     ok(eq(#p.sources, 0), "__pipeline without a string __stdout is no source")
-    ok(contains(raises(parse, { __input = {} }), "__input"),
-        "a table __input raises")
+    local p = parse({ __input = "", __stdout = "", __pipeline = false })
+    ok(eq(#p.sources, 0), "__pipeline = false is no source")
+    ok(
+        contains(raises(parse, { __input = {} }), "__input"),
+        "a table __input raises"
+    )
 end)
 
 test("quote", function()
@@ -258,15 +359,19 @@ test("Command rendering", function()
     c:flag("color", "auto")
     c:flag("a")
     c:flag("l", false)
-    ok(eq(tostring(c), "ls -l /tmp /var --color=auto -a"),
-        "DESIGN.md 3.4 example")
+    ok(
+        eq(tostring(c), "ls -l /tmp /var --color=auto -a"),
+        "DESIGN.md 3.4 example"
+    )
     ok(eq(command.render(c), tostring(c)), "render(c) is tostring(c)")
 
     local c = Command("stat", "/bin", { format = "%a %n" })
     ok(eq(tostring(c), "stat /bin '--format=%a %n'"), "stat with format")
     ok(eq(tostring(Command("grep", "it's")), "grep 'it'\\''s'"), "quote")
-    ok(eq(tostring(Command("x", { __input = "secret" })), "x"),
-        "literal stdin is not rendered")
+    ok(
+        eq(tostring(Command("x", { __input = "secret" })), "x"),
+        "literal stdin is not rendered"
+    )
 end)
 
 test("Command validation", function()
@@ -284,13 +389,19 @@ test("Command:flag", function()
     ok(eq(show(c:argv()), show({ "x", "--color=auto" })), "--color=auto")
     local c = Command("x"):flag("x", false)
     ok(eq(show(c:argv()), show({ "x" })), "flag('x', false) adds nothing")
+    local c = Command("x"):flag("v", nil)
+    ok(eq(show(c:argv()), show({ "x" })), "flag('v', nil) adds nothing")
     local c = Command("x"):flag("n", 3):flag("e", ""):flag("all", true)
-    ok(eq(show(c:argv()), show({ "x", "-n=3", "-e=", "--all" })),
-        "number, empty string and true values; calls chain")
+    ok(
+        eq(show(c:argv()), show({ "x", "-n=3", "-e=", "--all" })),
+        "number, empty string and true values; calls chain"
+    )
     local err = raises(Command("x").flag, Command("x"), "bad", {})
     ok(contains(err, "bad"), "an invalid value raises an error naming the key")
-    ok(raises(Command("x").flag, Command("x"), 5) ~= nil,
-        "a non-string key raises")
+    ok(
+        raises(Command("x").flag, Command("x"), 5) ~= nil,
+        "a non-string key raises"
+    )
 end)
 
 test("Command:argv", function()
@@ -303,6 +414,28 @@ test("Command:argv", function()
     ok(not rawequal(c:argv(), c:argv()), "each call gives a new table")
 end)
 
+test("Command:copy", function()
+    local r = result("1\n", Pipeline(Command("seq", 1)))
+    local c = Command("wc", r, "-l")
+    local d = c:copy()
+    ok(command.is_command(d) and not rawequal(c, d), "copy is a new Command")
+    ok(eq(tostring(d), tostring(c)), "copy renders the same")
+    ok(eq(d.stdin, c.stdin), "copy has the same stdin")
+    ok(
+        #d.sources == 1 and rawequal(d.sources[1], r.__pipeline),
+        "copy has the same sources"
+    )
+    c:arg("-w")
+    c:arg(result("2\n", Pipeline(Command("seq", 2))))
+    ok(eq(tostring(d), "seq 1 | wc -l"), "changing the original leaves copy")
+    ok(eq(d.stdin, "1\n"), "the copy keeps its stdin")
+    d:flag("c")
+    ok(
+        eq(show(c:argv()), show({ "wc", "-l", "-w" })),
+        "changing the copy leaves the original"
+    )
+end)
+
 test("Command:input", function()
     local c = Command("cat")
     ok(rawequal(c:input("data"), c), "input returns the command")
@@ -312,8 +445,10 @@ test("Command:input", function()
     local r  = result("1\n2\n3\n", pl)
     c:input(r)
     ok(eq(c.stdin, "1\n2\n3\n"), "Result input")
-    ok(#c.sources == 1 and rawequal(c.sources[1], pl),
-        "Result recorded as the source")
+    ok(
+        #c.sources == 1 and rawequal(c.sources[1], pl),
+        "Result recorded as the source"
+    )
     ok(eq(tostring(c), "seq 1 3 | cat"), "a Result's pipeline renders")
 
     c:input("other")
@@ -325,8 +460,10 @@ test("Command:input", function()
 
     local c = Command("wc", r, "-l")
     ok(eq(c.stdin, "1\n2\n3\n"), "a Result argument gives stdin")
-    ok(#c.sources == 1 and rawequal(c.sources[1], pl),
-        "a Result argument gives a source")
+    ok(
+        #c.sources == 1 and rawequal(c.sources[1], pl),
+        "a Result argument gives a source"
+    )
     c:arg({ __input = "more" })
     ok(eq(c.stdin, "1\n2\n3\nmore"), "arg() appends input")
 
@@ -351,8 +488,10 @@ test("Pipeline", function()
     list[3] = c
     table.remove(list, 1)
     ok(eq(#p2:commands(), 2), "modifying commands() leaves the Pipeline")
-    ok(rawequal(p2:commands()[1], a) and rawequal(p2:commands()[2], b),
-        "commands() holds the stages in order")
+    ok(
+        rawequal(p2:commands()[1], a) and rawequal(p2:commands()[2], b),
+        "commands() holds the stages in order"
+    )
     ok(rawequal(p2:pipe(c), p2), "Pipeline:pipe returns the pipeline")
     ok(eq(#p2:commands(), 3), "Pipeline:pipe appends")
 
@@ -373,24 +512,44 @@ test("Pipeline rendering of sources", function()
     local r2 = result("2\n", Pipeline(Command("seq", 20, 25)))
 
     local wc = Command("wc", r1, r2, "-l")
-    ok(eq(tostring(wc), "{ seq 1 10; seq 20 25; } | wc -l"),
-        "a Command with two sources renders a group")
-    ok(eq(tostring(Pipeline(wc)), "{ seq 1 10; seq 20 25; } | wc -l"),
-        "a stage with two sources renders a group")
-    ok(eq(tostring(Pipeline(wc, Command("cat"))),
-        "{ seq 1 10; seq 20 25; } | wc -l | cat"), "group, then a stage")
+    ok(
+        eq(tostring(wc), "{ seq 1 10; seq 20 25; } | wc -l"),
+        "a Command with two sources renders a group"
+    )
+    ok(
+        eq(tostring(Pipeline(wc)), "{ seq 1 10; seq 20 25; } | wc -l"),
+        "a stage with two sources renders a group"
+    )
+    ok(
+        eq(
+            tostring(Pipeline(wc, Command("cat"))),
+            "{ seq 1 10; seq 20 25; } | wc -l | cat"
+        ),
+        "group, then a stage"
+    )
 
     local one = Command("wc", r1, "-l")
     ok(eq(tostring(one), "seq 1 10 | wc -l"), "one source")
     -- How sh/init.lua extends the pipeline of a single source: the
     -- Command's own source is the stage before it and is not repeated.
-    ok(eq(tostring(Pipeline(r1.__pipeline, one)), "seq 1 10 | wc -l"),
-        "the sources of a later stage are not rendered")
+    ok(
+        eq(tostring(Pipeline(r1.__pipeline, one)), "seq 1 10 | wc -l"),
+        "the sources of a later stage are not rendered"
+    )
 
     local r3 = result("3\n", Pipeline(wc))
-    ok(eq(tostring(Command("sort", r3, r1)),
-        "{ { seq 1 10; seq 20 25; } | wc -l; seq 1 10; } | sort"),
-        "groups nest")
+    ok(
+        eq(
+            tostring(Command("sort", r3, r1)),
+            "{ { seq 1 10; seq 20 25; } | wc -l; seq 1 10; } | sort"
+        ),
+        "groups nest"
+    )
+
+    ok(
+        eq(tostring(Pipeline(Command("x"), wc)), "x | wc -l"),
+        "the group of a later stage is not rendered"
+    )
 
     local lit = Command("wc", r1, { __input = "x" })
     ok(eq(tostring(lit), "seq 1 10 | wc"), "literal input beside a Result")
@@ -407,11 +566,15 @@ test("__bor", function()
     ok(type(bor) == "function", "Command metatable has __bor")
     ok(getmetatable(Pipeline(ca)).__bor == bor, "Pipeline metatable has __bor")
     local p = bor(ca, cb)
-    ok(command.is_pipeline(p) and eq(tostring(p), "a | b"),
-        "__bor(a, b) builds the Pipeline a | b")
+    ok(
+        command.is_pipeline(p) and eq(tostring(p), "a | b"),
+        "__bor(a, b) builds the Pipeline a | b"
+    )
     local p2 = bor(p, Command("c"))
-    ok(eq(tostring(p2), "a | b | c") and eq(#p:commands(), 2),
-        "__bor of a Pipeline builds a new one and leaves the operand")
+    ok(
+        eq(tostring(p2), "a | b | c") and eq(#p:commands(), 2),
+        "__bor of a Pipeline builds a new one and leaves the operand"
+    )
     ok(eq(tostring(bor(ca, p)), "a | a | b"), "__bor(Command, Pipeline)")
     ok(raises(bor, ca, 5) ~= nil, "__bor with a number raises")
 
@@ -432,17 +595,27 @@ test("__bor", function()
     _G.luash_test_b = nil
     if expected then
         ok(chunk ~= nil, "the | operator compiles on " .. interpreter)
-        ok(good and command.is_pipeline(p) and eq(tostring(p), "a | b"),
-            "luash_test_a | luash_test_b renders as a | b")
+        ok(
+            good and command.is_pipeline(p) and eq(tostring(p), "a | b"),
+            "luash_test_a | luash_test_b renders as a | b"
+        )
     elseif not chunk then
-        ok(true, "note: " .. interpreter .. " has no | operator ("
-            .. tostring(err) .. ")")
+        ok(
+            true,
+            "note: " .. interpreter .. " has no | operator ("
+                .. tostring(err) .. ")"
+        )
     elseif not good then
-        ok(true, "note: " .. interpreter .. " compiles | but does not call "
-            .. "__bor (" .. tostring(p) .. ")")
+        ok(
+            true,
+            "note: " .. interpreter .. " compiles | but does not call __bor ("
+                .. tostring(p) .. ")"
+        )
     else
-        ok(command.is_pipeline(p) and eq(tostring(p), "a | b"),
-            "note: " .. interpreter .. " calls __bor; a | b renders")
+        ok(
+            command.is_pipeline(p) and eq(tostring(p), "a | b"),
+            "note: " .. interpreter .. " calls __bor; a | b renders"
+        )
     end
 end)
 
@@ -453,10 +626,15 @@ test("__name and recognition", function()
     ok(eq(getmetatable(p).__name, "sh.Pipeline"), "Pipeline __name")
     ok(command.is_command(c) and not command.is_command(p), "is_command")
     ok(command.is_pipeline(p) and not command.is_pipeline(c), "is_pipeline")
-    ok(not command.is_command("ls") and not command.is_command({})
-        and not command.is_command(nil), "non-Commands")
-    ok(not command.is_pipeline(42) and not command.is_pipeline({}),
-        "non-Pipelines")
+    ok(
+        not command.is_command("ls") and not command.is_command({})
+            and not command.is_command(nil),
+        "non-Commands"
+    )
+    ok(
+        not command.is_pipeline(42) and not command.is_pipeline({}),
+        "non-Pipelines"
+    )
     local foreign = setmetatable({}, { __name = "sh.Command" })
     ok(command.is_command(foreign), "recognised by __name alone")
     local locked = setmetatable({}, { __metatable = "locked" })
@@ -465,11 +643,15 @@ end)
 
 test("run", function()
     local c = Command("x")
-    ok(contains(raises(c.run, c), "no runner"),
-        "Command:run() before set_runner raises 'no runner'")
+    ok(
+        contains(raises(c.run, c), "no runner"),
+        "Command:run() before set_runner raises 'no runner'"
+    )
     local p = Pipeline(Command("a"), Command("b"))
-    ok(contains(raises(p.run, p), "no runner"),
-        "Pipeline:run() before set_runner raises 'no runner'")
+    ok(
+        contains(raises(p.run, p), "no runner"),
+        "Pipeline:run() before set_runner raises 'no runner'"
+    )
 
     local calls = {}
     local function stub(cmd, input)
@@ -489,19 +671,140 @@ test("run", function()
     local a, b, d = Command("a"), Command("b"), Command("d")
     local r = Pipeline(a, b, d):run()
     ok(eq(#calls, 3), "Pipeline:run() called the runner once per stage")
-    ok(rawequal(calls[1].cmd, a) and rawequal(calls[2].cmd, b)
-        and rawequal(calls[3].cmd, d), "stages ran left to right")
+    ok(
+        rawequal(calls[1].cmd, a) and rawequal(calls[2].cmd, b)
+            and rawequal(calls[3].cmd, d),
+        "stages ran left to right"
+    )
     ok(calls[1].input == nil, "the first stage gets no input")
-    ok(rawequal(calls[2].input, calls[1].result)
-        and rawequal(calls[3].input, calls[2].result),
-        "each later stage gets the Result before it as input")
+    ok(
+        rawequal(calls[2].input, calls[1].result)
+            and rawequal(calls[3].input, calls[2].result),
+        "each later stage gets the Result before it as input"
+    )
     ok(rawequal(r, calls[3].result), "Pipeline:run() returns the last Result")
 
-    ok(contains(raises(Pipeline().run, Pipeline()), "empty"),
-        "running an empty Pipeline raises")
+    ok(
+        contains(raises(Pipeline().run, Pipeline()), "empty"),
+        "running an empty Pipeline raises"
+    )
     ok(raises(command.set_runner, 5) ~= nil, "set_runner(5) raises")
     ok(rawequal(command.set_runner(nil), stub), "set_runner returns previous")
     ok(contains(raises(c.run, c), "no runner"), "set_runner(nil) uninstalls")
+end)
+
+test("Error positions", function()
+    local a   = Command("a")
+    local bor = getmetatable(a).__bor
+    local p   = Pipeline(a)
+    -- Each closure must stay on one line: raises_here() compares the error
+    -- position with the line that defines it.
+    local cases = {
+        { "parse(true)", function() parse(true) end },
+        { "Command with a bad flag", function() Command("x", { k = {} }) end },
+        { "Command(5)", function() Command(5) end },
+        { "arg(true)", function() a:arg(true) end },
+        { "flag('k', {})", function() a:flag("k", {}) end },
+        { "flag(5)", function() a:flag(5) end },
+        { "input({__input = {}})", function() a:input({ __input = {} }) end },
+        { "input(true)", function() a:input(true) end },
+        { "Pipeline(a, 'b')", function() Pipeline(a, "b") end },
+        { "Command:pipe(5)", function() a:pipe(5) end },
+        { "Pipeline:pipe(5)", function() p:pipe(5) end },
+        { "__bor(a, 5)", function() bor(a, 5) end },
+        { "quote({})", function() quote({}) end },
+        { "render({})", function() command.render({}) end },
+        { "set_runner(5)", function() command.set_runner(5) end },
+        { "Command:run(), no runner", function() a:run() end },
+        { "Pipeline:run(), no runner", function() p:run() end },
+    }
+    command.set_runner(nil)
+    for _, case in ipairs(cases) do
+        local here, err = raises_here(case[2])
+        ok(here, case[1] .. " raises at the caller: " .. err)
+    end
+    command.set_runner(function() return {} end)
+    local here, err = raises_here(function() Pipeline():run() end)
+    ok(here, "empty Pipeline:run() raises at the caller: " .. err)
+
+    -- DESIGN.md section 3.6: the runner raises error(message, 2). PUC Lua
+    -- 5.1 loses the frame of a tail call, so the message of the last stage
+    -- has no position there.
+    local lost  = _VERSION == "Lua 5.1" and rawget(_G, "jit") == nil
+    local fails = {}
+    command.set_runner(function(cmd)
+        if fails[cmd.name] then error(cmd.name .. " failed", 2) end
+        return { __stdout = "", __input = "" }
+    end)
+    local b, c = Command("b"), Command("c")
+    local function single() a:run() end
+    local function three() Pipeline(a, b, c):run() end
+    local runs = {
+        { "Command:run()", single, { a = true }, lost },
+        { "first stage",   three,  { a = true } },
+        { "middle stage",  three,  { b = true } },
+        { "last stage",    three,  { c = true }, lost },
+    }
+    for _, case in ipairs(runs) do
+        fails = case[3]
+        local here, err = raises_here(case[2])
+        ok(
+            here or (case[4] and err:find(":%d+:") == nil),
+            "runner error of " .. case[1] .. " raises at the caller: " .. err
+        )
+    end
+    command.set_runner(nil)
+end)
+
+test("Error values", function()
+    -- A runner error that is not a string passes through unchanged; LuaJIT
+    -- and Lua 5.1 would turn a number into a string with a position.
+    local token = {}
+    local value = nil
+    command.set_runner(function(cmd)
+        if cmd.name == "a" then error(value, 0) end
+        return { __stdout = "", __input = "" }
+    end)
+    local p = Pipeline(Command("a"), Command("b"))
+    local function caught()
+        local _, err = pcall(p.run, p)
+        return err
+    end
+    value = token
+    ok(rawequal(caught(), token), "a table error of an earlier stage")
+    value = 42
+    local err = caught()
+    ok(
+        type(err) == "number" and err == 42,
+        "a number error of an earlier stage stays a number: " .. tostring(err)
+    )
+    command.set_runner(nil)
+
+    -- The border of {nil, "b"} is 2 on LuaJIT (0 on Lua 5.5), and then the
+    -- walk reads t[1] through __index, which raises.
+    local holey = setmetatable({ nil, "b" }, {
+        __index = function() error(7, 0) end,
+    })
+    if #holey == 2 then
+        local good, err = pcall(parse, holey)
+        ok(
+            not good and type(err) == "number" and err == 7,
+            "a number error inside parse() stays a number: " .. tostring(err)
+        )
+    else
+        ok(true, "note: #{nil, 'b'} is " .. #holey .. "; __index not reached")
+    end
+
+    if HONOURS_PAIRS then
+        local proxy = setmetatable({}, {
+            __pairs = function() error(token) end,
+        })
+        local good, err = pcall(parse, proxy)
+        ok(
+            not good and rawequal(err, token),
+            "a table error inside parse() passes unchanged"
+        )
+    end
 end)
 
 test("No process started", function()

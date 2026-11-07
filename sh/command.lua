@@ -12,11 +12,22 @@
 --- "{ a; b; } | ". Every later stage reads the stage before it, so its own
 --- sources are not rendered. Literal stdin is never rendered.
 ---
+--- Pipeline:pipe() appends in place. To extend the Pipeline of an earlier
+--- Result without changing that Result, build a new one with
+--- Pipeline(r.__pipeline, cmd). Commands are mutable too; Command:copy()
+--- gives a snapshot that later changes to the original do not reach.
+---
 --- The runner is called as runner(cmd, input) and returns a Result. `input`
 --- is nil when the Command runs on its own (Command:run()): its stdin is
 --- then `cmd.stdin` and its provenance `cmd.sources`. Pipeline:run() passes
 --- the Result of the previous stage as `input` to every later stage; that
---- Result replaces `cmd.stdin` and `cmd.sources`.
+--- Result replaces `cmd.stdin` and `cmd.sources`. Both methods arrange that
+--- error(msg, 2) in the runner, as DESIGN.md section 3.6 has it, points at
+--- the line that called run(). A string error raised another way comes out
+--- of an earlier stage with that position in front of its own, and out of
+--- the last stage as raised; any other error value passes unchanged.
+---
+--- Errors in the arguments of a public function point at its caller.
 ---
 
 local M = {}
@@ -44,6 +55,18 @@ local Pipeline = {}
 
 local command_mt  = { __name = "sh.Command",  __index = Command }
 local pipeline_mt = { __name = "sh.Pipeline", __index = Pipeline }
+
+-- Call f(...) and return its first result. An error that f raises is
+-- raised again at the caller of the public function that called guard():
+-- a string with that position in front, any other value unchanged. That
+-- function must not tail-call guard(), or the level is one off. The
+-- helpers raise with level 0, so their messages carry no position yet.
+local function guard(f, ...)
+    local good, value = pcall(f, ...)
+    if good then return value end
+    if type(value) ~= "string" then error(value, 0) end
+    error(value, 3)
+end
 
 --------------------------------------------------------------------------------
 -- Recognition
@@ -109,40 +132,77 @@ local function format_flag(key, value)
     error("sh.command: bad " .. kind .. " value for flag '" .. key .. "'", 0)
 end
 
+-- Whether string `a` sorts before `b` in byte order. Lua's `<` on strings
+-- follows the collation locale on PUC Lua (strcoll), so flag order would
+-- depend on os.setlocale().
+local function byte_less(a, b)
+    local n = #a
+    if #b < n then n = #b end
+    for i = 1, n do
+        local x, y = a:byte(i), b:byte(i)
+        if x ~= y then return x < y end
+    end
+    return #a < #b
+end
+
 local walk  -- forward declaration; walk and walk_table recurse into each other
 
--- Walk the array entries, the known `__` fields and the flags of table `t`.
+-- Walk table `t`: its array entries, then the known `__` fields, then its
+-- flags in sorted key order. Entries and flags are read as `t[i]` and
+-- `pairs` give them, so a proxy table works; the `__` fields are read raw,
+-- so that a metatable of a Result cannot add any.
 local function walk_table(t, out, active)
-    for i = 1, #t do
+    local n = #t
+    for i = 1, n do
         walk(t[i], out, active)
     end
 
-    local is_result = type(rawget(t, "__stdout")) == "string"
-    local fields    = out.fields
-    local keys      = {}
-    local flags     = {}
+    -- Integer keys past the border `#t` (entries after a nil) and flag keys
+    -- are sorted, so that the order never depends on the table layout.
+    local extra  = {}
+    local keys   = {}
+    local values = {}
     for k, v in pairs(t) do
-        if type(k) == "string" and k:sub(1, 1) ~= "_" then
+        local kind = type(k)
+        if kind == "number" and k > n and k % 1 == 0 then
+            extra[#extra + 1] = k
+            values[k]         = v
+        elseif kind == "string" and k:sub(1, 1) ~= "_" then
             keys[#keys + 1] = k
-            flags[k]        = v
-        elseif k == "__input" then
-            out.input = out.input .. input_text(v)
-        elseif k == "__stdout" and is_result then
-            fields.__stdout = fields.__stdout .. v
-        elseif k == "__stderr" and type(v) == "string" then
-            fields.__stderr = fields.__stderr .. v
-        elseif k == "__exitcode" then
-            fields.__exitcode = v
-        elseif k == "__signal" then
-            fields.__signal = v
-        elseif k == "__pipeline" and is_result then
-            out.sources[#out.sources + 1] = v
+            values[k]       = v
         end
     end
+    table.sort(extra)
+    for _, k in ipairs(extra) do
+        walk(values[k], out, active)
+    end
 
-    table.sort(keys)
+    -- A Result is a table with a string `__stdout`.
+    local fields = out.fields
+    local input  = rawget(t, "__input")
+    local stdout = rawget(t, "__stdout")
+    local stderr = rawget(t, "__stderr")
+    if input ~= nil then
+        out.input = out.input .. input_text(input)
+    end
+    if type(stdout) == "string" then
+        local pipeline = rawget(t, "__pipeline")
+        fields.__stdout = fields.__stdout .. stdout
+        if pipeline then out.sources[#out.sources + 1] = pipeline end
+    end
+    if type(stderr) == "string" then
+        fields.__stderr = fields.__stderr .. stderr
+    end
+    if rawget(t, "__exitcode") ~= nil then
+        fields.__exitcode = rawget(t, "__exitcode")
+    end
+    if rawget(t, "__signal") ~= nil then
+        fields.__signal = rawget(t, "__signal")
+    end
+
+    table.sort(keys, byte_less)
     for _, k in ipairs(keys) do
-        local flag = format_flag(k, flags[k])
+        local flag = format_flag(k, values[k])
         if flag then out.args[#out.args + 1] = flag end
     end
 end
@@ -170,6 +230,21 @@ function walk(value, out, active)
     end
 end
 
+-- Flatten the `n` argument values in `values`.
+local function flatten(n, values)
+    local out = {
+        args    = {},
+        input   = "",
+        sources = {},
+        fields  = { __stdout = "", __stderr = "" },
+    }
+    local active = {}
+    for i = 1, n do
+        walk(values[i], out, active)
+    end
+    return out
+end
+
 --- Flatten the arguments of a command call as DESIGN.md section 7 says.
 --- Strings and numbers are positional, `nil` and `false` are skipped, tables
 --- are walked depth first, their string keys are flags in sorted order. A
@@ -180,18 +255,8 @@ end
 ---@param ... any
 ---@return table parsed { args, input, sources, fields }
 function M.parse(...)
-    local out = {
-        args    = {},
-        input   = "",
-        sources = {},
-        fields  = { __stdout = "", __stderr = "" },
-    }
-    local values = { ... }
-    local active = {}
-    for i = 1, select("#", ...) do
-        walk(values[i], out, active)
-    end
-    return out
+    local parsed = guard(flatten, select("#", ...), { ... })
+    return parsed
 end
 
 --------------------------------------------------------------------------------
@@ -292,6 +357,11 @@ end
 -- Command
 --------------------------------------------------------------------------------
 
+local function new_command(name, args, stdin, sources)
+    local cmd = { name = name, args = args, stdin = stdin, sources = sources }
+    return setmetatable(cmd, command_mt)
+end
+
 --- A Command for program `name` with the arguments `...`, not executed. The
 --- arguments are those of sh.name(...) (DESIGN.md section 7), so a flag
 --- table or a Result works too.
@@ -302,21 +372,15 @@ function M.Command(name, ...)
     if type(name) ~= "string" or name == "" then
         error("sh.command: Command name must be a non-empty string", 2)
     end
-    local parsed = M.parse(...)
-    local cmd = {
-        name    = name,
-        args    = parsed.args,
-        stdin   = parsed.input,
-        sources = parsed.sources,
-    }
-    return setmetatable(cmd, command_mt)
+    local parsed = guard(flatten, select("#", ...), { ... })
+    return new_command(name, parsed.args, parsed.input, parsed.sources)
 end
 
 --- Append arguments, flattened like those of M.Command.
 ---@param ... any
 ---@return sh.Command self
 function Command:arg(...)
-    local parsed = M.parse(...)
+    local parsed = guard(flatten, select("#", ...), { ... })
     append(self.args, parsed.args)
     append(self.sources, parsed.sources)
     self.stdin = self.stdin .. parsed.input
@@ -324,16 +388,18 @@ function Command:arg(...)
 end
 
 --- Append flag `key`: `-k` for a one-character key, else `--key`; with
---- `=value` for a string or number value; nothing when `value` is false.
+--- `=value` for a string or number value. Without a value it is a bare
+--- flag; a value of nil or false adds nothing, as in a flag table.
 ---@param key string
----@param value boolean|string|number|nil nil means true
+---@param ... boolean|string|number|nil the value; none means true
 ---@return sh.Command self
-function Command:flag(key, value)
+function Command:flag(key, ...)
     if type(key) ~= "string" then
         error("sh.command: flag name must be a string, got " .. type(key), 2)
     end
-    if value == nil then value = true end
-    local flag = format_flag(key, value)
+    local value = true
+    if select("#", ...) > 0 then value = ... end
+    local flag = guard(format_flag, key, value)
     if flag then self.args[#self.args + 1] = flag end
     return self
 end
@@ -357,12 +423,24 @@ function Command:input(x)
         if data == nil and not is_result then
             error("sh.command: Command:input() needs a Result or __input", 2)
         end
-        self.stdin   = (data == nil) and "" or input_text(data)
+        self.stdin   = (data == nil) and "" or guard(input_text, data)
         self.sources = { is_result and rawget(x, "__pipeline") or nil }
     else
         error("sh.command: invalid input of type " .. kind, 2)
     end
     return self
+end
+
+--- A new Command with the same program, arguments, stdin and sources.
+--- Changing either one afterwards leaves the other as it was, so a copy
+--- can record what ran.
+---@return sh.Command
+function Command:copy()
+    local args    = {}
+    local sources = {}
+    append(args, self.args)
+    append(sources, self.sources)
+    return new_command(self.name, args, self.stdin, sources)
 end
 
 --- The argument vector, a new table: the program, then its arguments.
@@ -375,17 +453,11 @@ function Command:argv()
     return argv
 end
 
---- Run this Command with the installed runner and return its Result.
+--- Run this Command with the installed runner and return its Result. The
+--- runner is tail-called, so its errors point at the caller of run().
 ---@return table Result
 function Command:run()
     return get_runner()(self)
-end
-
---- A new Pipeline: this Command, then `other` (a Command or Pipeline).
----@param other sh.Command|sh.Pipeline
----@return sh.Pipeline
-function Command:pipe(other)
-    return M.Pipeline(self, other)
 end
 
 --------------------------------------------------------------------------------
@@ -408,23 +480,36 @@ local function add_stage(stages, x)
     end
 end
 
+-- A Pipeline of the `n` Commands or Pipelines in `values`.
+local function new_pipeline(n, values)
+    local stages = {}
+    for i = 1, n do
+        add_stage(stages, values[i])
+    end
+    return setmetatable({ stages = stages }, pipeline_mt)
+end
+
 --- A Pipeline of the given Commands; a Pipeline argument adds its stages.
 ---@param ... sh.Command|sh.Pipeline
 ---@return sh.Pipeline
 function M.Pipeline(...)
-    local stages = {}
-    local values = { ... }
-    for i = 1, select("#", ...) do
-        add_stage(stages, values[i])
-    end
-    return setmetatable({ stages = stages }, pipeline_mt)
+    local p = guard(new_pipeline, select("#", ...), { ... })
+    return p
+end
+
+--- A new Pipeline: this Command, then `other` (a Command or Pipeline).
+---@param other sh.Command|sh.Pipeline
+---@return sh.Pipeline
+function Command:pipe(other)
+    local p = guard(new_pipeline, 2, { self, other })
+    return p
 end
 
 --- Append a Command, or the stages of a Pipeline, to this Pipeline.
 ---@param x sh.Command|sh.Pipeline
 ---@return sh.Pipeline self
 function Pipeline:pipe(x)
-    add_stage(self.stages, x)
+    guard(add_stage, self.stages, x)
     return self
 end
 
@@ -438,18 +523,28 @@ end
 
 --- Run the stages left to right, each with the Result of the one before as
 --- its input, and return the Result of the last stage. The sources of the
---- first stage do not run again: their output is already in its stdin.
+--- first stage do not run again: their output is already in its stdin. A
+--- string error of an earlier stage is raised again at the caller of run(),
+--- and the last stage is tail-called, so runner errors point at that
+--- caller.
 ---@return table Result
 function Pipeline:run()
-    local run = get_runner()
-    if #self.stages == 0 then
+    local run    = get_runner()
+    local stages = self.stages
+    local n      = #stages
+    if n == 0 then
         error("sh.command: cannot run an empty Pipeline", 2)
     end
     local result = nil
-    for _, stage in ipairs(self.stages) do
-        result = run(stage, result)
+    for i = 1, n - 1 do
+        local good, value = pcall(run, stages[i], result)
+        if not good then
+            if type(value) ~= "string" then error(value, 0) end
+            error(value, 2)
+        end
+        result = value
     end
-    return result
+    return run(stages[n], result)
 end
 
 --------------------------------------------------------------------------------
@@ -458,7 +553,8 @@ end
 
 -- `a | b` on Lua 5.3 and newer; older interpreters ignore the metamethod.
 local function bor(a, b)
-    return M.Pipeline(a, b)
+    local p = guard(new_pipeline, 2, { a, b })
+    return p
 end
 
 command_mt.__tostring  = M.render
