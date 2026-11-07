@@ -17,12 +17,24 @@ local M = { name = "posix" }
 
 local ok, posix = pcall(require, "posix")
 
+-- execp comes from posix.unistd. The top-level posix.execp was a wrapper
+-- kept for compatibility with luaposix 32 and earlier, and luaposix 38
+-- replaced it with a function that only raises an error. The wrapper
+-- called posix.unistd.execp, which takes the same (path, argt) arguments
+-- in luaposix 36.3 and 38.
+local execp = nil
+if ok then
+    local found, unistd = pcall(require, "posix.unistd")
+    if found and type(unistd) == "table" then execp = unistd.execp end
+end
+
 local READ_SIZE  = 4096    -- bytes per read from stdout or stderr
 local WRITE_SIZE = 65536   -- at most this many input bytes per write
 
--- Every luaposix field this module uses.
+-- Every field of the posix module that this module uses (execp, above,
+-- comes from posix.unistd).
 local REQUIRED = {
-    "_exit", "chdir", "close", "dup2", "errno", "execp", "fcntl", "fork",
+    "_exit", "chdir", "close", "dup2", "errno", "fcntl", "fork",
     "pipe", "poll", "read", "signal", "wait", "write",
     "EAGAIN", "EINTR", "EPIPE", "FD_CLOEXEC", "F_SETFD", "F_SETFL",
     "O_NONBLOCK", "SIGPIPE", "SIG_IGN",
@@ -39,6 +51,8 @@ end
 local unavailable = nil
 if not ok then
     unavailable = one_line(tostring(posix))
+elseif type(execp) ~= "function" then
+    unavailable = "luaposix has no posix.unistd.execp"
 else
     for _, key in ipairs(REQUIRED) do
         if posix[key] == nil then
@@ -114,7 +128,7 @@ local function exec_child(fds, program, args, cwd)
         local done, err = posix.chdir(cwd)
         if done == nil then return err end
     end
-    local _, _, errno = posix.execp(program, args)
+    local _, _, errno = execp(program, args)
     return (posix.errno(errno))
 end
 
