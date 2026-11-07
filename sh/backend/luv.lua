@@ -4,12 +4,19 @@
 -- and both of its output pipes have reached EOF. libuv writes the input
 -- while it reads the output, so no input size can deadlock.
 --
+-- A child that cannot start, fails or is killed is reported in the result
+-- of run(), never raised. run() raises for a malformed call, when luv
+-- cannot be loaded, when it is called from inside a libuv callback, when
+-- the loop stops before the child has finished (an internal error), and
+-- with the error of an on_stdout or on_stderr callback. luv ends the
+-- process on an error in its callback, so a callback's error is caught,
+-- stops the child, and is raised again once every handle is closed.
+--
 -- run() must not be called from inside a libuv callback: the loop is not
--- re-entrant, and sh is a synchronous API. run() raises an error when it
--- detects that case. Handles that the host owns on the same loop are
--- serviced while run() waits, but run() never waits for them, and the
--- pipes and the process handle that run() creates are closed before it
--- returns.
+-- re-entrant, and sh is a synchronous API. Handles that the host owns on
+-- the same loop are serviced while run() waits, but run() never waits for
+-- them, and the pipes and the process handle that run() creates are closed
+-- before it returns.
 --
 -- luv is loaded with pcall, so this module also loads on an interpreter
 -- without it; available() then returns false and the reason.
@@ -17,12 +24,16 @@ local M = { name = "luv" }
 
 local ok, uv = pcall(require, "luv")
 
--- require's message names the problem on its first line and, when the C
--- library failed to load, the cause on the second; the rest lists every
--- path that was searched. Keep the first two lines, joined.
+-- require's message names the problem on its first line. When the C library
+-- exists but failed to load, the second line holds the cause; otherwise the
+-- following lines list every path that was searched.
 local load_error = nil
 if not ok then
-    load_error = (tostring(uv):gsub("\n\t", " ", 1)):match("^[^\n]*")
+    local message = tostring(uv)
+    if message:find("^error loading module") then
+        message = message:gsub("\n\t", " ", 1)
+    end
+    load_error = message:match("^[^\n]*"):gsub(":$", "")
 end
 
 -- Closes a handle unless it is closed or closing already (luv raises on a
@@ -34,13 +45,43 @@ end
 local function ignore()
 end
 
-local function check_argv(argv)
+local function callable(value)
+    if type(value) == "function" then return true end
+    local mt = getmetatable(value)
+    return type(mt) == "table" and mt.__call ~= nil
+end
+
+-- Raises, at the caller of run(), for a malformed call, before any handle
+-- exists. libuv hands strings to the OS as C strings, so a NUL byte would
+-- cut a program name, an argument or the directory short without notice.
+local function check_call(argv, input, opts)
+    local function fail(message)
+        error("sh.backend.luv.run: " .. message, 4)
+    end
     if type(argv) ~= "table" or #argv == 0 then
-        error("sh.backend.luv.run: argv must be a non-empty array", 3)
+        fail("argv must be a non-empty array")
     end
     for i = 1, #argv do
         if type(argv[i]) ~= "string" then
-            error("sh.backend.luv.run: argv[" .. i .. "] is not a string", 3)
+            fail("argv[" .. i .. "] is not a string")
+        elseif argv[i]:find("\0", 1, true) then
+            fail("argv[" .. i .. "] contains a NUL byte")
+        end
+    end
+    if input ~= nil and type(input) ~= "string" then
+        fail("input must be a string")
+    end
+    if opts == nil then return end
+    if type(opts) ~= "table" then
+        fail("opts must be a table")
+    end
+    local cwd = opts.cwd
+    if cwd ~= nil and (type(cwd) ~= "string" or cwd:find("\0", 1, true)) then
+        fail("opts.cwd must be a string without NUL bytes")
+    end
+    for _, key in ipairs({ "on_stdout", "on_stderr" }) do
+        if opts[key] ~= nil and not callable(opts[key]) then
+            fail("opts." .. key .. " must be a function")
         end
     end
 end
@@ -53,12 +94,21 @@ end
 -- previous disposition (closing the handle resets it to SIG_DFL, which
 -- would undo a host's SIG_IGN), so the handle is created by the first run
 -- with input and kept, unreferenced, for the life of the process, much as
--- Node.js ignores SIGPIPE for good. Where SIGPIPE does not exist (Windows)
--- start() fails and nothing is installed.
-local sigpipe_handle = nil  -- nil: not tried yet; false: not available
+-- Node.js ignores SIGPIPE for good. Each later run with input re-arms it:
+-- other code may have reset SIGPIPE in the meantime (a luaposix save and
+-- restore turns libuv's handler into SIG_DFL), and start() alone does
+-- nothing for a signal the handle already watches. A handle that the host
+-- closed is replaced. Where SIGPIPE does not exist (Windows) start() fails
+-- and nothing is installed.
+local sigpipe_handle = nil  -- nil: none yet; false: SIGPIPE not available
 
 local function catch_sigpipe()
-    if sigpipe_handle ~= nil then return end
+    if sigpipe_handle == false then return end
+    if sigpipe_handle and not sigpipe_handle:is_closing() then
+        sigpipe_handle:stop()
+        if sigpipe_handle:start("sigpipe", ignore) then return end
+        close(sigpipe_handle)
+    end
     sigpipe_handle = false
     local handle = uv.new_signal()
     if not handle then return end
@@ -129,32 +179,22 @@ end
 function M.configure(_)
 end
 
----Runs argv[1], found on PATH, with the remaining elements as arguments.
----A child that cannot start, fails or is killed is reported in the
----result, never raised. run() raises for a malformed call, when called
----from inside a libuv callback, and with the error of an on_stdout or
----on_stderr callback: that stops the child, and the error is raised once
----every handle is closed, because luv would otherwise end the process.
+---Runs argv[1], found on PATH, with the rest as its arguments (the module
+---comment at the top says when it raises).
 ---@param argv string[]  program and arguments, passed verbatim
 ---@param input string|nil  written to the child's stdin, then EOF
 ---@param opts table|nil  fields on_stdout(chunk), on_stderr(chunk), cwd
 ---@return table result  fields exitcode, signal, stdout, stderr, cause
 function M.run(argv, input, opts)
-    check_argv(argv)
+    check_call(argv, input, opts)
     if not ok then
         error("sh.backend.luv.run: luv cannot be loaded: " .. load_error, 2)
-    end
-    input = input or ""
-    opts  = opts or {}
-    if type(input) ~= "string" then
-        error("sh.backend.luv.run: input must be a string", 2)
-    end
-    if opts.cwd ~= nil and type(opts.cwd) ~= "string" then
-        error("sh.backend.luv.run: opts.cwd must be a string", 2)
     end
     if uv.loop_mode and uv.loop_mode() then
         error("sh.backend.luv.run: called from inside a libuv callback", 2)
     end
+    input = input or ""
+    opts  = opts or {}
 
     local stdin_pipe  = uv.new_pipe(false)
     local stdout_pipe = uv.new_pipe(false)
@@ -208,7 +248,8 @@ function M.run(argv, input, opts)
     local finish_err = finisher(stderr_pipe)
 
     -- The first error raised by a callback, raised again after cleanup.
-    local failed, failure = false, nil
+    local failed  = false
+    local failure = nil
 
     -- Records the first error, kills the child and stops reading, so that
     -- only the child's exit is waited for: a grandchild that holds an output
