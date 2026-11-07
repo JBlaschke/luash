@@ -263,8 +263,9 @@ B.capabilities()`:
    otherwise `stdout` contains both `out` and `err` and `stderr == ""`.
 5. When `caps.exitcode`: `run({"sh", "-c", "exit 3"}, "")` has
    `exitcode == 3`.
-6. `run({"luash-no-such-program-xyz"}, "")`: `exitcode == 127`,
-   `stderr ~= ""`, `stdout == ""`.
+6. `run({"luash-no-such-program-xyz"}, "")`: `exitcode == 127` when
+   `caps.exitcode`; with `caps.separate_stderr`, `stderr ~= ""` and
+   `stdout == ""`, otherwise the shell's message is in `stdout`.
 7. Streaming callbacks: run `{"sh", "-c", "printf 'a\\rb\\r'; printf 'x\\n'
    >&2"}` and `{"seq", "1", "20000"}` with `on_stdout` and `on_stderr`
    appending to buffers; the concatenated buffers equal the returned
@@ -272,8 +273,8 @@ B.capabilities()`:
    buffer is empty). When `caps.streaming`, the `seq` run delivered more
    than one stdout chunk.
 8. When `caps.signals`: `run({"sh", "-c", "kill -9 $$"}, "")` has
-   `cause == "killed"` and `signal == 9`; otherwise `exitcode == 137`
-   when `caps.exitcode`.
+   `cause == "killed"`, `signal == 9` and `exitcode == 127`; otherwise
+   `cause == "exited"` and `exitcode == 137` when `caps.exitcode`.
 9. Argument fidelity: `run({"printf", "%s\n", "a b", "it's", "", "--",
    "$HOME", "*", "a;b", "`x`"}, "")` returns
    `"a b\nit's\n\n--\n$HOME\n*\na;b\n`x`\n"`.
@@ -282,9 +283,9 @@ B.capabilities()`:
     false.
 
 Acceptance: `lua tests/test_backend.lua fake` passes on all four
-interpreters; `lua tests/test_backend.lua posix` prints `SKIP:` on the
-Homebrew interpreters (module not found) and fails with a clear message on
-`$REG/lua` (backend not written yet).
+interpreters; `lua tests/test_backend.lua posix` prints `FAIL: cannot load
+sh.backend.posix` on every interpreter until WP2 lands. Once a backend
+module exists, an interpreter without its C module prints `SKIP:`.
 
 ### WP1: `sh/command.lua`
 
