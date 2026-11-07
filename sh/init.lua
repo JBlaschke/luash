@@ -126,14 +126,31 @@ end
 -- Running commands
 --------------------------------------------------------------------------------
 
--- The Pipeline a Result of `cmd` records: with one source, its stages
--- followed by `cmd`; otherwise `cmd` alone, which renders several sources
--- as a group (`{ a; b; } | cmd`).
-local function provenance(cmd, sources)
-    local src   = sources[1]
-    local stage = command_mod.is_pipeline(src) or command_mod.is_command(src)
-    if #sources == 1 and stage then return Pipeline(src, cmd) end
-    return Pipeline(cmd)
+-- The Pipeline a Result records for a run of `cmd` as `argv`, the vector
+-- from cmd:argv() that the backend gets: with one source, its stages
+-- followed by the Command; otherwise the Command alone, which renders
+-- `sources` as a group (`{ a; b; } | cmd`).
+--
+-- That Command is a new one holding `argv`, so the Result shows what ran,
+-- and changing `cmd` after the run does not change it. It is built the way
+-- sh.command builds one, with the metatable of `cmd`: nothing is checked
+-- or parsed again, so it fails nowhere the run would not. It has no stdin,
+-- which is never rendered, and sources only where they are rendered, so a
+-- chain `r = r:cat()` does not keep every earlier input and Pipeline alive.
+local function provenance(cmd, argv, sources)
+    local args = {}
+    for i = 2, #argv do
+        args[i - 1] = argv[i]
+    end
+    local fields = { name = argv[1], args = args, stdin = "", sources = {} }
+    local snap   = setmetatable(fields, getmetatable(cmd))
+    local src    = sources[1]
+    local stage  = command_mod.is_pipeline(src) or command_mod.is_command(src)
+    if #sources == 1 and stage then return Pipeline(src, snap) end
+    for i = 1, #sources do
+        snap.sources[i] = sources[i]
+    end
+    return Pipeline(snap)
 end
 
 -- The message to raise for a failed run, or nil when it succeeded
@@ -155,8 +172,9 @@ end
 -- run failed, the message to raise.
 local function execute(cmd, stdin, sources)
     local config   = sync_config() or {}
-    local pipeline = provenance(cmd, sources)
-    local res      = pipe.run(cmd:argv(), stdin, pipeline)
+    local argv     = cmd:argv()
+    local pipeline = provenance(cmd, argv, sources)
+    local res      = pipe.run(argv, stdin, pipeline)
     local fields   = {
         __input  = res.stdout, __stdout   = res.stdout,
         __stderr = res.stderr, __exitcode = res.exitcode,
@@ -186,6 +204,19 @@ end
 
 command_mod.set_runner(runner)
 
+-- f(...) for a function of sh.command that checks its arguments, with an
+-- argument error raised again at the caller of the function that called
+-- checked(), which must not tail-call it. Called through pcall, sh.command
+-- puts no position in front of the message, because the level it raises
+-- at is pcall itself. A non-string error value passes unchanged: LuaJIT's
+-- error() would put a position in front of a number too.
+local function checked(f, ...)
+    local ok, value = pcall(f, ...)
+    if ok then return value end
+    if type(value) ~= "string" then error(value, 0) end
+    error(value, 3)
+end
+
 --- Return a function that runs program `name` with the arguments `...`
 --- followed by those of each call, and returns its Result.
 ---@param name string the program
@@ -195,8 +226,8 @@ local function command(name, ...)
     local npre    = select("#", ...)
     local preargs = { ... }
     return function(...)
-        local cmd = Command(name, unpack(preargs, 1, npre))
-        cmd:arg(...)
+        local cmd = checked(Command, name, unpack(preargs, 1, npre))
+        checked(cmd.arg, cmd, ...)
         local result, msg = execute(cmd, cmd.stdin, cmd.sources)
         if msg then error(msg, 2) end
         return result
@@ -232,7 +263,7 @@ local function missing(builtin, dir)
 end
 
 local function cd(...)
-    local parsed = command_mod.parse(...)
+    local parsed = checked(command_mod.parse, ...)
     local dir    = parsed.args[1]
     local result = passthrough(parsed)
     if not sys.chdir(dir) then return fail(result, missing("cd", dir)) end
@@ -250,7 +281,7 @@ end
 M.PUSHD_STACK = Stack:new()
 
 local function pushd(...)
-    local parsed = command_mod.parse(...)
+    local parsed = checked(command_mod.parse, ...)
     local dir    = parsed.args[1]
     local result = passthrough(parsed)
     local old    = sys.getcwd()
@@ -263,7 +294,7 @@ local function pushd(...)
 end
 
 local function popd(...)
-    local parsed = command_mod.parse(...)
+    local parsed = checked(command_mod.parse, ...)
     local result = passthrough(parsed)
     local dir    = M.PUSHD_STACK:pop()
     if dir == nil then return fail(result, missing("popd", "EMPTY")) end
@@ -272,7 +303,7 @@ local function popd(...)
 end
 
 local function print(...)
-    local result = passthrough(command_mod.parse(...))
+    local result = passthrough(checked(command_mod.parse, ...))
     _print(result_tostring(result))
     return result
 end
