@@ -17,6 +17,10 @@ jobs:
   test:
     name: ${{ matrix.lua }}
     runs-on: ubuntu-latest
+    # A job takes under 5 minutes, and run_all.sh limits each test run to
+    # 120 s. This bounds a hang elsewhere, such as a stalled download while
+    # setting up Lua, which would otherwise hold the job for 6 hours.
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
