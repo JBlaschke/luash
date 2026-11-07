@@ -1,0 +1,71 @@
+# Runs tests/run_all.sh once per supported Lua version. Each job installs
+# one interpreter, adds luaposix and luv through luarocks where they build,
+# builds standalone/sh.lua and tests every backend and popen strategy
+# against both layouts; cells whose module is missing report SKIP.
+name: test
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: ${{ matrix.lua }}
+    runs-on: ubuntu-latest
+    # A job takes under 5 minutes, and run_all.sh limits each test run to
+    # 120 s. This bounds a hang elsewhere, such as a stalled download while
+    # setting up Lua, which would otherwise hold the job for 6 hours.
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        lua: ["5.1", "5.2", "5.3", "5.4", "5.5", "luajit-2.1"]
+    steps:
+      - uses: actions/checkout@v5
+
+      # Puts lua on PATH; for LuaJIT, lua is a link to luajit.
+      - uses: leafo/gh-actions-lua@v13
+        with:
+          luaVersion: ${{ matrix.lua }}
+
+      # Exports LUA_PATH and LUA_CPATH for the rocks tree; run_all.sh keeps
+      # them after its own entries.
+      - uses: leafo/gh-actions-luarocks@v6
+
+      - name: Install luaposix
+        run: luarocks install luaposix
+
+      # luv builds a bundled libuv with cmake. Where it does not build, the
+      # luv cells report SKIP and the job goes on.
+      - name: Install luv
+        continue-on-error: true
+        run: luarocks install luv
+
+      - name: Build standalone/sh.lua
+        run: make standalone
+
+      # Runs even when a step above failed, so the matrix still reports.
+      - name: Run the test matrix
+        if: ${{ !cancelled() }}
+        env:
+          LUASH_INTERPRETERS: lua
+          LUASH_LOG_DIR: ${{ runner.temp }}/luash-logs
+        run: tests/run_all.sh
+
+      - name: Show the output of every run
+        if: ${{ failure() }}
+        env:
+          LUASH_LOG_DIR: ${{ runner.temp }}/luash-logs
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          for log in "$LUASH_LOG_DIR"/*.log; do
+              echo "::group::$(basename "$log")"
+              cat "$log"
+              echo "::endgroup::"
+          done
