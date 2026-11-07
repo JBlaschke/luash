@@ -75,7 +75,9 @@ local STRATEGIES = {
 -- "cmd" on Windows (cmd.exe syntax, best effort), "sh" everywhere else
 local MODE = package.config:sub(1, 1) == "\\" and "cmd" or "sh"
 
-local newproxy = _G.newproxy   -- Lua 5.1 and LuaJIT only
+-- Lua 5.1 and LuaJIT only. rawget: after sh.install(), _G's __index makes
+-- an undefined global a command function.
+local newproxy = rawget(_G, "newproxy")
 
 local config = { strategy = "auto", tmpdir = nil }
 

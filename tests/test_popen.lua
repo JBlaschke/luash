@@ -176,7 +176,8 @@ local function make_scratch()
     local digits = tostring({}):gsub("%D", "")
     local dir    = base .. "/luash-test-" .. os.time() .. "-" .. digits
     local names  = {
-        "", "/root", "/child", "/fallback", "/pid", "/real", "/real/a"
+        "", "/root", "/child", "/fallback", "/pid", "/hooked", "/real",
+        "/real/a"
     }
     local args   = {}
     for i, name in ipairs(names) do
@@ -697,6 +698,38 @@ test("pid in the directory name", function()
     ok(
         #second == 1 and second[1]:match("^luash%-%d+%-%d+$") ~= nil,
         "the pid is asked again later: " .. table.concat(second, " ")
+    )
+end)
+
+test("undefined globals", function()
+    -- sh.install() gives _G an __index that makes every undefined global
+    -- a command function. A copy of the module loaded and run under such
+    -- a hook must not take one for an optional global such as newproxy
+    -- (undefined from Lua 5.2 on).
+    local name   = "sh.backend.popen"
+    local gmt    = getmetatable(_G)
+    local called = {}
+    setmetatable(_G, { __index = function(_, key)
+        return function()
+            called[#called + 1] = tostring(key)
+            error("the undefined global " .. tostring(key) .. " was called")
+        end
+    end })
+    package.loaded[name] = nil
+    local loaded, fresh = pcall(require, name)
+    local ran, r = false, nil
+    if loaded then
+        local dir = scratch .. "/hooked"
+        fresh.configure({ strategy = "standard", tmpdir = dir })
+        ran, r = pcall(fresh.run, {"true"}, "", {})
+        fresh.cleanup_all()
+    end
+    setmetatable(_G, gmt)
+    package.loaded[name] = B
+    ok(
+        loaded and ran and r.exitcode == 0 and #called == 0,
+        "loads and runs; globals called: [" .. table.concat(called, " ")
+        .. "] " .. (ran and "" or tostring(r or fresh))
     )
 end)
 
