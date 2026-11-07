@@ -6,7 +6,14 @@
 --- is emulated: the directory is checked through io.popen and remembered,
 --- and the dispatcher passes it to every backend as `opts.cwd`. The
 --- emulated directory affects the commands run by `sh` only, not Lua's own
---- io functions. luaposix and luv are only loaded through pcall.
+--- io functions. luaposix and luv are only loaded through load_pcall.
+---
+--- load_pcall is also how sh.pipe loads and probes backends. Libraries
+--- detect features by reading optional globals, and sh.install() turns
+--- every undefined global into a command function, which they would take
+--- for the feature: luaposix reads `jit` and `bit` on Lua 5.1 and 5.2, and
+--- then indexes the function `bit`. While load_pcall runs, loading() is
+--- true and install()'s hook leaves undefined globals nil.
 ---
 
 local M = {}
@@ -20,10 +27,24 @@ local emulated = nil
 -- The result of M.platform(), computed once.
 local platform = nil
 
+-- Calls of load_pcall in progress.
+local loads = 0
+
+local function end_load(...)
+    loads = loads - 1
+    return ...
+end
+
+-- pcall(f, ...) with loading() true while f runs.
+local function load_pcall(f, ...)
+    loads = loads + 1
+    return end_load(pcall(f, ...))
+end
+
 -- The module `name` (posix or luv), or nil when it does not load.
 local function load(name)
     if modules[name] == nil then
-        local ok, mod = pcall(require, name)
+        local ok, mod = load_pcall(require, name)
         modules[name] = ok and type(mod) == "table" and mod or false
     end
     return modules[name] or nil
@@ -143,6 +164,20 @@ function M.getcwd()
         return nil, "sh.sys.getcwd: cannot read the working directory"
     end
     return path
+end
+
+--- pcall(f, ...) for code that loads or probes a library: while f runs,
+--- M.loading() is true, and sh.install() leaves undefined globals nil
+--- (see the module comment). Returns what pcall returns.
+---@param f function
+---@return boolean ok
+---@return any ... the results of f, or its error
+M.load_pcall = load_pcall
+
+--- Whether a load_pcall call is in progress.
+---@return boolean
+function M.loading()
+    return loads > 0
 end
 
 --- The directory `cd` moved to by emulation, or nil when a real chdir is

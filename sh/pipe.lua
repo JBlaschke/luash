@@ -18,6 +18,14 @@
 --- whether it is available, because popen answers for its configured
 --- strategy. Availability is asked again at every resolution.
 ---
+--- sh.install() turns undefined globals into commands, and libraries read
+--- optional globals to detect features. So install() first loads the
+--- backends with preload(), and a backend that loads later anyway (one
+--- installed later, or selected by name) loads, is configured and is asked
+--- whether it is available through sys.load_pcall, which keeps undefined
+--- globals nil. run() is called directly: it calls config.sink, which may
+--- use the commands install() provides.
+---
 
 local sys = require("sh.sys")
 
@@ -75,7 +83,7 @@ end
 -- require remembers only a success, so a backend installed later in the
 -- process is found on the next try.
 local function load(name)
-    local ok, mod = pcall(require, "sh.backend." .. name)
+    local ok, mod = sys.load_pcall(require, "sh.backend." .. name)
     if not ok then return nil, first_line(mod) end
     if type(mod) ~= "table" or type(mod.run) ~= "function" then
         return nil, "sh.backend." .. name .. " is not a backend"
@@ -88,11 +96,11 @@ end
 -- strategy) makes the backend unavailable for that reason.
 local function ready(mod, opts)
     if type(mod.configure) == "function" then
-        local ok, err = pcall(mod.configure, opts)
+        local ok, err = sys.load_pcall(mod.configure, opts)
         if not ok then return false, first_line(err) end
     end
     if type(mod.available) ~= "function" then return true end
-    local called, avail, why = pcall(mod.available)
+    local called, avail, why = sys.load_pcall(mod.available)
     if called and avail then return true end
     return false, first_line(why or avail or "not available")
 end
@@ -212,6 +220,17 @@ function M.set_config(tbl)
         error("sh.pipe.set_config: expected a table, got a " .. type(tbl), 2)
     end
     config = tbl
+end
+
+--- Load the backends of this platform now, and with them the libraries
+--- they need. sh.install() calls this before undefined globals become
+--- commands, so that a script's own require("posix") after install() gets
+--- the loaded module, as with the 1.x sh.lua, which loaded luaposix first.
+--- A backend that does not load is tried again when it is needed.
+function M.preload()
+    for _, name in ipairs(ORDER[sys.platform()] or ORDER.posix) do
+        load(name)
+    end
 end
 
 --- Select a backend now and record it in the configuration. Raises when it

@@ -265,6 +265,7 @@ run_interpreter() {
             tests/test.lua
     done
     run_case "test_command.lua" tests/test_command.lua
+    run_case "test_install.lua" tests/test_install.lua
     for backend in "${BACKENDS[@]}"; do
         run_case "test_backend.lua $backend" \
             tests/test_backend.lua "$backend"

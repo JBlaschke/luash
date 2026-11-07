@@ -340,15 +340,22 @@ local function list_contains(list, name, comp)
 end
 
 --- Make undefined globals run the program of the same name: after
---- `sh.install()`, `ls("-l")` is `sh.ls("-l")`.
+--- `sh.install()`, `ls("-l")` is `sh.ls("-l")`. Libraries detect features
+--- by reading optional globals (luaposix reads `jit` and `bit` on Lua 5.1
+--- and 5.2), so the backends and their libraries are loaded first, and
+--- code run by sh.sys.load_pcall, such as a backend loading later, still
+--- sees undefined globals as nil.
 local function install()
+    pipe.preload()
     local gmt = getmetatable(_G)
     if gmt == nil then
         gmt = {}
         setmetatable(_G, gmt)
     end
     gmt.__index = function(t, name)
-        if type(name) ~= "string" then return rawget(t, name) end
+        if type(name) ~= "string" or sys.loading() then
+            return rawget(t, name)
+        end
         if list_contains(M.__index_ignore_prefix, name, prefcmp) then
             return rawget(t, name)
         end
