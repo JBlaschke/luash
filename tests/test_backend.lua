@@ -1,0 +1,240 @@
+---@diagnostic disable: undefined-global, redefined-local
+-- Backend contract test (handoff/DESIGN.md sections 4 and 5).
+--
+--     lua tests/test_backend.lua <posix|luv|popen|fake> [strategy]
+--
+-- Prints "SKIP: <reason>" and exits 0 when the backend cannot run on this
+-- interpreter. Exits 1 when a check fails or the module does not load.
+-- Required from another test file (`require("test_backend")`) it starts
+-- nothing and returns run_contract(B, name, strategy), which runs the
+-- checks with the caller's gambiarra reporter.
+
+--------------------------------------------------------------------------------
+-- INITIALIZE PROJECT PATHS
+--------------------------------------------------------------------------------
+local function init()
+    -- prepend `pth` to the package search path, using `pth` as a key to
+    -- prevent duplicates
+    local function prepend_path(pth)
+        ---@diagnostic disable-next-line: undefined-field
+        if package.user_modules and (true == package.user_modules[pth]) then
+            return
+        end
+        package.path = pth .. ";" .. package.path
+        if not package.user_modules then package.user_modules = {} end
+        package.user_modules[pth] = true
+    end
+
+    local pth = debug.getinfo(2).source:match("@?(.*)/")
+    -- called from its own directory, the path has no '/' (nil)
+    if nil == pth then pth = "." end
+    prepend_path(pth .. "/?.lua")
+    prepend_path(pth .. "/../?.lua")
+    prepend_path(pth .. "/../?/init.lua")
+    return pth
+end
+
+init()
+
+local test = require("gambiarra")
+
+--------------------------------------------------------------------------------
+-- CONTRACT CHECKS
+--------------------------------------------------------------------------------
+local BIG = string.rep("0123456789abcdef\n", 20000)   -- 340 KB
+local CAPABILITY_KEYS = {
+    "stdin", "separate_stderr", "streaming", "exitcode", "signals",
+}
+
+local function describe(caps)
+    local parts = {}
+    for _, k in ipairs(CAPABILITY_KEYS) do
+        parts[#parts + 1] = k .. "=" .. tostring(caps[k])
+    end
+    return table.concat(parts, " ")
+end
+
+local function run_collecting(B, argv)
+    local outs, errs = {}, {}
+    local r = B.run(argv, "", {
+        on_stdout = function(chunk) outs[#outs + 1] = chunk end,
+        on_stderr = function(chunk) errs[#errs + 1] = chunk end,
+    })
+    return r, table.concat(outs), table.concat(errs), #outs
+end
+
+local function run_contract(B, name, strategy)
+    local caps = B.capabilities()
+    print("backend " .. name .. ": " .. describe(caps))
+
+    test("name and capabilities", function()
+        ok(B.name == name, "B.name is " .. name)
+        ok(caps.name == name, "capabilities().name is " .. name)
+        for _, k in ipairs(CAPABILITY_KEYS) do
+            ok(
+                type(caps[k]) == "boolean",
+                "capabilities()." .. k .. " is boolean"
+            )
+        end
+        if strategy then
+            ok(
+                caps.strategy == strategy,
+                "capabilities().strategy is " .. strategy
+            )
+        end
+    end)
+
+    test("echo", function()
+        local r = B.run({"echo", "hello"}, "", {})
+        ok(r.stdout == "hello\n", "stdout is hello")
+        ok(r.stderr == "", "stderr is empty")
+        ok(r.cause == "exited", "cause is exited")
+        ok(r.signal == 0, "signal is 0")
+        if caps.exitcode then ok(r.exitcode == 0, "exitcode is 0") end
+    end)
+
+    if caps.stdin then
+        test("stdin", function()
+            local r = B.run({"cat"}, "abc\n", {})
+            ok(r.stdout == "abc\n", "cat echoes small input")
+            local big = B.run({"cat"}, BIG, {})
+            ok(big.stdout == BIG, "cat echoes 340 KB input")
+        end)
+    else
+        print("note: no stdin capability, stdin checks skipped")
+    end
+
+    test("stderr", function()
+        local r = B.run({"sh", "-c", "echo out; echo err >&2"}, "", {})
+        if caps.separate_stderr then
+            ok(r.stdout == "out\n", "stdout holds out")
+            ok(r.stderr == "err\n", "stderr holds err")
+        else
+            local has_out = r.stdout:find("out", 1, true) ~= nil
+            local has_err = r.stdout:find("err", 1, true) ~= nil
+            ok(has_out and has_err, "both lines merged into stdout")
+            ok(r.stderr == "", "stderr empty when merged")
+        end
+    end)
+
+    if caps.exitcode then
+        test("exit status", function()
+            local r = B.run({"sh", "-c", "exit 3"}, "", {})
+            ok(r.exitcode == 3, "exit 3 is reported")
+        end)
+    end
+
+    test("missing program", function()
+        local r = B.run({"luash-no-such-program-xyz"}, "", {})
+        if caps.exitcode then ok(r.exitcode == 127, "exitcode is 127") end
+        if caps.separate_stderr then
+            ok(r.stderr ~= "", "stderr names the problem")
+            ok(r.stdout == "", "stdout is empty")
+        else
+            ok(r.stdout ~= "", "the shell's message is in stdout")
+        end
+    end)
+
+    test("streaming callbacks", function()
+        local r, out, err = run_collecting(
+            B, {"sh", "-c", "printf 'a\\rb\\r'; printf 'x\\n' >&2"}
+        )
+        ok(out == r.stdout, "stdout chunks equal stdout")
+        ok(err == r.stderr, "stderr chunks equal stderr")
+        if caps.separate_stderr then
+            ok(r.stdout == "a\rb\r", "carriage returns pass through")
+            ok(r.stderr == "x\n", "stderr bytes pass through")
+        end
+        local r2, out2, err2, n = run_collecting(B, {"seq", "1", "20000"})
+        ok(out2 == r2.stdout, "seq stdout chunks equal stdout")
+        ok(err2 == r2.stderr, "seq stderr chunks equal stderr")
+        ok(#r2.stdout > 100000, "seq output exceeds one chunk")
+        if caps.streaming then ok(n > 1, "more than one stdout chunk") end
+    end)
+
+    test("killed child", function()
+        local r = B.run({"sh", "-c", "kill -9 $$"}, "", {})
+        if caps.signals then
+            ok(r.cause == "killed", "cause is killed")
+            ok(r.signal == 9, "signal is 9")
+            ok(r.exitcode == 127, "exitcode is 127 for a killed child")
+        else
+            ok(r.cause == "exited", "cause is exited without signal support")
+            if caps.exitcode then
+                ok(r.exitcode == 137, "exit status is 128 + 9")
+            end
+        end
+    end)
+
+    test("argument fidelity", function()
+        local argv = {
+            "printf", "%s\\n",
+            "a b", "it's", "", "--", "$HOME", "*", "a;b", "`x`",
+        }
+        local r = B.run(argv, "", {})
+        ok(
+            r.stdout == "a b\nit's\n\n--\n$HOME\n*\na;b\n`x`\n",
+            "arguments arrive verbatim"
+        )
+    end)
+
+    test("cwd option", function()
+        local r = B.run({"pwd"}, "", { cwd = "/" })
+        ok(r.stdout == "/\n", "pwd runs in /")
+    end)
+
+    test("argument validation", function()
+        ok(not pcall(B.run, {}, "", {}), "empty argv raises")
+        ok(not pcall(B.run, {"echo", 1}, "", {}), "non-string element raises")
+    end)
+end
+
+--------------------------------------------------------------------------------
+-- SCRIPT MODE
+--------------------------------------------------------------------------------
+local function main(name, strategy)
+    if not name then
+        io.stderr:write(
+            "usage: lua tests/test_backend.lua <posix|luv|popen|fake> [strategy]\n"
+        )
+        os.exit(2)
+    end
+    local modname = "sh.backend." .. name
+    if name == "fake" then modname = "backend_fake" end
+    local loaded, B = pcall(require, modname)
+    if not loaded then
+        print("FAIL: cannot load " .. modname .. ": " .. tostring(B))
+        os.exit(1)
+    end
+    if strategy then B.configure({ strategy = strategy }) end
+    local available, reason = B.available()
+    if not available then
+        print(
+            "SKIP: backend " .. name .. " unavailable: " .. tostring(reason)
+        )
+        os.exit(0)
+    end
+
+    local passed, failed = 0, 0
+    test(function(e, t, msg)
+        if e == "pass" then
+            passed = passed + 1
+            print("\27[32m✔\27[0m " .. t .. ": " .. msg)
+        elseif e == "fail" or e == "except" then
+            failed = failed + 1
+            print("\27[31m✘\27[0m " .. t .. ": " .. msg)
+        end
+    end)
+
+    run_contract(B, name, strategy)
+
+    local label = strategy and (name .. "/" .. strategy) or name
+    print(("%d passed, %d failed (backend %s)"):format(passed, failed, label))
+    os.exit(failed == 0 and 0 or 1)
+end
+
+if arg and arg[0] and arg[0]:match("test_backend%.lua$") then
+    main(arg[1], arg[2])
+end
+
+return run_contract
