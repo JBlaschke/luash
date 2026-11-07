@@ -14,6 +14,10 @@
 --- of "auto". Both variables are read once, at first use. A change of
 --- config.backend or config.popen takes effect at the next run.
 ---
+--- Each candidate is configured with those options before it is asked
+--- whether it is available, because popen answers for its configured
+--- strategy. Availability is asked again at every resolution.
+---
 
 local sys = require("sh.sys")
 
@@ -36,10 +40,6 @@ local config = {
     backend      = "auto",
     popen        = { strategy = "auto" },
 }
-
--- Available backend modules by name. A failure is not remembered, so that a
--- backend installed later in the process is found on the next try.
-local modules = {}
 
 -- LUASH_BACKEND and LUASH_POPEN_STRATEGY, read once.
 local env = nil
@@ -71,23 +71,39 @@ local function first_line(err)
     return (line:gsub(":%s*$", ""))
 end
 
--- The backend `name` when its module loads and it reports itself available;
--- otherwise nil and the reason.
+-- The module of backend `name`, or nil and the reason it does not load.
+-- require remembers only a success, so a backend installed later in the
+-- process is found on the next try.
 local function load(name)
-    if modules[name] then return modules[name] end
     local ok, mod = pcall(require, "sh.backend." .. name)
     if not ok then return nil, first_line(mod) end
     if type(mod) ~= "table" or type(mod.run) ~= "function" then
         return nil, "sh.backend." .. name .. " is not a backend"
     end
-    local called, avail, why = true, true, nil
-    if type(mod.available) == "function" then
-        called, avail, why = pcall(mod.available)
+    return mod
+end
+
+-- Configure `mod` with `opts`, then ask whether it is available: true, or
+-- false and the reason. A configure() that raises (popen: an unknown
+-- strategy) makes the backend unavailable for that reason.
+local function ready(mod, opts)
+    if type(mod.configure) == "function" then
+        local ok, err = pcall(mod.configure, opts)
+        if not ok then return false, first_line(err) end
     end
-    if not (called and avail) then
-        return nil, first_line(why or avail or "not available")
-    end
-    modules[name] = mod
+    if type(mod.available) ~= "function" then return true end
+    local called, avail, why = pcall(mod.available)
+    if called and avail then return true end
+    return false, first_line(why or avail or "not available")
+end
+
+-- The backend `name`, configured with `opts`, when it loads and is
+-- available; otherwise nil and the reason.
+local function candidate(name, opts)
+    local mod, why = load(name)
+    if not mod then return nil, why end
+    local ok, reason = ready(mod, opts)
+    if not ok then return nil, reason end
     return mod
 end
 
@@ -95,20 +111,15 @@ local function unavailable(name, why)
     error("sh.pipe: backend " .. name .. " is unavailable: " .. why, 0)
 end
 
--- The backend for `choice`: a name, "auto" or a backend table. Raises when
--- it is not available.
-local function select_backend(choice)
+-- The backend for `choice`, a name, "auto" or a backend table, configured
+-- with `opts`. Raises when it is not available.
+local function select_backend(choice, opts)
     if type(choice) == "table" then
         if type(choice.name) ~= "string" or type(choice.run) ~= "function" then
             error("sh.pipe: a backend table needs a name and a run function", 0)
         end
-        local called, ok, why = true, true, nil
-        if type(choice.available) == "function" then
-            called, ok, why = pcall(choice.available)
-        end
-        if not (called and ok) then
-            unavailable(choice.name, first_line(why or ok or "not available"))
-        end
+        local ok, why = ready(choice, opts)
+        if not ok then unavailable(choice.name, why) end
         return choice
     end
     if choice == nil or choice == "auto" then
@@ -119,14 +130,14 @@ local function select_backend(choice)
         error("sh.pipe: a backend is a name or a table, not a " .. kind, 0)
     end
     if choice ~= "auto" then
-        local mod, why = load(choice)
+        local mod, why = candidate(choice, opts)
         if not mod then unavailable(choice, why) end
         return mod
     end
     local platform = sys.platform()
     local tried    = {}
     for _, name in ipairs(ORDER[platform] or ORDER.posix) do
-        local mod, why = load(name)
+        local mod, why = candidate(name, opts)
         if mod then return mod end
         tried[#tried + 1] = name .. " (" .. why .. ")"
     end
@@ -155,16 +166,12 @@ local function config_key()
     }, "\0")
 end
 
-local function configure(mod, opts)
-    if type(mod.configure) == "function" then mod.configure(opts) end
-end
-
 -- The backend in use, resolved again when the configuration changed.
 local function current()
     local key = config_key()
     if active and key == active_key then return active end
-    local mod = select_backend(config.backend)
-    configure(mod, backend_options(config.popen))
+    active = nil  -- a selection that raises may have reconfigured it
+    local mod = select_backend(config.backend, backend_options(config.popen))
     active     = mod
     active_key = key
     return mod
@@ -215,7 +222,6 @@ function M.set_backend(backend, opts)
     -- Anything but a table is ignored: on Lua 5.4 and newer
     -- `set_backend(require("x"))` passes the module's file name as `opts`.
     if type(opts) ~= "table" then opts = {} end
-    local mod    = select_backend(backend)
     local popen  = type(config.popen) == "table" and config.popen or {}
     local chosen = { strategy = popen.strategy, tmpdir = popen.tmpdir }
     if opts.strategy ~= nil then chosen.strategy = opts.strategy end
@@ -224,7 +230,10 @@ function M.set_backend(backend, opts)
     for k, v in pairs(opts) do
         if merged[k] == nil then merged[k] = v end
     end
-    configure(mod, merged)
+    -- The selection may reconfigure the backend in use; when it raises, the
+    -- next run resolves the backend again from the configuration.
+    active = nil
+    local mod = select_backend(backend, merged)
 
     if type(config.popen) ~= "table" then config.popen = {} end
     config.popen.strategy = chosen.strategy
@@ -245,9 +254,17 @@ end
 --- The names of the available backends, in the order of this platform.
 ---@return string[]
 function M.available_backends()
+    local opts  = backend_options(config.popen)
     local names = {}
+    -- The backend in use keeps the options it was selected with; one
+    -- selected for an older configuration is reconfigured below and
+    -- resolved again at the next run.
+    if active_key ~= config_key() then active = nil end
     for _, name in ipairs(ORDER[sys.platform()] or ORDER.posix) do
-        if load(name) then names[#names + 1] = name end
+        local mod = load(name)
+        local ok  = false
+        if mod then ok = (mod == active) or ready(mod, opts) end
+        if ok then names[#names + 1] = name end
     end
     return names
 end
