@@ -89,16 +89,15 @@ local function feed(pipe, input)
     if not pipe:write(input, after_write) then close(pipe) end
 end
 
--- Reads `pipe` into `chunks` and passes each chunk to `deliver`. At EOF, or
--- on a read error, closes the pipe and calls `done()`.
-local function drain(pipe, chunks, deliver, done)
+-- Reads `pipe` into `chunks` and passes each chunk to `deliver`; calls
+-- `finish()` at EOF or on a read error.
+local function drain(pipe, chunks, deliver, finish)
     pipe:read_start(function(_, chunk)
         if chunk then
             chunks[#chunks + 1] = chunk
             deliver(chunk)
         else
-            close(pipe)
-            done()
+            finish()
         end
     end)
 end
@@ -147,6 +146,9 @@ function M.run(argv, input, opts)
     end
     input = input or ""
     opts  = opts or {}
+    if type(input) ~= "string" then
+        error("sh.backend.luv.run: input must be a string", 2)
+    end
     if opts.cwd ~= nil and type(opts.cwd) ~= "string" then
         error("sh.backend.luv.run: opts.cwd must be a string", 2)
     end
@@ -162,14 +164,10 @@ function M.run(argv, input, opts)
     local pending     = 3  -- process exit, stdout EOF, stderr EOF
     local exit_code, exit_signal
 
-    local function done()
-        pending = pending - 1
-    end
-
     local function on_exit(code, signal)
         exit_code   = code
         exit_signal = signal
-        done()
+        pending     = pending - 1
     end
 
     local args = {}
@@ -195,15 +193,34 @@ function M.run(argv, input, opts)
         }
     end
 
+    -- Returns a function that closes an output pipe and counts it as
+    -- finished, once: at its EOF, or earlier when the run is aborted.
+    local function finisher(pipe)
+        local finished = false
+        return function()
+            if finished then return end
+            finished = true
+            close(pipe)
+            pending = pending - 1
+        end
+    end
+    local finish_out = finisher(stdout_pipe)
+    local finish_err = finisher(stderr_pipe)
+
     -- The first error raised by a callback, raised again after cleanup.
     local failed, failure = false, nil
 
+    -- Records the first error, kills the child and stops reading, so that
+    -- only the child's exit is waited for: a grandchild that holds an output
+    -- pipe open cannot keep the run going (it gets SIGPIPE instead).
     local function abort(err)
         if not failed then
             failed  = true
             failure = err
         end
         if exit_code == nil then process:kill("sigkill") end
+        finish_out()
+        finish_err()
     end
 
     local function deliver_to(callback)
@@ -217,8 +234,8 @@ function M.run(argv, input, opts)
 
     if input ~= "" then catch_sigpipe() end
     feed(stdin_pipe, input)
-    drain(stdout_pipe, out_chunks, deliver_to(opts.on_stdout), done)
-    drain(stderr_pipe, err_chunks, deliver_to(opts.on_stderr), done)
+    drain(stdout_pipe, out_chunks, deliver_to(opts.on_stdout), finish_out)
+    drain(stderr_pipe, err_chunks, deliver_to(opts.on_stderr), finish_err)
 
     while pending > 0 do
         local alive, loop_error = uv.run("once")
