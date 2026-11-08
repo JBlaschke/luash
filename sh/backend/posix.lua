@@ -258,7 +258,7 @@ local function reap(job)
     until pid ~= nil or code ~= posix.EINTR
     -- The status pipe holds a byte when exec failed and is at EOF when
     -- exec closed it. The child has ended, so this read does not block.
-    local mark, errno
+    local mark, _, errno
     repeat
         mark, _, errno = posix.read(job.status, 1)
     until mark ~= nil or errno ~= posix.EINTR
