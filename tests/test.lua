@@ -18,32 +18,38 @@ local function init()
         package.user_modules[pth] = true
     end
 
-    -- The first file that `template` (a package.path entry) names for each
-    -- of `names`, or nil when none exists.
-    local function existing(template, names)
-        local sep = package.config:sub(1, 1)
-        for _, name in ipairs(names) do
-            local file = template:gsub("%?", (name:gsub("%.", sep)))
-            local f    = io.open(file, "r")
-            if f then
-                f:close()
-                return file
-            end
+    -- The file that `template` (a package.path entry) names for module
+    -- `name`, or nil when it does not exist.
+    local function existing(template, name)
+        local sep  = package.config:sub(1, 1)
+        local file = template:gsub("%?", (name:gsub("%.", sep)))
+        local f    = io.open(file, "r")
+        if f then
+            f:close()
+            return file
         end
         return nil
     end
 
-    -- Removes every package.path entry that finds `sh` or `sh.command` (in
-    -- sh/, at the repository root), so that only standalone/sh.lua can
-    -- provide the modules.
-    local function drop_sh_sources()
-        local kept = {}
-        for template in package.path:gmatch("[^;]+") do
-            if not existing(template, { "sh", "sh.command" }) then
-                kept[#kept + 1] = template
+    -- Makes require() of a module sh.* that standalone/sh.lua does not
+    -- preload fail, instead of loading it from sh/ or from a copy that
+    -- luarocks installed: every searcher after package.preload refuses
+    -- the name. package.path stays as it is, so that the libraries of the
+    -- backends, such as luaposix, are found where they are installed.
+    local function refuse_sh_sources()
+        local searchers = package.searchers or package.loaders
+        for i = 2, #searchers do
+            local search = searchers[i]
+            searchers[i] = function(name, ...)
+                if type(name) == "string" and name:find("^sh%.") then
+                    error(
+                        "module '" .. name .. "' is not in standalone/sh.lua"
+                        .. "; run make standalone", 0
+                    )
+                end
+                return search(name, ...)
             end
         end
-        package.path = table.concat(kept, ";")
     end
 
     local pth = debug.getinfo(2).source:match("@?(.*)/")
@@ -57,15 +63,28 @@ local function init()
     -- standalone builds it). Its modules are preloaded by standalone/sh.lua,
     -- and none may come from sh/ instead.
     local standalone = os.getenv("LUASH_STANDALONE")
-    if standalone and standalone ~= "" then
-        drop_sh_sources()
+    standalone = standalone ~= nil and standalone ~= ""
+    if standalone then
+        refuse_sh_sources()
         prepend_path(pth .. "/../standalone/?.lua")
     else
         prepend_path(pth .. "/../?/init.lua")
     end
+    -- The file that require("sh") loads: the first package.path entry that
+    -- names an existing one.
     local found = nil
     for template in package.path:gmatch("[^;]+") do
-        found = found or existing(template, { "sh" })
+        found = found or existing(template, "sh")
+    end
+    -- Without standalone/sh.lua, require("sh") would get sh/ or an
+    -- installed copy, and the run would test the wrong library.
+    local standalone_file = pth .. "/../standalone/sh.lua"
+    if standalone and found ~= standalone_file then
+        local would = found and ("load " .. found) or "find nothing"
+        error(
+            "LUASH_STANDALONE is set, but require('sh') would " .. would
+            .. "; run make standalone", 0
+        )
     end
     return pth, found
 end
