@@ -35,12 +35,24 @@ curl -LO https://github.com/JBlaschke/luash/releases/latest/download/sh.lua
 The second is the whole library in one file, attached to every
 [release](https://github.com/JBlaschke/luash/releases); replace `latest`
 with `download/v2.0.0` for a pinned version, and put the file anywhere on
-`package.path`. In a clone, `standalone/sh.lua` is the same file. luaposix
-and luv are optional:
+`package.path`. In a clone, `standalone/sh.lua` is the same file.
 
-```bash
-luarocks install luaposix   # or: luarocks install luv
-```
+!!! important
+
+    [luaposix](https://github.com/luaposix/luaposix) and
+    [luv](https://github.com/luvit/luv) are optional. They are weak
+    dependencies, in the sense that they are resolved, if present, when
+    the library is loaded or a backend is changed. Either one gives a
+    faster and more secure backend that streams stderr separately and
+    reports signals:
+
+    ```bash
+    luarocks install luaposix   # or: luarocks install luv
+    ```
+
+    Without them, commands run through `io.popen` and a shell, and the
+    popen backend's file strategies keep stdin and stderr in temp files
+    ([pipes in each backend](how-it-works/pipes.md#popen-one-pipe-and-a-shell-string)).
 
 ## Where to look
 
