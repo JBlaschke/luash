@@ -40,3 +40,16 @@ sh './example_type_wrapper.sh' 'ls' : print()
 -- the other solution is to pass the command directly to `bash -c <command>`
 -- we use a table to delineate multiple arguments from multi-word statements
 print(sh("bash"){"-c", "type type"}) -- NOTE the {}
+
+-- commands and pipelines can also be built as data: printed, extended, and
+-- run later. Each Result remembers the pipeline that produced it.
+local count = sh.Command('ls', '/bin'):pipe(sh.Command('wc', '-l'))
+print('Pipeline:', count)                  -- ls /bin | wc -l
+local counted = count:run()
+print('Files in /bin:', counted)
+print('Produced by:', counted.__pipeline)  -- ls /bin | wc -l
+
+local match = sh.Command('grep'):flag('c'):arg('o')
+match:input('foo\nbar\nboo\n')
+print('Command:', match)                   -- grep -c o
+print('Lines with an o:', match:run())     -- 2
