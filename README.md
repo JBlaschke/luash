@@ -40,12 +40,15 @@ curl -LO https://github.com/JBlaschke/luash/releases/download/v2.0.0/sh.lua
 
 `releases/latest/download/sh.lua` is the newest release.
 
-luaposix and luv are optional. Either one gives a faster backend that streams
-stderr separately and reports signals:
-
-```bash
-luarocks install luaposix   # or: luarocks install luv
-```
+> [!IMPORTANT]
+> [luaposix](https://github.com/luaposix/luaposix) and [luv](https://github.com/luvit/luv) are optional.
+> They are weak dependencies in the sense that they are resolved -- if present -- when the library is
+> loaded, or a backend is changes. Either one gives a faster and more secure backend that streams
+> `stderr` separately and reports signals:
+> 
+> ```bash
+> luarocks install luaposix   # or: luarocks install luv
+> ```
 
 ## Simple usage
 
