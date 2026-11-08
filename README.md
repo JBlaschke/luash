@@ -493,17 +493,17 @@ experts.
 
 ## Origins: How is this related to Luash, and sh v1?
 
-[luash](https://github.com/zserge/luash) is great! But the main problem is
-that: I was missing `cd` support, as well as separate pipes for `stdout` and
-`stderr`. Also -- and more importantly -- the original `luash` stores the
-intermediate results in a `:` "pipe" to a temporary file. I planned to use
-this to coordinate scripts on a shared system, where stdout and stderr can
-contain privileged information. A crash before any temporary files are
-cleaned up could leak private information.
+The original [luash](https://github.com/zserge/luash) is great! But the 
+problem is that I was missing `cd` support, as well as separate pipes for
+`stdout` and `stderr`. Also -- and more importantly -- the original `luash`
+stores the intermediate results in a `:` "pipe" to a temporary file. I 
+use `sh` to coordinate scripts on a shared system, where `stdout` and
+`stderr` can contain privileged information. A crash before any temporary
+files are cleaned up could leak private information.
 
-After a few years working with the initial re-write; a long list of issues
-emerged + many workarounds. This was starting to become unbearable, leading us
-to version 2: a full re-write (by Claude) in order to introduce 3 major
+After a few years working with the initial re-write a long list of issues
+emerged + many workarounds. This was starting to become unbearable, leading
+us to version 2: a full re-write (by Claude) in order to introduce 3 major
 improvements:
 1. Tidy up configuration
 2. Introduce a `luv` backend
@@ -512,7 +512,7 @@ improvements:
 The `posix` and `luv` backends use pipes only. The `popen` backend's `shmem`
 and `standard` strategies do use temporary files, in a directory that only
 your user can read, removed after each command; install luaposix or luv where
-that matters. In a way, the `popen` backend return's to
+that matters. In a way, the `popen` backend is a return to
 [zsegre's](https://github.com/zserge) vision (which is simplicity), but with
 more security and performance-oriented alternatives.
 
