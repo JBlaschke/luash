@@ -1,0 +1,76 @@
+# The documentation site, built with MkDocs and the Material theme and
+# published to GitHub Pages by .github/workflows/pages.yml.
+#
+#   pip install mkdocs-material
+#   mkdocs serve           # preview at http://127.0.0.1:8000/luash/
+#   mkdocs build --strict  # what the workflow runs; fails on a broken link
+
+site_name: LuaSH
+site_description: Shell scripting in Lua, with three process backends
+site_url: https://jblaschke.github.io/luash/
+repo_url: https://github.com/JBlaschke/luash
+repo_name: JBlaschke/luash
+edit_uri: edit/master/docs/
+copyright: MIT license
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: blue grey
+      accent: deep orange
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: blue grey
+      accent: deep orange
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.sections
+    - navigation.top
+    - navigation.footer
+    - search.highlight
+    - content.code.copy
+    - content.action.edit
+    - toc.follow
+
+markdown_extensions:
+  - toc:
+      permalink: true
+  - admonition
+  - attr_list
+  - tables
+  - pymdownx.details
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.snippets:
+      base_path: [.]
+      check_paths: true
+
+# A broken link or anchor fails `mkdocs build --strict`.
+validation:
+  omitted_files: warn
+  absolute_links: warn
+  unrecognized_links: warn
+  anchors: warn
+
+nav:
+  - Home: index.md
+  - Examples: examples.md
+  - How it works:
+      - Architecture: how-it-works/architecture.md
+      - Pipes in each backend: how-it-works/pipes.md
+      - Backend resolution: how-it-works/backends.md
+      - Configuration and bundling: how-it-works/configuration.md
+      - Commands as data: how-it-works/commands.md
+      - Results, errors and output: how-it-works/results.md
+      - Working directory: how-it-works/cwd.md
+      - Testing and your own backend: how-it-works/testing.md
+  - Design:
+      - Design document: DESIGN.md
+      - Implementation plan: PLAN.md

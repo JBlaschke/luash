@@ -1,5 +1,5 @@
 ---@diagnostic disable: undefined-global, redefined-local
--- Backend contract test (handoff/DESIGN.md sections 4 and 5).
+-- Backend contract test (docs/DESIGN.md sections 4 and 5).
 --
 --     lua tests/test_backend.lua <posix|luv|popen|fake> [strategy]
 --

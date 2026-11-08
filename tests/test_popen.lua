@@ -221,7 +221,7 @@ do
     close_status = (code == 7)
 end
 
--- Shell strings of handoff/DESIGN.md section 6.3, rendered for POSIX sh,
+-- Shell strings of docs/DESIGN.md section 6.3, rendered for POSIX sh,
 -- in the form the header of sh/backend/popen.lua explains.
 local FILES = { input = "/t/in-1", stderr = "/t/err-1", status = "/t/st-1" }
 local FILE_FORM =

@@ -1,0 +1,74 @@
+# Attaches the single-file library to a GitHub release, so that one version
+# of it is one download:
+#
+#   https://github.com/JBlaschke/luash/releases/download/<tag>/sh.lua
+#   https://github.com/JBlaschke/luash/releases/latest/download/sh.lua
+#
+# Runs when a tag v* is pushed (also the tag that a release made on GitHub
+# creates) and on demand with the name of an existing tag. It rebuilds
+# standalone/sh.lua from the tagged sources and stops when the result
+# differs from the committed file, so a release never ships a stale build,
+# then checks the file the way DESIGN.md section 8 asks: the test suite
+# must pass against it on an interpreter without luaposix and luv. A
+# release that does not exist yet is created with generated notes.
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: An existing tag (v2.0.0) to attach sh.lua to
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  standalone:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      TAG: ${{ inputs.tag || github.ref_name }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: refs/tags/${{ inputs.tag || github.ref_name }}
+
+      # Puts lua on PATH, without luarocks: no luaposix, no luv.
+      - uses: leafo/gh-actions-lua@v13
+        with:
+          luaVersion: "5.4"
+
+      - name: Rebuild standalone/sh.lua and compare it with the committed file
+        run: |
+          set -euo pipefail
+          make standalone
+          changed="$(git status --porcelain -- standalone/sh.lua)"
+          if [ -n "$changed" ]; then
+              git --no-pager diff -- standalone/sh.lua
+              echo "standalone/sh.lua is not the build of the tagged sh/;" \
+                  "run make standalone and commit it before tagging" >&2
+              exit 1
+          fi
+
+      - name: Test the file without luaposix and luv
+        env:
+          LUASH_STANDALONE: "1"
+        run: lua -e 'package.cpath = ""' tests/test.lua
+
+      - name: Attach it to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if ! gh release view "$TAG" > /dev/null 2>&1; then
+              gh release create "$TAG" --verify-tag --generate-notes
+          fi
+          gh release upload "$TAG" standalone/sh.lua --clobber

@@ -1,5 +1,5 @@
 -- Process backend on io.popen, for interpreters that have neither
--- luaposix nor luv (handoff/DESIGN.md sections 4, 5 and 6.3). Standard
+-- luaposix nor luv (docs/DESIGN.md sections 4, 5 and 6.3). Standard
 -- library only; runs on Lua 5.1 to 5.5 and LuaJIT.
 --
 -- io.popen gives one pipe: the child's stdout. Strategies supply the rest,
@@ -483,7 +483,7 @@ end
 
 -- Lua 5.1 and LuaJIT start math.random from the same seed in every
 -- process, so seed it once, at the first private directory. This reseeds
--- the host's math.random too (handoff/DESIGN.md section 6.3).
+-- the host's math.random too (docs/DESIGN.md section 6.3).
 local function random_digits()
     if not seeded then
         seeded = true
@@ -864,7 +864,7 @@ function M.available()
     return true
 end
 
----Describes the resolved strategy (handoff/DESIGN.md section 5).
+---Describes the resolved strategy (docs/DESIGN.md section 5).
 ---@return table capabilities  name, strategy, stdin, separate_stderr,
 ---                            streaming, exitcode, signals
 function M.capabilities()

@@ -1,4 +1,4 @@
--- Process backend on luv, the libuv binding for Lua (handoff/DESIGN.md
+-- Process backend on luv, the libuv binding for Lua (docs/DESIGN.md
 -- sections 4 and 6.2). uv.spawn starts the program with three pipes, and
 -- run() drives the libuv loop with uv.run("once") until the child has exited
 -- and both of its output pipes have reached EOF. libuv writes the input
@@ -163,7 +163,7 @@ function M.available()
     return false, load_error
 end
 
----Describes what this backend can do (handoff/DESIGN.md section 5).
+---Describes what this backend can do (docs/DESIGN.md section 5).
 ---@return table capabilities
 function M.capabilities()
     return {

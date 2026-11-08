@@ -305,7 +305,7 @@ end
 do
 local _ENV = _ENV
 package.preload[ "sh.backend.luv" ] = function( ... ) local arg = _G.arg;
--- Process backend on luv, the libuv binding for Lua (handoff/DESIGN.md
+-- Process backend on luv, the libuv binding for Lua (docs/DESIGN.md
 -- sections 4 and 6.2). uv.spawn starts the program with three pipes, and
 -- run() drives the libuv loop with uv.run("once") until the child has exited
 -- and both of its output pipes have reached EOF. libuv writes the input
@@ -470,7 +470,7 @@ function M.available()
     return false, load_error
 end
 
----Describes what this backend can do (handoff/DESIGN.md section 5).
+---Describes what this backend can do (docs/DESIGN.md section 5).
 ---@return table capabilities
 function M.capabilities()
     return {
@@ -655,7 +655,7 @@ do
 local _ENV = _ENV
 package.preload[ "sh.backend.popen" ] = function( ... ) local arg = _G.arg;
 -- Process backend on io.popen, for interpreters that have neither
--- luaposix nor luv (handoff/DESIGN.md sections 4, 5 and 6.3). Standard
+-- luaposix nor luv (docs/DESIGN.md sections 4, 5 and 6.3). Standard
 -- library only; runs on Lua 5.1 to 5.5 and LuaJIT.
 --
 -- io.popen gives one pipe: the child's stdout. Strategies supply the rest,
@@ -1139,7 +1139,7 @@ end
 
 -- Lua 5.1 and LuaJIT start math.random from the same seed in every
 -- process, so seed it once, at the first private directory. This reseeds
--- the host's math.random too (handoff/DESIGN.md section 6.3).
+-- the host's math.random too (docs/DESIGN.md section 6.3).
 local function random_digits()
     if not seeded then
         seeded = true
@@ -1520,7 +1520,7 @@ function M.available()
     return true
 end
 
----Describes the resolved strategy (handoff/DESIGN.md section 5).
+---Describes the resolved strategy (docs/DESIGN.md section 5).
 ---@return table capabilities  name, strategy, stdin, separate_stderr,
 ---                            streaming, exitcode, signals
 function M.capabilities()
@@ -1690,7 +1690,7 @@ end
 do
 local _ENV = _ENV
 package.preload[ "sh.backend.posix" ] = function( ... ) local arg = _G.arg;
--- luaposix process backend for LuaSH (handoff/DESIGN.md sections 4, 6.1).
+-- luaposix process backend for LuaSH (docs/DESIGN.md sections 4, 6.1).
 --
 -- run() forks, connects three pipes to the child's stdin, stdout and
 -- stderr, and execs the program found on PATH. The parent then runs one
@@ -1982,7 +1982,7 @@ function M.available()
     return true
 end
 
----Describes this backend (handoff/DESIGN.md section 5).
+---Describes this backend (docs/DESIGN.md section 5).
 ---@return table capabilities  a new table on each call
 function M.capabilities()
     return {
