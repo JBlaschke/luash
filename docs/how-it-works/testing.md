@@ -100,6 +100,14 @@ Each run's output lands in `logs/<column>-<label>.log`; without
 `LUASH_LOG_DIR` the logs are removed when nothing failed. `LUASH_TIMEOUT`
 is the limit per run in seconds, 120 by default, 0 for none.
 
+`LUA_PATH` and `LUA_CPATH` from the environment, such as those that
+`luarocks path` prints, follow the runner's own entries, and each
+interpreter's default paths follow them. An interpreter gets only the
+entries for its own Lua version (`.../lua/5.5/?.lua` is for Lua 5.5) and
+those that name none: LuaJIT cannot load the C modules of Lua 5.5, and
+would stop at a `luv.so` built for it instead of finding its own. The
+header of its column says how many entries it does without.
+
 ### Test as on a host without luaposix and luv
 
 ```bash
