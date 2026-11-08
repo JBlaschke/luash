@@ -9,10 +9,27 @@ description = {
     summary  = "Tiny library for shell scripting with Lua",
     detailed = [[
         Tiny library with syntax sugar for shell scripting in Lua (inspired by
-        Python's sh module). Runs programs through luaposix, luv or io.popen,
-        whichever the host provides.
+        Python's sh module): every program on PATH is a function, its output
+        is a value, and chains read like shell pipelines. It keeps stdout and
+        stderr apart, reports exit status and signals, and implements cd,
+        pushd and popd. Runs on Lua 5.1 to 5.5 and LuaJIT and needs no C
+        module.
+
+        Optional dependencies: programs are started through luaposix or luv
+        when one of them is installed, and through Lua's own io.popen
+        otherwise. Either one gives a faster backend that streams pipelines
+        through pipes, and luv is the one that works on Windows. Install one
+        of them next to sh:
+
+            luarocks install luaposix
+        or
+            luarocks install luv
+
+        Documentation: https://jblaschke.github.io/luash/ has runnable
+        examples and a page on each part of how the library works.
+        Source and issues: https://github.com/JBlaschke/luash
     ]],
-    homepage = "https://github.com/JBlaschke/luash",
+    homepage = "https://jblaschke.github.io/luash/",
     license  = "MIT/X11",
 }
 
