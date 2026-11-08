@@ -65,6 +65,7 @@ nav:
   - How it works:
       - Architecture: how-it-works/architecture.md
       - Pipes in each backend: how-it-works/pipes.md
+      - "Streaming: pump and writer": how-it-works/streaming.md
       - Backend resolution: how-it-works/backends.md
       - Configuration and bundling: how-it-works/configuration.md
       - Commands as data: how-it-works/commands.md

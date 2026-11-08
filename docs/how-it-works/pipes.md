@@ -15,7 +15,8 @@ input.
 ## Inside a stage
 
 Within a stage the backend connects one program's stdin, stdout and stderr
-([section 6](../DESIGN.md#6-backend-designs)).
+([section 6](../DESIGN.md#6-backend-designs)); [streaming](streaming.md)
+follows the bytes through that plumbing, and on to verbose mode.
 
 ### posix: fork, four pipes, one poll loop
 

@@ -63,6 +63,7 @@ with `download/v2.0.0` for a pinned version, and put the file anywhere on
   a *How to* section of recipes:
   [architecture](how-it-works/architecture.md),
   [pipes in each backend](how-it-works/pipes.md),
+  [streaming, pump and writer](how-it-works/streaming.md),
   [backend resolution](how-it-works/backends.md),
   [configuration and bundling](how-it-works/configuration.md),
   [commands as data](how-it-works/commands.md),
