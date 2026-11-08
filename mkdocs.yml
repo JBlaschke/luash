@@ -10,7 +10,7 @@ site_description: Shell scripting in Lua, with three process backends
 site_url: https://jblaschke.github.io/luash/
 repo_url: https://github.com/JBlaschke/luash
 repo_name: JBlaschke/luash
-edit_uri: edit/master/docs/
+edit_uri: edit/main/docs/
 copyright: MIT license
 
 theme:

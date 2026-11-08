@@ -1,12 +1,12 @@
 # Builds the documentation site from docs/ and mkdocs.yml with MkDocs and
 # publishes it to GitHub Pages. Runs when the site's sources change on
-# master, and on demand from the Actions tab. The repository's Pages
+# main, and on demand from the Actions tab. The repository's Pages
 # source must be "GitHub Actions".
 name: pages
 
 on:
   push:
-    branches: [master]
+    branches: [main]
     paths:
       - docs/**
       - examples/**

@@ -61,24 +61,24 @@ backend got and pairs it with the source's Pipeline, so changing the
 original afterwards does not rewrite history, and a chain `r = r:cat()`
 does not keep every earlier input alive.
 
-[command]: https://github.com/JBlaschke/luash/blob/master/sh/command.lua
-[walk]: https://github.com/JBlaschke/luash/blob/master/sh/command.lua#L212
-[walk_table]: https://github.com/JBlaschke/luash/blob/master/sh/command.lua#L154
-[format_flag]: https://github.com/JBlaschke/luash/blob/master/sh/command.lua#L119
-[parse]: https://github.com/JBlaschke/luash/blob/master/sh/command.lua#L257
-[Command]: https://github.com/JBlaschke/luash/blob/master/sh/command.lua#L371
-[arg]: https://github.com/JBlaschke/luash/blob/master/sh/command.lua#L382
-[flag]: https://github.com/JBlaschke/luash/blob/master/sh/command.lua#L396
-[input]: https://github.com/JBlaschke/luash/blob/master/sh/command.lua#L412
-[copy]: https://github.com/JBlaschke/luash/blob/master/sh/command.lua#L438
-[argv]: https://github.com/JBlaschke/luash/blob/master/sh/command.lua#L448
-[Pipeline]: https://github.com/JBlaschke/luash/blob/master/sh/command.lua#L495
-[cmd_pipe]: https://github.com/JBlaschke/luash/blob/master/sh/command.lua#L503
-[pipe_pipe]: https://github.com/JBlaschke/luash/blob/master/sh/command.lua#L511
-[bor]: https://github.com/JBlaschke/luash/blob/master/sh/command.lua#L555
-[pipeline_run]: https://github.com/JBlaschke/luash/blob/master/sh/command.lua#L531
-[set_runner]: https://github.com/JBlaschke/luash/blob/master/sh/command.lua#L341
-[render]: https://github.com/JBlaschke/luash/blob/master/sh/command.lua#L326
-[quote]: https://github.com/JBlaschke/luash/blob/master/sh/command.lua#L270
-[render_feed]: https://github.com/JBlaschke/luash/blob/master/sh/command.lua#L293
-[provenance]: https://github.com/JBlaschke/luash/blob/master/sh/init.lua#L163
+[command]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua
+[walk]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L212
+[walk_table]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L154
+[format_flag]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L119
+[parse]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L257
+[Command]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L371
+[arg]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L382
+[flag]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L396
+[input]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L412
+[copy]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L438
+[argv]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L448
+[Pipeline]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L495
+[cmd_pipe]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L503
+[pipe_pipe]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L511
+[bor]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L555
+[pipeline_run]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L531
+[set_runner]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L341
+[render]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L326
+[quote]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L270
+[render_feed]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L293
+[provenance]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L163

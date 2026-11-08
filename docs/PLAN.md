@@ -16,7 +16,7 @@ nothing else from the discussion that produced them.
 
 ### 1.1 Branches and ownership
 
-- Start from `master`. Work on a branch named `wp<N>-<slug>` (for example
+- Start from `main`. Work on a branch named `wp<N>-<slug>` (for example
   `wp2-posix`). Commit on it as you go; push nothing; merge nothing. WP8
   merges the branches.
 - Edit only the files your package owns (listed in each brief). When you
@@ -206,7 +206,7 @@ wave 1 (parallel):   WP0 contract test      WP1 command.lua      WP6 build tooli
                          |                      |
 wave 2 (parallel):   WP2 posix  WP3 luv  WP4 popen           WP5 init/pipe/sys
                          \         |        /                     |
-wave 3:                   WP8 stage 1: merge WP0-WP6 into master -+
+wave 3:                   WP8 stage 1: merge WP0-WP6 into main ---+
                                         |
 wave 4:                              WP7 tests and docs
                                         |
@@ -219,7 +219,7 @@ wave 5:                   WP8 stage 2: standalone, matrix, release
   `M.parse` and `M.Command` exist on the `wp1-command` branch (copy that
   one file into your checkout while WP1 finishes; do not commit it).
 - WP6 needs only the module names in §2.
-- WP7 starts from `master` after stage 1, so it runs against the real
+- WP7 starts from `main` after stage 1, so it runs against the real
   modules.
 
 Rough sizes: WP0 1 h, WP1 3 h, WP2 4 h, WP3 3 h, WP4 5 h, WP5 5 h,
@@ -624,7 +624,7 @@ crash); `shellcheck tests/run_all.sh` is clean.
 
 ### WP7: test suite and documentation (after stage 1)
 
-Owns `tests/test.lua`, `README.md`, `example.lua`. Starts from `master`
+Owns `tests/test.lua`, `README.md`, `example.lua`. Starts from `main`
 after WP8 stage 1 so that every module is real.
 
 `tests/test.lua`:
@@ -669,12 +669,12 @@ development machine; `README.md` examples were each run once.
 ### WP8: integration (coordinator)
 
 Stage 1, after WP0 to WP6: merge `wp0`, `wp1`, `wp2`, `wp3`, `wp4`, `wp5`,
-`wp6` into `master` (disjoint files; resolve nothing by hand except
+`wp6` into `main` (disjoint files; resolve nothing by hand except
 `tests/` additions), run `tests/test_backend.lua` for every backend on
 every interpreter, run `tests/test.lua` per backend with the old version
 string expected to fail, build `standalone/sh.lua` with `make standalone`,
 run the gating grep of §8 on it, run the no-C-modules command against the
-standalone file. Fix integration mismatches in small commits on `master`
+standalone file. Fix integration mismatches in small commits on `main`
 (or send them back to the package's session). Then start WP7.
 
 Stage 2, after WP7: `make standalone` again, commit the generated file,

@@ -65,24 +65,24 @@ backend, [backend resolution](backends.md) is how step 4 found its backend,
 [results](results.md) is step 6, and [configuration](configuration.md)
 covers `sh.config` and the bundled single file.
 
-[init]: https://github.com/JBlaschke/luash/blob/master/sh/init.lua
-[command]: https://github.com/JBlaschke/luash/blob/master/sh/command.lua
-[pipe]: https://github.com/JBlaschke/luash/blob/master/sh/pipe.lua
-[registry]: https://github.com/JBlaschke/luash/blob/master/sh/backend/init.lua
-[posix]: https://github.com/JBlaschke/luash/blob/master/sh/backend/posix.lua
-[luv]: https://github.com/JBlaschke/luash/blob/master/sh/backend/luv.lua
-[popen]: https://github.com/JBlaschke/luash/blob/master/sh/backend/popen.lua
-[sys]: https://github.com/JBlaschke/luash/blob/master/sh/sys.lua
-[stack]: https://github.com/JBlaschke/luash/blob/master/sh/stack.lua
-[index_module]: https://github.com/JBlaschke/luash/blob/master/sh/init.lua#L445
-[command_fn]: https://github.com/JBlaschke/luash/blob/master/sh/init.lua#L247
-[Command]: https://github.com/JBlaschke/luash/blob/master/sh/command.lua#L371
-[execute]: https://github.com/JBlaschke/luash/blob/master/sh/init.lua#L196
-[pipe_run]: https://github.com/JBlaschke/luash/blob/master/sh/pipe.lua#L63
-[backend_run]: https://github.com/JBlaschke/luash/blob/master/sh/backend/init.lua#L249
-[make_result]: https://github.com/JBlaschke/luash/blob/master/sh/init.lua#L136
-[result_index]: https://github.com/JBlaschke/luash/blob/master/sh/init.lua#L123
-[install]: https://github.com/JBlaschke/luash/blob/master/sh/init.lua#L374
-[preload]: https://github.com/JBlaschke/luash/blob/master/sh/backend/init.lua#L292
-[load_pcall]: https://github.com/JBlaschke/luash/blob/master/sh/sys.lua#L26
-[set_runner]: https://github.com/JBlaschke/luash/blob/master/sh/command.lua#L341
+[init]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua
+[command]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua
+[pipe]: https://github.com/JBlaschke/luash/blob/main/sh/pipe.lua
+[registry]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua
+[posix]: https://github.com/JBlaschke/luash/blob/main/sh/backend/posix.lua
+[luv]: https://github.com/JBlaschke/luash/blob/main/sh/backend/luv.lua
+[popen]: https://github.com/JBlaschke/luash/blob/main/sh/backend/popen.lua
+[sys]: https://github.com/JBlaschke/luash/blob/main/sh/sys.lua
+[stack]: https://github.com/JBlaschke/luash/blob/main/sh/stack.lua
+[index_module]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L445
+[command_fn]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L247
+[Command]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L371
+[execute]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L196
+[pipe_run]: https://github.com/JBlaschke/luash/blob/main/sh/pipe.lua#L63
+[backend_run]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L249
+[make_result]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L136
+[result_index]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L123
+[install]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L374
+[preload]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L292
+[load_pcall]: https://github.com/JBlaschke/luash/blob/main/sh/sys.lua#L26
+[set_runner]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L341

@@ -1,6 +1,6 @@
 # Examples
 
-The scripts in [`examples/`](https://github.com/JBlaschke/luash/tree/master/examples)
+The scripts in [`examples/`](https://github.com/JBlaschke/luash/tree/main/examples)
 run from a clone of the repository without installing anything:
 
 ```bash
