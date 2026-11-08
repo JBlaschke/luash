@@ -111,6 +111,25 @@ table.insert(sh.__index_ignore_exact, "optional_hook")
 print(type(optional_hook))      -- nil, not a function
 ```
 
+### Use a strict `_G`
+
+A library that rejects assignments to undeclared globals, such as
+safer.lua's `safer.globals()` or the classic strict.lua, gives `_G` a
+metatable with a `__newindex`. Load it before `sh.install()`: the hook
+keeps the metatable it finds and replaces only `__index`, so assignments
+stay checked while an undefined name still runs a program. Loaded after
+`sh.install()`, such a library replaces the whole metatable, and an
+undefined name raises instead of running. LuaSH writes no global of its
+own, which [`tests/test.lua`][test] checks by running a command under a
+`_G` whose `__newindex` records every write.
+
+```lua
+require("safer").globals()      -- or dofile("strict.lua")
+local sh = require("sh")
+sh.install()
+print(uname("-s"))              -- runs; assignments stay checked
+```
+
 ### Build a command without running it
 
 `sh.Command` and `sh.Pipeline` do step 2 and stop; `run()` continues at
@@ -148,3 +167,4 @@ step 3. [Commands as data](commands.md#how-to) has the recipes.
 [load_pcall]: https://github.com/JBlaschke/luash/blob/main/sh/sys.lua#L26
 [set_runner]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L341
 [backends_dir]: https://github.com/JBlaschke/luash/tree/main/sh/backend
+[test]: https://github.com/JBlaschke/luash/blob/main/tests/test.lua

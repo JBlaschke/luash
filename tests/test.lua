@@ -226,6 +226,42 @@ test('Check command output', function()
     ok(tostring(seq(1, 5)) == '1\n2\n3\n4\n5', 'seq 1 5')
 end)
 
+-- A strict _G, as safer.lua or strict.lua give a program, raises on an
+-- assignment to a new global. Running a command must write none: the
+-- posix backend once assigned `_` while waiting for the child. The hook
+-- records each write with its location and drops it.
+test('Check no global is written while a command runs', function()
+    local gmt     = getmetatable(_G)
+    local seen    = {}
+    local written = {}
+    setmetatable(_G, {
+        __index    = gmt and gmt.__index,
+        __newindex = function(_, name)
+            local info  = debug.getinfo(2, 'Sl')
+            local entry = tostring(name) .. ' at ' .. info.short_src .. ':'
+                .. info.currentline
+            if not seen[entry] then
+                seen[entry] = true
+                written[#written + 1] = entry
+            end
+        end,
+    })
+    local done, err = pcall(function()
+        ok(tostring(sh.echo('hello')) == 'hello', 'echo under a strict _G')
+        if caps.stdin then
+            local r = sh.cat(sh.echo('piped'))
+            ok(tostring(r) == 'piped', 'a pipeline under a strict _G')
+        end
+    end)
+    setmetatable(_G, gmt)
+    if not done then error(err, 0) end
+    ok(
+        #written == 0,
+        #written == 0 and 'no global written'
+            or 'globals written: ' .. table.concat(written, ', ')
+    )
+end)
+
 -- Tests that pass input to a command, or check an exit status, run only on
 -- a backend that can.
 local no_stdin    = "the backend cannot pass input (capabilities().stdin)"
