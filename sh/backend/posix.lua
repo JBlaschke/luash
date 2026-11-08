@@ -11,6 +11,9 @@
 -- A fourth pipe, closed on exec, tells a program that could not be
 -- started (cause "failed") apart from one that exits with status 127.
 --
+-- chdir() and getcwd() are posix.chdir and posix.getcwd: `cd` changes the
+-- directory of the process.
+--
 -- luaposix is loaded with pcall: without it this module still loads and
 -- available() returns false with the reason.
 local M = { name = "posix" }
@@ -34,7 +37,7 @@ local WRITE_SIZE = 65536   -- at most this many input bytes per write
 -- Every field of the posix module that this module uses (execp, above,
 -- comes from posix.unistd).
 local REQUIRED = {
-    "_exit", "chdir", "close", "dup2", "errno", "fcntl", "fork",
+    "_exit", "chdir", "close", "dup2", "errno", "fcntl", "fork", "getcwd",
     "pipe", "poll", "read", "signal", "wait", "write",
     "EAGAIN", "EINTR", "EPIPE", "FD_CLOEXEC", "F_SETFD", "F_SETFL",
     "O_NONBLOCK", "SIGPIPE", "SIG_IGN",
@@ -304,6 +307,29 @@ end
 ---Accepts and ignores options; this backend has none.
 ---@param _ table|nil
 function M.configure(_)
+end
+
+---Changes the working directory of the process.
+---@param dir string
+---@return true|nil ok
+---@return string|nil err  "<dir>: No such file or directory"
+function M.chdir(dir)
+    if unavailable then
+        error("sh.backend.posix.chdir: " .. unavailable, 2)
+    end
+    local done, err = posix.chdir(dir)
+    if done then return true end
+    return nil, err
+end
+
+---The working directory of the process.
+---@return string|nil path
+---@return string|nil err
+function M.getcwd()
+    if unavailable then
+        error("sh.backend.posix.getcwd: " .. unavailable, 2)
+    end
+    return posix.getcwd()
 end
 
 ---Runs argv[1], found on PATH, with argv[2], ... as its arguments. A

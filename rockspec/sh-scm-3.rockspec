@@ -31,6 +31,7 @@ build = {
         ["sh.pipe"]          = "sh/pipe.lua",
         ["sh.sys"]           = "sh/sys.lua",
         ["sh.stack"]         = "sh/stack.lua",
+        ["sh.backend"]       = "sh/backend/init.lua",
         ["sh.backend.posix"] = "sh/backend/posix.lua",
         ["sh.backend.luv"]   = "sh/backend/luv.lua",
         ["sh.backend.popen"] = "sh/backend/popen.lua",

@@ -46,14 +46,16 @@ sh/
 │                        config, Result objects
 ├── command.lua       -- Command and Pipeline types, argument flattening,
 │                        shell quoting, rendering (was args.lua)
-├── pipe.lua          -- backend dispatcher: platform table, selection,
-│                        capabilities, verbose/trace plumbing
-├── sys.lua           -- platform detection, chdir/getcwd with fallbacks
+├── pipe.lua          -- the run path: verbose/trace plumbing over the
+│                        backend in use
+├── sys.lua           -- platform detection, load_pcall
 ├── stack.lua         -- LIFO stack used by pushd/popd
 └── backend/
-    ├── posix.lua     -- luaposix: fork, execp, poll loop
-    ├── luv.lua       -- luv: uv.spawn, pipes, uv.run("once") loop
-    └── popen.lua     -- io.popen plus temp-file strategies
+    ├── init.lua      -- registry: platform table, selection once, the
+    │                    unified interface (run, chdir, getcwd, ...)
+    ├── posix.lua     -- luaposix: fork, execp, poll loop; chdir
+    ├── luv.lua       -- luv: uv.spawn, pipes, uv.run("once") loop; chdir
+    └── popen.lua     -- io.popen plus temp-file strategies; emulated cd
 standalone/sh.lua     -- GENERATED single-file library; never edit by hand
 opt/bin/build.lua     -- amalgamation driver (make standalone)
 opt/bin/build/amalg.lua -- vendored amalg.lua, copied verbatim from
@@ -72,10 +74,11 @@ rockspec/sh-2.0-1.rockspec
 symlink to it and is deleted too. Dependency direction, no cycles:
 
 ```
-init -> command, pipe, sys, stack
-pipe -> sys, backend.*
-backend.* -> (posix | luv | nothing), never init/pipe/command
-sys  -> (posix | luv | io.popen)
+init -> command, pipe, backend, sys, stack
+pipe -> backend
+backend -> sys, backend.*
+backend.* -> (posix | luv | io.popen), never init/pipe/command
+sys  -> nothing
 ```
 
 ## 3. Public API
@@ -117,13 +120,21 @@ sh.config = {
 }
 ```
 
+`verbose`, `trace`, `raise_errors` and `sink` are read at every run.
+`backend` and `popen` are read when `sh` loads, when a table is assigned to
+`sh.config`, and by `sh.set_backend()` (section 3.3); they are never
+checked at a run.
+
 `sh.__verbose` and `sh.__raise_errors` stay valid as aliases of
 `sh.config.verbose` and `sh.config.raise_errors`, reading and writing. The
-module table has no raw field of either name; its metatable's `__index` and
-`__newindex` map the two names onto `sh.config`. Any other assignment to the
-module table is a plain `rawset`.
+module table has no raw field of either name, nor of `config`; its
+metatable's `__index` and `__newindex` map the three names onto the
+configuration table, so that `sh.config = {...}` is seen: the new table
+goes to the run path and the backend it names is selected (an error when
+that backend is unavailable, and then nothing changes). Any other
+assignment to the module table is a plain `rawset`.
 
-Environment overrides, read once at first use and only when the
+Environment overrides, read once when `sh.backend` loads and only when the
 corresponding config value is `"auto"`: `LUASH_BACKEND` (`posix`, `luv`,
 `popen`) and `LUASH_POPEN_STRATEGY`. They exist for the test matrix and for
 operators; code should use `sh.config` or `sh.set_backend`.
@@ -131,12 +142,18 @@ operators; code should use `sh.config` or `sh.set_backend`.
 ### 3.3 Backend control
 
 ```lua
-sh.set_backend(name, opts)   -- select now; error if unavailable.
+sh.set_backend(name, opts)   -- select now; error if unavailable, and then
+                             -- the backend in use is unchanged.
                              -- opts for popen: { strategy = ..., tmpdir = ... }
-sh.backend_name()            -- name of the active backend; resolves "auto"
+sh.set_backend()             -- select what sh.config.backend/popen name
+sh.backend_name()            -- name of the backend in use
 sh.available_backends()      -- e.g. { "posix", "luv", "popen" } in platform order
 sh.capabilities()            -- table, see section 5
 ```
+
+The backend in use is selected once, when `sh` loads (the default of the
+platform, section 6.6), and again only by these calls; `sh.config` records
+the selection.
 
 ### 3.4 Command and Pipeline
 
@@ -260,7 +277,9 @@ New behaviour:
 ## 4. Backend contract
 
 Each backend is a module returning a table with this shape. Nothing else is
-public. Backends never require `sh.init`, `sh.pipe` or `sh.command`.
+public. Backends never require `sh.init`, `sh.pipe` or `sh.command`. Every
+function is required: the registry (section 6.6) does not select a module
+that lacks one, and `tests/test_backend.lua` checks for them.
 
 ```lua
 B.name = "posix"              -- "posix" | "luv" | "popen"
@@ -275,6 +294,14 @@ function B.capabilities()     -- -> table, see section 5
 function B.configure(opts)    -- popen only; others accept and ignore it
 
 function B.run(argv, input, opts)   -- -> result table
+
+function B.chdir(dir)         -- -> true | nil, reason
+function B.getcwd()           -- -> path | nil, reason
+-- The working directory of the programs run() starts: posix and luv change
+-- the directory of the process (posix.chdir, uv.chdir); popen, which has
+-- no chdir, resolves `dir` through the shell, remembers it and enters it
+-- at each run (section 6.3). `dir` is a non-empty string, checked by the
+-- registry.
 ```
 
 `run` arguments:
@@ -290,8 +317,8 @@ function B.run(argv, input, opts)   -- -> result table
   `on_stdout(chunk)` and `on_stderr(chunk)` optional callbacks (section 3.7);
   `cwd` optional directory the child must run in. Every backend honours it
   (posix: `chdir` in the child before `execp`; luv: the `cwd` spawn option;
-  popen: a `cd` prefix). The dispatcher passes it only while the sys module
-  is emulating `cd` (section 6.5).
+  popen: a `cd` prefix). The run path never passes it: without it, the
+  child runs in the directory of `B.getcwd()`.
 
 `run` result: `{ exitcode = integer, signal = integer, stdout = string,
 stderr = string, cause = "exited" | "killed" | "failed" }`. `exitcode` is
@@ -457,6 +484,14 @@ syntax, `NUL` for `/dev/null`, `cd /d "<cwd>" && `, arguments wrapped in
 double quotes with embedded `"` doubled. Best effort: it cannot be tested
 here; keep it in one clearly marked function so it can be fixed later.
 
+Emulated `cd`: `io.popen` has no `chdir`, so `B.chdir(dir)` runs
+`(cd -P '<current>' && cd -P './<dir>' && pwd -P) 2>/dev/null` through the
+shell (`cd /d` and `cd` under cmd.exe), which checks that the directory can
+be entered and resolves it; the printed path is remembered, `B.getcwd()`
+returns it (else `pwd -P`), and `run` enters it when `opts.cwd` is nil. The
+emulated directory applies to the programs this backend runs only, not to
+Lua's own `io` functions; the README says so.
+
 Streaming: read the popen handle with `h:read(4096)` in a loop and pass
 each chunk to `on_stdout`. After `h:close()`, read the stderr file and pass
 it to `on_stderr` in one chunk.
@@ -477,7 +512,35 @@ is false. When `h:close()` itself reports `"signal", N` (the popen shell
 exec'd the command and was killed in its place), report `exitcode =
 128 + N` the same way.
 
-### 6.4 Dispatcher (`sh/pipe.lua`)
+### 6.4 Run path (`sh/pipe.lua`)
+
+`run(argv, input, pipeline)` runs one command through the backend in use
+(`sh.backend.current()`). It owns the verbose/trace plumbing: it builds the
+`on_stdout` and `on_stderr` callbacks from `sh.config` (sink or io handles
+with flush) and writes the trace line. A backend whose
+`capabilities().stdin` is false (popen `minimal`) raises
+`"sh: backend popen/minimal cannot pass input to <program>"` when it is
+given non-empty input, instead of silently discarding it. It reads the
+configuration table that `sh/init.lua` hands over with `set_config`, and
+selects nothing.
+
+### 6.5 sys (`sh/sys.lua`)
+
+- `platform()`: `"windows"` when `package.config:sub(1, 1) == "\\"` or
+  `jit.os == "Windows"`; `"android"` when `ANDROID_ROOT` or `ANDROID_DATA`
+  is set in the environment; otherwise `"posix"`.
+- `load_pcall(f, ...)` and `loading()`: `pcall` for code that loads or
+  probes a library, during which `sh.install()`'s hook leaves undefined
+  globals nil (libraries read optional globals to detect features).
+
+### 6.6 Registry (`sh/backend/init.lua`)
+
+The one place that knows the backends. Resolve once, look up, never
+re-detect: a backend is loaded, checked against the contract, configured
+and asked whether it is available at a selection only, and the selected
+module answers every later `run`, `chdir`, `getcwd` and `capabilities`
+call through the registry's functions of the same names. Nothing is probed
+at a command or a `cd`.
 
 ```lua
 local ORDER = {
@@ -492,35 +555,30 @@ ship luv and `fork` inside an app process is unsupported; a Termux-style
 userland works with luaposix as the second choice. This order is an
 assumption; it is a one-line table to change.
 
-Resolution of `"auto"`: the order for `sys.platform()`, first backend whose
-`available()` is true. `LUASH_BACKEND` overrides `"auto"`. A named backend
-that is unavailable is an error naming the backend and the reason. No
-backend available at all is an error (`io.popen` missing is the only way).
-`sh.set_backend` also accepts a table that implements the contract of
-section 4 instead of a name, which is how tests plug in
-`tests/backend_fake.lua` and how a user can supply a custom backend.
+`select(choice, opts)` resolves `choice` by its type, through a lookup
+table (`RESOLVE[type(choice)]`): a table of your own is checked against
+the contract, configured and asked whether it is available; a name is the
+module `sh.backend.<name>`, treated the same; `"auto"` (or nil) is
+`LUASH_BACKEND` when set, else the first backend of `ORDER[platform]` that
+loads, is complete and is available, each candidate configured with `opts`
+first because popen answers for its configured strategy. `opts` are the
+popen options, with `LUASH_POPEN_STRATEGY` replacing a strategy of
+`"auto"`. A backend that lacks a function of the contract is skipped by
+`"auto"` and an error by name, naming what it lacks. A named backend that
+is unavailable is an error naming the backend and the reason; no backend
+available at all is an error listing every candidate's reason. A failed
+selection leaves the backend in use as it was (configured again with its
+options, since the attempt may have reconfigured popen). `sh/init.lua`
+calls `select` when it loads, inside `pcall`: with no backend available the
+module still loads, and the first command raises the recorded reason.
 
-A backend whose `capabilities().stdin` is false (popen `minimal`) raises
-`"sh: backend popen/minimal cannot pass input to <program>"` when it is
-given non-empty input, instead of silently discarding it.
-The dispatcher owns verbose/trace plumbing: it builds the `on_stdout` and
-`on_stderr` callbacks from `sh.config` (sink or io handles with flush) and
-writes the trace line. It exposes `run(argv, input, cwd)`,
-`set_backend`, `backend_name`, `available_backends`, `capabilities`.
-
-### 6.5 sys (`sh/sys.lua`)
-
-- `platform()`: `"windows"` when `package.config:sub(1, 1) == "\\"` or
-  `jit.os == "Windows"`; `"android"` when `ANDROID_ROOT` or `ANDROID_DATA`
-  is set in the environment; otherwise `"posix"`.
-- `chdir(dir)` -> `true | nil, err`: `posix.chdir`, else `luv.chdir`, else
-  emulation: verify the directory with `io.popen("cd '<dir>' && pwd")`
-  (exit status), remember it as the emulated cwd. The dispatcher passes the
-  emulated cwd to the backend as `opts.cwd`. In emulation `cd` affects
-  `sh` commands only, not Lua's own `io` functions; the README says so.
-- `getcwd()`: `posix.getcwd`, else `luv.cwd`, else the emulated cwd, else
-  `pwd` through popen.
-- Every `require` of posix or luv in this module is behind `pcall`, cached.
+`current()`, `name()`, `capabilities()`, `run(argv, input, opts)`,
+`chdir(dir)` and `getcwd()` go to the backend in use; `chdir` checks that
+`dir` is a non-empty string. `available()` lists the platform's backends
+that load, are complete and are available with the options of the backend
+in use, found once per selection. `preload()` loads the platform's
+backends for `sh.install()`. Modules load, are configured and are asked
+whether they are available through `sys.load_pcall`.
 
 ## 7. Argument flattening (`sh/command.lua`)
 

@@ -62,8 +62,9 @@ end)
 --------------------------------------------------------------------------------
 -- INITIALIZE SH
 --------------------------------------------------------------------------------
--- Nothing may load luaposix or luv before install(), or the first test
--- passes whatever install() does.
+-- require("sh") loads the default backend and its library; install() loads
+-- the other backends of the platform. Nothing else may load luaposix or luv
+-- before install(), or the first test passes whatever install() does.
 local sh  = require("sh")
 local sys = require("sh.sys")
 sh.install()
@@ -92,10 +93,13 @@ test("A backend loaded after install() sees undefined globals", function()
     package.preload["sh.backend.probe"] = function()
         look("load")
         return {
-            name      = "probe",
-            run       = function() error("probe: run called") end,
-            configure = function() look("configure") end,
-            available = function()
+            name         = "probe",
+            run          = function() error("probe: run called") end,
+            chdir        = function() return true end,
+            getcwd       = function() return "/" end,
+            capabilities = function() return { name = "probe" } end,
+            configure    = function() look("configure") end,
+            available    = function()
                 look("available")
                 return true
             end,

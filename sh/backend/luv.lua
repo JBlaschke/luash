@@ -18,6 +18,9 @@
 -- them, and the pipes and the process handle that run() creates are closed
 -- before it returns.
 --
+-- chdir() and getcwd() are uv.chdir and uv.cwd: `cd` changes the directory
+-- of the process.
+--
 -- luv is loaded with pcall, so this module also loads on an interpreter
 -- without it; available() then returns false and the reason.
 local M = { name = "luv" }
@@ -177,6 +180,31 @@ end
 ---Accepts the options of the popen backend and ignores them.
 ---@param _ table|nil
 function M.configure(_)
+end
+
+---Changes the working directory of the process.
+---@param dir string
+---@return true|nil ok
+---@return string|nil err  "<dir>: ENOENT: no such file or directory"
+function M.chdir(dir)
+    if not ok then
+        local msg = "sh.backend.luv.chdir: luv cannot be loaded: "
+        error(msg .. load_error, 2)
+    end
+    local done, err = uv.chdir(dir)
+    if done then return true end
+    return nil, dir .. ": " .. tostring(err)
+end
+
+---The working directory of the process.
+---@return string|nil path
+---@return string|nil err
+function M.getcwd()
+    if not ok then
+        local msg = "sh.backend.luv.getcwd: luv cannot be loaded: "
+        error(msg .. load_error, 2)
+    end
+    return uv.cwd()
 end
 
 ---Runs argv[1], found on PATH, with the rest as its arguments (the module
