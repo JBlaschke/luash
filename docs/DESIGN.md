@@ -1,5 +1,14 @@
 # LuaSH 2.0 design
 
+> **Status.** This is the design that LuaSH 2.0 was built from. It was
+> written before the code, for an implementer, which is why it speaks of
+> the implementation in the future tense; the work packages of
+> [PLAN.md](PLAN.md) landed as pull requests #3 to #14. The `reference/`
+> code it mentions was the starting point from the design discussion and
+> is no longer in the repository (it is in the git history under
+> `handoff/reference/`). The [How it works](how-it-works/architecture.md)
+> pages describe what was built and link the sections here to the code.
+
 This document is the design for the next version of `sh` (LuaSH). It is
 written for an implementer who has not seen the discussion that led to it.
 Read it completely before reading `PLAN.md`, which splits the work into

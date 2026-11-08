@@ -1,4 +1,4 @@
--- The smallest implementation of the backend contract in handoff/DESIGN.md
+-- The smallest implementation of the backend contract in docs/DESIGN.md
 -- section 4: io.popen with stdin from a temporary file, stderr merged
 -- into stdout and an emulated cd. It exists so that sh/init.lua and
 -- tests/test_backend.lua can be developed and run before the real backends
@@ -51,7 +51,7 @@ function M.available()
     return true
 end
 
----@return table capabilities  see handoff/DESIGN.md section 5
+---@return table capabilities  see docs/DESIGN.md section 5
 function M.capabilities()
     return {
         name            = "fake",

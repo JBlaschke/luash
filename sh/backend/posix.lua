@@ -1,4 +1,4 @@
--- luaposix process backend for LuaSH (handoff/DESIGN.md sections 4, 6.1).
+-- luaposix process backend for LuaSH (docs/DESIGN.md sections 4, 6.1).
 --
 -- run() forks, connects three pipes to the child's stdin, stdout and
 -- stderr, and execs the program found on PATH. The parent then runs one
@@ -290,7 +290,7 @@ function M.available()
     return true
 end
 
----Describes this backend (handoff/DESIGN.md section 5).
+---Describes this backend (docs/DESIGN.md section 5).
 ---@return table capabilities  a new table on each call
 function M.capabilities()
     return {

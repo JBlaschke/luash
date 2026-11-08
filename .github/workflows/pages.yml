@@ -1,0 +1,59 @@
+# Builds the documentation site from docs/ and mkdocs.yml with MkDocs and
+# publishes it to GitHub Pages. Runs when the site's sources change on
+# master, and on demand from the Actions tab. The repository's Pages
+# source must be "GitHub Actions".
+name: pages
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - docs/**
+      - examples/**
+      - mkdocs.yml
+      - .github/workflows/pages.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time; a queued one still runs after the current one.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.x"
+
+      # The version that the site was last checked with.
+      - name: Install MkDocs
+        run: pip install mkdocs-material==9.8.1
+
+      # --strict turns a broken link, anchor or snippet into a failure.
+      - name: Build the site
+        run: mkdocs build --strict
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

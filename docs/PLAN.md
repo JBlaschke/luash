@@ -1,5 +1,11 @@
 # LuaSH 2.0 implementation plan
 
+> **Status.** This plan is kept as a record. Its work packages WP0 to WP8
+> landed as pull requests #3 to #14 on 2026-11-08, and `handoff/`, where
+> this plan and [DESIGN.md](DESIGN.md) lived while the work was open, is
+> gone: the two documents moved to `docs/`, and the reference code is in
+> the git history under `handoff/reference/`.
+
 Companion to `DESIGN.md`; a reference like `§6.3` points to a section
 there. The work is cut into packages WP0 to WP8 that own disjoint files, so
 WP1 to WP6 can run as parallel sessions. Each package is written as a brief

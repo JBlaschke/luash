@@ -57,6 +57,12 @@ jobs:
           LUASH_LOG_DIR: ${{ runner.temp }}/luash-logs
         run: tests/run_all.sh
 
+      # The examples are documentation that runs: each must exit 0 on the
+      # default backend of the interpreter.
+      - name: Run the examples
+        if: ${{ !cancelled() }}
+        run: examples/run_all.sh
+
       - name: Show the output of every run
         if: ${{ failure() }}
         env:

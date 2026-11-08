@@ -11,6 +11,11 @@ or [luv](https://luarocks.org/modules/luvit/luv) when one of them is
 installed, and through Lua's own `io.popen` otherwise (see
 [Backends](#backends-and-shconfig)).
 
+The [documentation site](https://jblaschke.github.io/luash/) has runnable
+[examples](https://jblaschke.github.io/luash/examples/) and a short page on
+each part of [how the library works](https://jblaschke.github.io/luash/how-it-works/architecture/),
+with links into the design document and the code.
+
 ## Install
 
 Via luarocks:
@@ -26,6 +31,14 @@ there.
 Without luarocks, copy the single file `standalone/sh.lua` into your project,
 somewhere on `package.path`, and `require("sh")` as usual. It holds the whole
 library. It is generated from `sh/` by `make standalone`; never edit it.
+Every [release](https://github.com/JBlaschke/luash/releases) carries that
+file as the asset `sh.lua`, so one version is one download:
+
+```bash
+curl -LO https://github.com/JBlaschke/luash/releases/download/v2.0.0/sh.lua
+```
+
+`releases/latest/download/sh.lua` is the newest release.
 
 luaposix and luv are optional. Either one gives a faster backend that streams
 stderr separately and reports signals:
