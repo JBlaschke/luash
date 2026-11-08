@@ -31,6 +31,12 @@
 -- starting with "-" and a command line longer than the system accepts are
 -- start failures (cause "failed", exit code 127).
 --
+-- io.popen has no chdir, so `cd` is emulated: chdir() resolves the
+-- directory through the shell (`cd -P ... && pwd -P`), which also checks
+-- that it can be entered, and remembers it; run() enters it when opts.cwd
+-- is nil, and getcwd() returns it. The emulated directory applies to the
+-- programs this backend runs only, not to Lua's own io functions.
+--
 -- The private directory <root>/luash-<pid>-<random> is made once per
 -- process and root with `mkdir -m 700`, which fails when the name exists,
 -- so no other user can read it or plant a file or symlink in it. Lua
@@ -80,6 +86,10 @@ local MODE = package.config:sub(1, 1) == "\\" and "cmd" or "sh"
 local newproxy = rawget(_G, "newproxy")
 
 local config = { strategy = "auto", tmpdir = nil }
+
+-- The directory chdir() moved to, nil until the first chdir(); run() enters
+-- it when opts.cwd is nil (emulated `cd`, see the module comment).
+local emulated = nil
 
 local resolved     = nil   -- strategy name that config.strategy resolves to
 local probed       = {}    -- root -> result of the writable check
@@ -243,6 +253,45 @@ end
 local function cd_target(dir)
     if dir:sub(1, 1) == "/" then return dir end
     return "./" .. dir
+end
+
+-- The shell line that prints the directory of the process, by MODE.
+local PRINT_DIR = {
+    sh  = sh_line("pwd -P", "pwd"),
+    cmd = "cd",
+}
+
+-- The shell line that prints the absolute, resolved path of `dir`, taken
+-- relative to `base` when given, and nothing when `dir` is not a directory
+-- one can enter, by MODE. cmd.exe is best effort and untested.
+local RESOLVE_DIR = {
+    sh = function(base, dir)
+        local steps = {}
+        if base then
+            steps[#steps + 1] = "cd -P " .. quote(cd_target(base))
+        end
+        steps[#steps + 1] = "cd -P " .. quote(cd_target(dir))
+        steps[#steps + 1] = "pwd -P"
+        local script = "(" .. table.concat(steps, " && ") .. ") 2>/dev/null"
+        return sh_line(script, "cd pwd")
+    end,
+    cmd = function(base, dir)
+        local steps = {}
+        if base then steps[#steps + 1] = 'cd /d "' .. base .. '"' end
+        steps[#steps + 1] = 'cd /d "' .. dir .. '"'
+        steps[#steps + 1] = "cd"
+        return "(" .. table.concat(steps, " && ") .. ") 2>NUL"
+    end,
+}
+
+-- The line a shell line prints, without its line ending; nil when it
+-- prints nothing or io.popen fails.
+local function capture_line(cmd)
+    local out = capture(cmd)
+    if out == nil then return nil end
+    out = out:gsub("[\r\n]+$", "")
+    if out == "" then return nil end
+    return out
 end
 
 -- printf is a builtin, so the input never passes through exec. Input with
@@ -412,8 +461,8 @@ local function absolute(path)
     if MODE == "cmd" or path:sub(1, 1) == "/" then
         return path
     end
-    local cwd = (capture(sh_line("pwd", "pwd")) or ""):gsub("\n$", "")
-    if cwd == "" then return path end
+    local cwd = capture_line(PRINT_DIR[MODE])
+    if not cwd then return path end
     return join(cwd, path)
 end
 
@@ -854,6 +903,36 @@ function M.configure(opts)
     probed          = {}
 end
 
+---Changes the directory that run() enters when opts.cwd is nil (emulated
+---`cd`: io.popen has no chdir). `dir` is taken relative to that directory.
+---@param dir string
+---@return true|nil ok
+---@return string|nil err  when `dir` is not a directory one can enter
+function M.chdir(dir)
+    if type(dir) ~= "string" or dir == "" or has_nul(dir) then
+        return nil, "sh.popen.chdir: expected a directory name"
+    end
+    local path = capture_line(RESOLVE_DIR[MODE](emulated, dir))
+    if not path then
+        return nil, dir .. ": cannot change directory"
+    end
+    emulated = path
+    return true
+end
+
+---The directory run() enters: the one chdir() moved to, else that of the
+---process.
+---@return string|nil path
+---@return string|nil err
+function M.getcwd()
+    if emulated then return emulated end
+    local path = capture_line(PRINT_DIR[MODE])
+    if not path then
+        return nil, "sh.popen.getcwd: cannot read the working directory"
+    end
+    return path
+end
+
 ---Lists the strategies that can run here, most capable first.
 ---@return string[] names
 function M.available_strategies()
@@ -887,7 +966,8 @@ end
 ---Runs argv[1], found on PATH, with the remaining elements as arguments.
 ---@param argv string[]  program and arguments, passed verbatim
 ---@param input string|nil  stdin for the child; "" or nil for none
----@param opts table|nil  on_stdout(chunk), on_stderr(chunk), cwd
+---@param opts table|nil  on_stdout(chunk), on_stderr(chunk), cwd (default:
+---                       the directory chdir() moved to)
 ---@return table result  exitcode, signal, stdout, stderr, cause
 function M.run(argv, input, opts)
     check_argv(argv)
@@ -914,6 +994,10 @@ function M.run(argv, input, opts)
         -- chdir("") fails, but `cd ''` stays put in some shells
         return failure(argv, "cannot change to an empty directory name", opts)
     end
+    if cwd == nil then cwd = emulated end
+    opts = {
+        on_stdout = opts.on_stdout, on_stderr = opts.on_stderr, cwd = cwd,
+    }
     if argv[1]:sub(1, 1) == "-" and not argv[1]:find("/", 1, true) then
         -- exec would read it as an option, and has no portable "--"
         return failure(

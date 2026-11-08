@@ -338,7 +338,9 @@ exited, and the `basic` and `minimal` strategies merge it into stdout.
 
 By default (`"auto"`), sh uses the first available backend in the order of
 the platform: `posix`, `luv`, `popen` on Linux, macOS and the BSDs; `luv`,
-`popen` on Windows; `luv`, `posix`, `popen` on Android.
+`popen` on Windows; `luv`, `posix`, `popen` on Android. The backend is
+selected once, when `require("sh")` runs, and again only by
+`sh.set_backend`; every command and `cd` then goes to the backend in use.
 
 ```lua
 local sh = require('sh')
@@ -352,7 +354,9 @@ for k, v in pairs(sh.capabilities()) do print(k, v) end
 only), and the booleans `stdin` (input can be passed), `separate_stderr`,
 `streaming` (output arrives while the program runs), `exitcode` (the exit
 status is known) and `signals`. `sh.set_backend` also accepts a table that
-implements the backend contract, for a backend of your own.
+implements the backend contract, for a backend of your own: a `name` and
+the functions `available`, `capabilities`, `configure`, `run`, `chdir` and
+`getcwd`, as in `tests/backend_fake.lua`.
 
 The settings, with their defaults:
 
@@ -370,10 +374,16 @@ sh.config = {
 }
 ```
 
+`verbose`, `trace`, `raise_errors` and `sink` are read at every command.
+`backend` and `popen` are read when sh loads, when a table is assigned to
+`sh.config`, and by `sh.set_backend()`, which without an argument selects
+the backend that `sh.config` names: after `sh.config.backend = "popen"`,
+call `sh.set_backend()`.
+
 The environment variables `LUASH_BACKEND` and `LUASH_POPEN_STRATEGY` override
-`"auto"` for the backend and the popen strategy. They are read once, at the
-first command, and exist for test runs and operators; code should set
-`sh.config` or call `sh.set_backend`.
+`"auto"` for the backend and the popen strategy. They are read once, when sh
+loads, and exist for test runs and operators; code should set `sh.config` or
+call `sh.set_backend`.
 
 The popen backend runs every command through `/bin/sh` and gets the rest from
 temp files or the command line. Its strategies, from most to least capable:
@@ -439,11 +449,11 @@ Note how `sh.popd()` returns to the previous directory. This way `pushd` and
 sh.pushd(my_dir) : my_cmd(my_args) : popd()
 ```
 
-`cd` uses `chdir` from luaposix, or from luv. With neither installed, `cd` is
-emulated: sh checks the directory, remembers it, and runs every later command
-in it. The emulated directory applies to the commands that sh runs only, not
-to Lua itself: `io.open("file")` still opens `file` in the directory the
-process started in.
+`cd` belongs to the backend: the posix and luv backends change the directory
+of the process. The popen backend has no `chdir` and emulates `cd`: it checks
+the directory, remembers it, and runs every later command in it. The emulated
+directory applies to the commands that sh runs only, not to Lua itself:
+`io.open("file")` still opens `file` in the directory the process started in.
 
 ## Upgrading from 1.x
 

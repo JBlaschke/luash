@@ -1,8 +1,8 @@
 -- The smallest implementation of the backend contract in handoff/DESIGN.md
--- section 4: io.popen with stdin from a temporary file and stderr merged
--- into stdout. It exists so that sh/init.lua and tests/test_backend.lua
--- can be developed and run before the real backends exist, and as a worked
--- example of the contract.
+-- section 4: io.popen with stdin from a temporary file, stderr merged
+-- into stdout and an emulated cd. It exists so that sh/init.lua and
+-- tests/test_backend.lua can be developed and run before the real backends
+-- exist, and as a worked example of the contract.
 local M = { name = "fake" }
 
 -- Does h:close() report the exit status? Lua 5.2 and newer do; Lua 5.1 and
@@ -67,6 +67,40 @@ end
 function M.configure(_)
 end
 
+-- The directory chdir() moved to, which run() enters when opts.cwd is nil.
+local cwd = nil
+
+-- The first line of the output of shell command `cmd`, or nil.
+local function first_line(cmd)
+    local h = io.popen(cmd .. " 2>/dev/null", "r")
+    if not h then return nil end
+    local out = h:read("*a") or ""
+    h:close()
+    return out:match("^([^\n]+)")
+end
+
+---Emulated `cd`: checks `dir` through the shell and remembers it.
+---@param dir string
+---@return true|nil ok
+---@return string|nil err
+function M.chdir(dir)
+    local steps = {}
+    if cwd then steps[#steps + 1] = "cd " .. quote(cwd) end
+    steps[#steps + 1] = "cd " .. quote(dir)
+    steps[#steps + 1] = "pwd -P"
+    local path = first_line("(" .. table.concat(steps, " && ") .. ")")
+    if not path then return nil, dir .. ": cannot change directory" end
+    cwd = path
+    return true
+end
+
+---The directory run() enters.
+---@return string|nil path
+---@return string|nil err
+function M.getcwd()
+    return cwd or first_line("pwd -P")
+end
+
 ---Runs argv[1] with the remaining elements as its arguments.
 ---@param argv string[]
 ---@param input string|nil
@@ -82,8 +116,9 @@ function M.run(argv, input, opts)
     end
     local path = write_input(input)
     local cmd  = table.concat(words, " ") .. " < " .. quote(path)
-    if opts.cwd then
-        cmd = "cd " .. quote(opts.cwd) .. " && " .. cmd
+    local dir = opts.cwd or cwd
+    if dir then
+        cmd = "cd " .. quote(dir) .. " && " .. cmd
     end
     -- The command's stderr is merged into stdout. The subshell around it
     -- discards the shell's own diagnostics, such as the "Killed: 9" that

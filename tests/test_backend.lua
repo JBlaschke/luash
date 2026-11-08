@@ -47,6 +47,9 @@ local BIG = string.rep("0123456789abcdef\n", 20000)   -- 340 KB
 local CAPABILITY_KEYS = {
     "stdin", "separate_stderr", "streaming", "exitcode", "signals",
 }
+local CONTRACT = {
+    "available", "capabilities", "configure", "run", "chdir", "getcwd",
+}
 
 local function describe(caps)
     local parts = {}
@@ -71,6 +74,9 @@ local function run_contract(B, name, strategy)
 
     test("name and capabilities", function()
         ok(B.name == name, "B.name is " .. name)
+        for _, k in ipairs(CONTRACT) do
+            ok(type(B[k]) == "function", "B." .. k .. " is a function")
+        end
         ok(caps.name == name, "capabilities().name is " .. name)
         for _, k in ipairs(CAPABILITY_KEYS) do
             ok(
@@ -185,6 +191,26 @@ local function run_contract(B, name, strategy)
         ok(r.stdout == "/\n", "pwd runs in /")
     end)
 
+    -- posix and luv move the process; the test moves it back.
+    test("chdir and getcwd", function()
+        local start = B.getcwd()
+        ok(type(start) == "string" and start ~= "", "getcwd gives a path")
+        local done, err = pcall(function()
+            ok(B.chdir("/") == true, "chdir / succeeds")
+            ok(B.getcwd() == "/", "getcwd follows chdir")
+            local r = B.run({"pwd", "-P"}, "", {})
+            ok(r.stdout == "/\n", "run enters the directory")
+            r = B.run({"pwd", "-P"}, "", { cwd = start })
+            ok(r.stdout == start .. "\n", "the cwd option takes precedence")
+            local moved, why = B.chdir("/luash-no-such-directory")
+            ok(moved == nil and type(why) == "string", "missing: nil, reason")
+            ok(B.getcwd() == "/", "unchanged after a failed chdir")
+        end)
+        ok(B.chdir(start) == true, "chdir back")
+        ok(B.getcwd() == start, "getcwd is back")
+        if not done then error(err, 0) end
+    end)
+
     test("argument validation", function()
         ok(not pcall(B.run, {}, "", {}), "empty argv raises")
         ok(not pcall(B.run, {"echo", 1}, "", {}), "non-string element raises")
@@ -213,6 +239,14 @@ local function system_accepts(input)
     return tonumber(out:match("%d+")) == #input
 end
 
+-- Exits once the backend has removed its temp files: os.exit(code) alone
+-- skips the finalizer that does so, and `true` closes the state first on
+-- Lua 5.2 and newer and on LuaJIT.
+local function finish(B, code)
+    if type(B.cleanup_all) == "function" then B.cleanup_all() end
+    os.exit(code, true)
+end
+
 local function main(name, strategy)
     if not name then
         io.stderr:write(
@@ -233,7 +267,7 @@ local function main(name, strategy)
         print(
             "SKIP: backend " .. name .. " unavailable: " .. tostring(reason)
         )
-        os.exit(0)
+        finish(B, 0)
     end
 
     local passed, failed = 0, 0
@@ -266,7 +300,7 @@ local function main(name, strategy)
 
     local label = strategy and (name .. "/" .. strategy) or name
     print(("%d passed, %d failed (backend %s)"):format(passed, failed, label))
-    os.exit(failed == 0 and 0 or 1)
+    finish(B, failed == 0 and 0 or 1)
 end
 
 if arg and arg[0] and arg[0]:match("test_backend%.lua$") then

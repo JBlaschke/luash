@@ -9,11 +9,13 @@
 --- Every command returns a Result: a table with the fields `__input`,
 --- `__stdout`, `__stderr`, `__exitcode`, `__signal` and `__pipeline`.
 --- Indexing a Result falls back to this module, which is what makes
---- `r:grep(...)` work. Processes run through the backend that sh.pipe
---- selects (DESIGN.md sections 3 and 4).
+--- `r:grep(...)` work. Processes run, and `cd` happens, through the backend
+--- that sh.backend selects when this module loads (DESIGN.md sections 3, 4
+--- and 6.6).
 ---
 
 local command_mod = require("sh.command")
+local backend     = require("sh.backend")
 local pipe        = require("sh.pipe")
 local sys         = require("sh.sys")
 local Stack       = require("sh.stack")
@@ -30,8 +32,14 @@ local M = {}
 
 M.version = "Automatic Shell Bindings for Lua / LuaSH 2.0.0"
 
---- Configuration, read at every run (DESIGN.md section 3.2).
-M.config = {
+-- The configuration behind sh.config (DESIGN.md section 3.2). verbose,
+-- trace, raise_errors and sink are read at every run; backend and popen
+-- when this module loads, when a table is assigned to sh.config, and by
+-- sh.set_backend(). The module table has no raw `config` field: the
+-- metatable maps the name onto this table, so that an assignment reaches
+-- newindex_module, which hands the new table to the run path and selects
+-- the backend it names.
+local settings = {
     verbose      = false,   -- stream child output live
     trace        = false,   -- print "+ <pipeline>" to stderr before each run
     raise_errors = true,    -- error() when a command fails
@@ -43,7 +51,8 @@ M.config = {
     sink         = nil,     -- function(stream, chunk) replacing io writes
 }
 
--- `sh.__verbose` and `sh.__raise_errors` read and write these config fields.
+-- `sh.__verbose` and `sh.__raise_errors` read and write these fields of
+-- sh.config.
 local ALIASES = {
     __verbose      = "verbose",
     __raise_errors = "raise_errors",
@@ -55,12 +64,26 @@ local RESULT_FIELDS = {
     __signal = true, __exitcode = true, __pipeline = true,
 }
 
--- Hand the current sh.config to the dispatcher; a script may have replaced
--- the whole table.
-local function sync_config()
-    local config = rawget(M, "config")
-    if type(config) == "table" then pipe.set_config(config) end
-    return config
+-- Make `config` the configuration: the backend it names is selected, and
+-- the run path reads it from now on. Raises when that backend is
+-- unavailable, and sh.config is then unchanged.
+local function apply_config(config)
+    if type(config) ~= "table" then
+        error("sh.config must be a table, not a " .. type(config), 3)
+    end
+    backend.select(config.backend, config.popen)
+    pipe.set_config(config)
+    settings = config
+end
+
+-- The popen options of sh.config, with those of `opts` on top.
+local function popen_options(opts)
+    local popen  = type(settings.popen) == "table" and settings.popen or {}
+    local chosen = { strategy = popen.strategy, tmpdir = popen.tmpdir }
+    for key, value in pairs(opts) do
+        chosen[key] = value
+    end
+    return chosen
 end
 
 --------------------------------------------------------------------------------
@@ -171,7 +194,6 @@ end
 -- input. Returns the Result and, when config.raise_errors is set and the
 -- run failed, the message to raise.
 local function execute(cmd, stdin, sources)
-    local config   = sync_config() or {}
     local argv     = cmd:argv()
     local pipeline = provenance(cmd, argv, sources)
     local res      = pipe.run(argv, stdin, pipeline)
@@ -181,7 +203,7 @@ local function execute(cmd, stdin, sources)
         __signal = res.signal,
     }
     local result = make_result(fields, pipeline)
-    if not config.raise_errors then return result, nil end
+    if not settings.raise_errors then return result, nil end
     return result, failure(result, res.cause, pipeline)
 end
 
@@ -266,7 +288,9 @@ local function cd(...)
     local parsed = checked(command_mod.parse, ...)
     local dir    = parsed.args[1]
     local result = passthrough(parsed)
-    if not sys.chdir(dir) then return fail(result, missing("cd", dir)) end
+    if not backend.chdir(dir) then
+        return fail(result, missing("cd", dir))
+    end
     return result
 end
 
@@ -284,11 +308,13 @@ local function pushd(...)
     local parsed = checked(command_mod.parse, ...)
     local dir    = parsed.args[1]
     local result = passthrough(parsed)
-    local old    = sys.getcwd()
+    local old    = backend.getcwd()
     if not old then
         return fail(result, "pushd: cannot read the current directory")
     end
-    if not sys.chdir(dir) then return fail(result, missing("pushd", dir)) end
+    if not backend.chdir(dir) then
+        return fail(result, missing("pushd", dir))
+    end
     M.PUSHD_STACK:push(old)
     return result
 end
@@ -298,7 +324,7 @@ local function popd(...)
     local result = passthrough(parsed)
     local dir    = M.PUSHD_STACK:pop()
     if dir == nil then return fail(result, missing("popd", "EMPTY")) end
-    if not sys.chdir(dir) then return fail(result, missing("popd", dir)) end
+    if not backend.chdir(dir) then return fail(result, missing("popd", dir)) end
     return result
 end
 
@@ -346,7 +372,7 @@ end
 --- code run by sh.sys.load_pcall, such as a backend loading later, still
 --- sees undefined globals as nil.
 local function install()
-    pipe.preload()
+    backend.preload()
     local gmt = getmetatable(_G)
     if gmt == nil then
         gmt = {}
@@ -378,48 +404,48 @@ M.install  = install
 M.Command  = Command
 M.Pipeline = Pipeline
 
---- Select a backend now: "auto", "posix", "luv", "popen" or a table that
---- implements the backend contract. Raises when it is unavailable.
----@param backend string|table
+--- Select the backend in use now: "auto", "posix", "luv", "popen" or a
+--- table that implements the backend contract (DESIGN.md section 4);
+--- without an argument, the one sh.config.backend names. `opts` are the
+--- popen options, on top of sh.config.popen. Raises when the backend is
+--- unavailable, and then changes nothing. sh.config records the selection.
+---@param choice string|table|nil
 ---@param opts table|nil for popen: { strategy = ..., tmpdir = ... }
-function M.set_backend(backend, opts)
-    sync_config()
-    return pipe.set_backend(backend, opts)
+function M.set_backend(choice, opts)
+    -- Anything but a table is ignored: on Lua 5.4 and newer
+    -- `set_backend(require("x"))` passes the module's file name as `opts`.
+    if type(opts) ~= "table" then opts = {} end
+    if choice == nil then choice = settings.backend end
+    local chosen = popen_options(opts)
+    backend.select(choice, chosen)
+    if type(settings.popen) ~= "table" then settings.popen = {} end
+    settings.popen.strategy = chosen.strategy
+    settings.popen.tmpdir   = chosen.tmpdir
+    settings.backend        = (choice == nil) and "auto" or choice
 end
 
 --- The name of the backend in use; raises when none is available.
 ---@return string
 function M.backend_name()
-    sync_config()
-    return pipe.backend_name()
+    return backend.name()
 end
 
 --- The available backends, in the order of preference of this platform.
 ---@return string[]
 function M.available_backends()
-    return pipe.available_backends()
+    return backend.available()
 end
 
 --- The capability table of the backend in use (DESIGN.md section 5).
 ---@return table
 function M.capabilities()
-    sync_config()
-    return pipe.capabilities()
-end
-
--- sh.config, replaced by a new table when a script stored something else.
-local function config_table()
-    local config = rawget(M, "config")
-    if type(config) ~= "table" then
-        config = {}
-        rawset(M, "config", config)
-    end
-    return config
+    return backend.capabilities()
 end
 
 local function index_module(_, name)
+    if name == "config" then return settings end
     local alias = ALIASES[name]
-    if alias then return config_table()[alias] end
+    if alias then return settings[alias] end
     if type(name) ~= "string" then return nil end
     if list_contains(M.__index_ignore_function, name, strcmp) then
         return M.FUNCTIONS[name]
@@ -428,9 +454,13 @@ local function index_module(_, name)
 end
 
 local function newindex_module(t, name, value)
+    if name == "config" then
+        apply_config(value)
+        return
+    end
     local alias = ALIASES[name]
     if alias then
-        config_table()[alias] = value
+        settings[alias] = value
         return
     end
     rawset(t, name, value)
@@ -442,6 +472,10 @@ setmetatable(M, {
     __newindex = newindex_module,
 })
 
-sync_config()
+-- The default backend: the one LUASH_BACKEND names, else the first
+-- available one of this platform. Where none is available this module
+-- still loads, and the first command raises the reason (sh.backend).
+pipe.set_config(settings)
+pcall(backend.select, settings.backend, settings.popen)
 
 return M
