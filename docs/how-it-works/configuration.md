@@ -87,6 +87,97 @@ The generated file is committed and never edited. The
 [release workflow][release] rebuilds it from the tagged sources, fails when
 the result differs from the committed file, and attaches it to the release.
 
+## How to
+
+### Change a setting
+
+Assign the field; the next command sees it:
+
+```lua
+sh.config.trace        = true
+sh.config.raise_errors = false
+```
+
+`backend` and `popen` are read at a selection only: after
+`sh.config.backend = "popen"` call `sh.set_backend()`, or select and
+record in one step with `sh.set_backend("popen", { strategy = "standard" })`.
+
+### Change a setting for one call
+
+The settings are global. A helper that sets one, runs, and restores it,
+also when the call raises, keeps the change local:
+
+```lua
+local function quietly(f, ...)
+    local saved = sh.config.raise_errors
+    sh.config.raise_errors = false
+    local ok, result = pcall(f, ...)
+    sh.config.raise_errors = saved
+    if not ok then error(result, 0) end
+    return result
+end
+
+local r = quietly(sh.grep, "needle", { __input = "hay\n" })
+print(r.__exitcode)                        -- 1, and nothing raised
+```
+
+### Replace the whole table
+
+`sh.config = t` selects the backend that `t` names and reads every
+setting from `t` from then on. Give every field: a missing
+`raise_errors` counts as false, and a missing `popen` as a strategy of
+`"auto"`. Start from the defaults above and change what differs. When
+the backend is unavailable the assignment raises and the old table stays.
+
+### Put popen's temp files elsewhere
+
+```lua
+sh.set_backend("popen", { strategy = "standard", tmpdir = "/var/tmp/me" })
+```
+
+`tmpdir` must be a writable directory; the private directory is made
+under it and removed when the Lua state closes. A script that ends with
+`os.exit` should call `os.exit(code, true)` (Lua 5.2 and newer, LuaJIT)
+so that the state closes.
+
+### Pin a version
+
+```bash
+luarocks install sh 2.0-1
+```
+
+```bash
+curl -LO https://github.com/JBlaschke/luash/releases/download/v2.0.0/sh.lua
+```
+
+`sh.version` names the one that loaded:
+`Automatic Shell Bindings for Lua / LuaSH 2.0.0`.
+
+### Ship the single file with a project
+
+Put `sh.lua` next to the script and add that directory to `package.path`
+before the `require`, so the project's copy wins over an installed rock:
+
+```lua
+local here   = (arg and arg[0] or ""):match("^(.*)/") or "."
+package.path = here .. "/?.lua;" .. package.path
+local sh     = require("sh")
+```
+
+`debug.getinfo(sh.install, "S").source` tells which file a loaded `sh`
+came from: `@./sh/init.lua` for the module directory, the path of
+`sh.lua` for the single file.
+
+### Rebuild after a change to `sh/`
+
+```bash
+make standalone
+```
+
+The result is committed with the change; the release workflow refuses a
+tag whose file is stale. `make test` rebuilds first and then runs the
+matrix ([testing](testing.md#run-the-tests)).
+
 [settings]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L42
 [pipe_run]: https://github.com/JBlaschke/luash/blob/main/sh/pipe.lua#L63
 [execute]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L196

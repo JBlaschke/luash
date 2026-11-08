@@ -67,6 +67,105 @@ missing reports `SKIP` rather than failing the job. The examples run there
 too, on the default backend. [Section 9](../DESIGN.md#9-interpreter-compatibility)
 lists what differs between the interpreters and how the code copes.
 
+## How to
+
+### Run the tests
+
+```bash
+make test
+```
+
+runs the whole matrix after rebuilding `standalone/sh.lua`. Each test
+file also runs on its own from the root, with the interpreter of your
+choice; it finds `sh/` itself:
+
+```bash
+LUASH_BACKEND=luv lua tests/test.lua
+```
+
+```bash
+lua tests/test_backend.lua popen basic
+```
+
+`LUASH_POPEN_STRATEGY=basic` picks the strategy for the other files. The
+examples are tests too: `examples/run_all.sh luajit`.
+
+### Choose the interpreters and keep the logs
+
+```bash
+LUASH_INTERPRETERS="lua5.4 luajit" LUASH_LOG_DIR=logs tests/run_all.sh
+```
+
+Each run's output lands in `logs/<column>-<label>.log`; without
+`LUASH_LOG_DIR` the logs are removed when nothing failed. `LUASH_TIMEOUT`
+is the limit per run in seconds, 120 by default, 0 for none.
+
+### Test as on a host without luaposix and luv
+
+```bash
+lua -e 'package.cpath = ""' tests/test.lua
+```
+
+```bash
+LUASH_STANDALONE=1 lua tests/test.lua
+```
+
+The second runs against the single file, after `make standalone`; the
+matrix runs both, and the release workflow runs them together.
+
+### Test a backend of your own
+
+Give it its name, `name = "mine"` in the table and `sh.backend.mine` as
+the module, and run the contract test on it. From a file anywhere,
+`package.preload` supplies the module:
+
+```bash
+lua -e 'package.preload["sh.backend.mine"] = function() return dofile("mine.lua") end' tests/test_backend.lua mine
+```
+
+From a test file of your own, `require("test_backend")` returns
+`run_contract(B, name, strategy)`, which runs the same checks with that
+file's reporter.
+
+### Test a script without running programs
+
+A backend table can stand in for the real one: it records the argument
+vectors and answers with canned output, so a test of a script checks
+what the script would run.
+
+```lua
+local calls = {}
+local mock  = {
+    name         = "mock",
+    available    = function() return true end,
+    configure    = function() end,
+    chdir        = function() return true end,
+    getcwd       = function() return "/" end,
+    capabilities = function()
+        return {
+            name = "mock", stdin = true, separate_stderr = true,
+            streaming = false, exitcode = true, signals = false,
+        }
+    end,
+    run = function(argv, input, opts)
+        calls[#calls + 1] = table.concat(argv, " ")
+        return {
+            exitcode = 0, signal = 0, cause = "exited",
+            stdout   = "ok\n", stderr = "",
+        }
+    end,
+}
+
+sh.set_backend(mock)
+sh.git("push", "origin", "main")
+assert(calls[1] == "git push origin main")
+sh.set_backend("auto")                 -- the real backend again
+```
+
+`cd` goes through `chdir`, so the mock decides what `sh.cd` reports, and
+a `run` that returns `exitcode = 1` with text in `stderr` exercises the
+script's error handling.
+
 [CONTRACT]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L41
 [test_backend]: https://github.com/JBlaschke/luash/blob/main/tests/test_backend.lua
 [run_contract]: https://github.com/JBlaschke/luash/blob/main/tests/test_backend.lua#L71

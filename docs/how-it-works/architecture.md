@@ -65,6 +65,65 @@ backend, [backend resolution](backends.md) is how step 4 found its backend,
 [results](results.md) is step 6, and [configuration](configuration.md)
 covers `sh.config` and the bundled single file.
 
+## How to
+
+### Call a program
+
+Index the module with the program's name, or call `sh.install()` once
+and use the name as a global. Either call runs the program at once and
+returns its Result:
+
+```lua
+local sh = require("sh")
+print(sh.uname("-s"))           -- through the module
+
+sh.install()
+print(uname("-s"))              -- as a global, after install()
+```
+
+A library should keep to the first form: `sh.install()` changes `_G` for
+the whole program, and a misspelled global then runs a program of that
+name, so the error is `sh: lenght: No such file or directory` rather
+than `attempt to call a nil value`.
+
+### Name a program that is not an identifier
+
+`sh("pkg-config")` and `sh.command("true")` return the command function
+for a name with a `-` in it or a Lua keyword. Further arguments are
+preset: `sh.command("git", "log", "--oneline")` is a `git log --oneline`
+that takes more arguments at each call
+([example 3](../examples.md#3-flags-partial-commands-and-tricky-names)).
+
+### Keep a global out of `install()`
+
+After `sh.install()` every undefined global is a command function, which
+a library that reads an optional global to detect a feature would take
+for the feature; the backends load before the hook goes in for that
+reason. A global of your own that must stay nil goes on
+`sh.__index_ignore_exact`, or its prefix on `sh.__index_ignore_prefix`,
+which the hook consults at every lookup:
+
+```lua
+sh.install()
+table.insert(sh.__index_ignore_exact, "optional_hook")
+print(type(optional_hook))      -- nil, not a function
+```
+
+### Build a command without running it
+
+`sh.Command` and `sh.Pipeline` do step 2 and stop; `run()` continues at
+step 3. [Commands as data](commands.md#how-to) has the recipes.
+
+### Find the code behind a behaviour
+
+| You see | Look in |
+|---|---|
+| a wrong word or flag on the rendered command line | [`sh/command.lua`][command]: `walk_table`, `format_flag`, `quote`; [commands](commands.md) |
+| a setting that has no effect | [`sh/init.lua`][init]: `apply_config`, `set_backend`; [configuration](configuration.md) |
+| output in the wrong stream, merged, or arriving late | the backend in use, `sh.backend_name()`, under [`sh/backend/`][backends_dir]; [pipes](pipes.md) |
+| a `cd` that the programs follow but `io.open` does not | [`sh/backend/popen.lua`][popen]; [working directory](cwd.md) |
+| an unexpected error message or exit status | [`sh/init.lua`][init]: `failure`, `execute`; [results](results.md) |
+
 [init]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua
 [command]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua
 [pipe]: https://github.com/JBlaschke/luash/blob/main/sh/pipe.lua
@@ -86,3 +145,4 @@ covers `sh.config` and the bundled single file.
 [preload]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L292
 [load_pcall]: https://github.com/JBlaschke/luash/blob/main/sh/sys.lua#L26
 [set_runner]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L341
+[backends_dir]: https://github.com/JBlaschke/luash/tree/main/sh/backend

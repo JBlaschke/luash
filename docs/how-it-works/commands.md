@@ -61,6 +61,76 @@ backend got and pairs it with the source's Pipeline, so changing the
 original afterwards does not rewrite history, and a chain `r = r:cat()`
 does not keep every earlier input alive.
 
+## How to
+
+### Pass flags
+
+The string keys of a table are its flags, sorted by key, after its
+array entries. To fix the order, write the flags as strings, or use
+`:flag()` on a Command:
+
+```lua
+sh.ls({ l = true, color = "never" }, "/tmp")   -- ls --color=never -l /tmp
+sh.ls("-l", "--color=never", "/tmp")           -- as written
+sh.Command("ls"):flag("l"):flag("color", "never"):arg("/tmp"):run()
+```
+
+A key is written as it is, so `--dry-run` is `["dry-run"] = true` in a
+table or `:flag("dry-run")`. A value of `false` or nil adds nothing,
+which toggles a flag from a variable: `{ v = verbose }`.
+
+### Pass arguments verbatim
+
+Nothing is quoted, split or expanded: a name with spaces, a `*` or a
+`$HOME` reaches the program as one argument with those characters. The
+rendering quotes for reading only.
+
+```lua
+sh.touch("two words.txt")      -- one file
+sh.ls("*.lua")                 -- ls: *.lua: No such file or directory
+```
+
+To expand a glob or a variable, ask a shell: `sh.sh("-c", "ls *.lua")`;
+or list from Lua and pass the names. A table groups arguments that
+belong together, `sh("bash"){ "-c", "type type" }`, and a number is
+passed as its text, `sh.seq(1, 10)`.
+
+### Build a command in steps
+
+```lua
+local c = sh.Command("rsync", "-a")
+if dry then c:flag("dry-run") end
+c:arg(src, dest)
+print(c)                       -- rsync -a --dry-run src/ dest/
+local r = c:run()
+```
+
+The methods change the Command in place, so a base Command is reused
+through `copy()`: with `local git = sh.Command("git", "-C", repo)`,
+`git:copy():arg("log", "-n", 1):run()` leaves `git` as it was. For
+arguments that never change, `sh.command("git", "-C", repo)` returns a
+function with them preset.
+
+### Run a Pipeline
+
+```lua
+local p = sh.Command("seq", 1, 10):pipe(sh.Command("wc", "-l"))
+p:pipe(sh.Command("tr", "-d", " "))   -- appends in place
+print(p)                              -- seq 1 10 | wc -l | tr -d ' '
+print(p:run())                        -- 10
+```
+
+A Command is not an argument: `sh.wc(sh.Command("seq", 1, 3))` raises
+`sh.command: a Command is not an argument; use :pipe()`. Run it and pass
+the Result, or pipe it.
+
+### Log what runs
+
+`tostring(c)` before the run, and `tostring(r.__pipeline)` after it,
+which shows every stage up to this one: `seq 1 10 | grep 5 | wc -l`.
+With `sh.config.trace = true` each stage is printed as it runs
+([results](results.md#watch-a-long-run)).
+
 [command]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua
 [walk]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L212
 [walk_table]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L154

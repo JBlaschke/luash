@@ -70,6 +70,68 @@ from its file after exit, in one piece. Design:
 ([section 5](../DESIGN.md#5-capabilities)); [`pipe.run`][pipe_run] refuses
 input for a backend whose `stdin` capability is false.
 
+## How to
+
+### Feed a command
+
+A program gets its stdin from a Result among the arguments, from a table
+with an `__input` field, or from `Command:input()`; a chained call is the
+first form with the Result in front:
+
+```lua
+local r = sh.printf("b\na\n")
+print(sh.sort(r))                                -- a Result as argument
+print(r:sort())                                  -- the same, chained
+print(sh.sort({ __input = "b\na\n" }))           -- literal stdin
+print(sh.Command("sort"):input("b\na\n"):run())  -- a Command's stdin
+```
+
+Several Results concatenate in argument order: `sh.wc(a, b, "-l")` counts
+both outputs ([example 2](../examples.md#2-pipelines)).
+
+### Pass large input
+
+Nothing in the posix and luv backends limits the input: `pump` and
+`feed` write it as the program reads. Under popen the `shmem` and
+`standard` strategies write it to a temp file, `basic` puts it on the
+command line, which the system caps (128 KiB on Linux), and `minimal`
+refuses it with `sh: backend popen/minimal cannot pass input to cat`. A
+script that must run anywhere checks `sh.capabilities().stdin` first, or
+selects a strategy that can
+([backend resolution](backends.md#choose-a-backend)).
+
+### Run two programs at the same time
+
+The stages of a chain run one after another, so a producer that never
+ends never hands over: `sh.yes():head("-n", 3)` waits for `yes` to exit.
+Give such a pipeline to a shell, which connects its stages with real
+pipes:
+
+```lua
+print(sh.sh("-c", "yes | head -n 3"))            -- y, y, y
+```
+
+### Keep stderr apart from stdout
+
+Under posix, luv and popen's file strategies, `sh.stderr(r)` is what the
+program wrote to stderr, and `tostring(r)` shows it on an `E:` line.
+Under `basic` and `minimal` both streams land in `__stdout` and
+`__stderr` stays empty; `sh.capabilities().separate_stderr` says which
+case applies. To merge them on purpose everywhere, ask a shell:
+`sh.sh("-c", "make 2>&1")`.
+
+### See the chunks arrive
+
+With `verbose` set, a sink receives each chunk as the backend delivers
+it ([results](results.md#send-the-output-somewhere-else)), which shows
+how the backend in use streams:
+
+```lua
+sh.config.verbose = true
+sh.config.sink    = function(stream, chunk) print(stream, #chunk) end
+sh.seq(1, 3000)      -- posix: stdout 4096, 4096, 4096, 1605; luv: 13893
+```
+
 [pipeline_run]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L531
 [runner]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L212
 [open_pipes]: https://github.com/JBlaschke/luash/blob/main/sh/backend/posix.lua#L97

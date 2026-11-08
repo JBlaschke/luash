@@ -67,6 +67,96 @@ Result holds the whole output in any case; streaming never consumes it.
 Chunk sizes depend on the backend ([pipes](pipes.md)); under popen, stderr
 arrives in one piece after the program has exited.
 
+## How to
+
+### Read the output
+
+```lua
+local r = sh.ls("-1")
+print(r)                               -- trimmed stdout
+local text  = r.__stdout               -- raw, with the final newline
+local lines = {}
+for line in r.__stdout:gmatch("[^\n]+") do
+    lines[#lines + 1] = line
+end
+local n = tonumber(tostring(sh.wc(r, "-l")))   -- a count as a number
+```
+
+`tostring(r)` carries stderr and the status too when stderr is not
+empty, so code that parses the text reads `r.__stdout`.
+
+### Check success without raising
+
+Turn `raise_errors` off, for the script or for one call
+([configuration](configuration.md#change-a-setting-for-one-call)), and
+read `__exitcode`:
+
+```lua
+sh.config.raise_errors = false
+local r = sh.grep("needle", { __input = "hay\n" })
+if r.__exitcode == 1 then print("no match") end
+```
+
+`pcall(sh.grep, ...)` catches the error but has only its message; the
+Result, with the status and stderr, is not returned.
+
+### Catch a failure
+
+With `raise_errors` on, `pcall` gives the message:
+
+```lua
+local ok, err = pcall(sh.make, "-j4")
+if not ok then
+    io.stderr:write("build failed: ", err, "\n")
+end
+```
+
+The message is the program's stderr when it wrote any, otherwise the
+pipeline and how it ended. Called through `pcall`, as here, it carries no
+file position; raised from a script line, it starts with that line.
+
+### Tell "not found" from "failed"
+
+A program that could not be started has status 127 and a message naming
+it on stderr, like a program that exits 127 by itself:
+
+```lua
+sh.config.raise_errors = false
+local r = sh.some_tool("--version")
+if r.__exitcode == 127 then
+    print("some_tool is missing: " .. sh.stderr(r))
+end
+```
+
+Under popen's merged strategies the message is in `__stdout`.
+
+### Watch a long run
+
+```lua
+sh.config.verbose = true               -- output as it arrives
+sh.config.trace   = true               -- "+ make -j4" first
+sh.make("-j4")
+```
+
+### Send the output somewhere else
+
+A sink gets every verbose chunk and trace line with the stream name, to
+prefix, filter or log:
+
+```lua
+local log = assert(io.open("build.log", "a"))
+sh.config.verbose = true
+sh.config.trace   = true
+sh.config.sink    = function(stream, chunk)
+    log:write(chunk)
+    if stream == "stderr" then io.stderr:write(chunk) end
+end
+```
+
+The chunks of a stream concatenate to `__stdout` or `__stderr` byte for
+byte, so a sink can collect as well as forward. A chunk can end in the
+middle of a line: a sink that works by lines buffers until the newline.
+
 [make_result]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L136
 [result_tostring]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L99
 [result_concat]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L117

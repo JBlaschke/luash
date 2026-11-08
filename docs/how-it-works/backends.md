@@ -82,6 +82,86 @@ backend of the platform without selecting one. `sh.install()` calls it
 first, so that a script's own `require("posix")` after `install()` gets the
 loaded module, as with the 1.x library.
 
+## How to
+
+### See what is in use
+
+```lua
+print(sh.backend_name())                           -- posix
+print(table.concat(sh.available_backends(), " "))  -- posix luv popen
+print(sh.capabilities().separate_stderr)           -- true
+```
+
+Where nothing was available at load, `sh.backend_name()` and the first
+command raise the recorded reason:
+`sh.backend: no backend in use: sh.backend: luv is unavailable: module 'luv' not found`.
+
+### Choose a backend
+
+`sh.set_backend("luv")` selects by name, and
+`sh.set_backend("popen", { strategy = "standard" })` configures popen at
+the same time. Both raise when the choice is unavailable and leave the
+backend in use as it was, so a preference with a fallback is a `pcall`:
+
+```lua
+if not pcall(sh.set_backend, "luv") then
+    sh.set_backend("auto")                         -- whatever works here
+end
+```
+
+For one run of a script, from the environment, without a change to the
+code:
+
+```bash
+LUASH_BACKEND=popen LUASH_POPEN_STRATEGY=minimal lua script.lua
+```
+
+The variables replace a value of `"auto"` only: a script that calls
+`sh.set_backend("posix")` is not overridden.
+
+### Get a faster backend
+
+Install one library for the interpreter in use; the next `require("sh")`
+finds it:
+
+```bash
+luarocks install luaposix      # or: luarocks install luv
+```
+
+A load that failed is tried again at the next selection, so a running
+program picks up a library installed meanwhile with
+`sh.set_backend("auto")`.
+
+### Require a capability
+
+Check the capability, not the name: a popen strategy changes what the
+same backend can do.
+
+```lua
+if not sh.capabilities().separate_stderr then
+    sh.set_backend("popen", { strategy = "standard" })
+end
+```
+
+The booleans are `stdin`, `separate_stderr`, `streaming`, `exitcode` and
+`signals` ([section 5](../DESIGN.md#5-capabilities)), next to `name`
+and, under popen, `strategy`.
+
+### Read an "unavailable" error
+
+- `sh.backend: luv is unavailable: module 'luv' not found`: the library
+  is not on this interpreter's `package.cpath`. Rocks are installed per
+  Lua version (`luarocks --lua-version 5.1 install luv`).
+- `sh.backend: popen is unavailable: strategy shmem unavailable: /dev/shm is not a writable directory`:
+  the strategy asked for cannot work here. `standard` names its temp
+  root the same way, and `tmpdir` points it elsewhere
+  ([configuration](configuration.md#put-popens-temp-files-elsewhere)).
+- `sh.backend: no backend available on posix: posix (...); luv (...); popen (...)`:
+  `"auto"` found nothing, and the reasons follow in the order tried.
+- `sh.backend: the backend table has no available()`: a table of your
+  own lacks part of the contract
+  ([testing](testing.md#test-a-backend-of-your-own)).
+
 [registry]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua
 [select]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L204
 [init_select]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L479

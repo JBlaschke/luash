@@ -53,6 +53,69 @@ adds the `cd` prefix. A directory that cannot be entered is a start
 failure, exit status 127 with a message, like a program that is not found.
 The contract test exercises this ([testing](testing.md)).
 
+## How to
+
+### Run commands in another directory
+
+`cd` moves for the rest of the script; `pushd` and `popd` bracket a
+stretch and chain like commands:
+
+```lua
+sh.pushd("build")
+sh.make()
+sh.popd()
+
+sh.pushd("build"):make():popd()        -- the same, in one line
+```
+
+A `make` that raises leaves the script in `build`. A helper that pops
+under an error as well keeps the directory change local:
+
+```lua
+local function within(dir, f, ...)
+    local entered = sh.pushd(dir)
+    if entered.__exitcode ~= 0 then error(sh.stderr(entered), 2) end
+    local ok, result = pcall(f, ...)
+    sh.popd()
+    if not ok then error(result, 0) end
+    return result
+end
+
+within("build", sh.make, "-j4")
+```
+
+Many programs also take the directory as an option, with no change at
+all: `git -C`, `make -C`, `tar -C`.
+
+### Check that a `cd` worked
+
+The builtins never raise; read the Result:
+
+```lua
+local r = sh.cd(dir)
+if r.__exitcode ~= 0 then error(sh.stderr(r)) end
+```
+
+The message is `cd: The directory '...' does not exist` for any
+directory that cannot be entered.
+
+### Know where you are
+
+`sh.pwd()` runs the program, so it answers for the backend's directory
+on every backend, popen included. `sh.PUSHD_STACK:size()` is the depth
+of the `pushd` stack.
+
+### Open files from Lua after a `cd`
+
+Under posix and luv the process moved, so `io.open("file")` follows the
+`cd`; under popen only the programs moved. Code for every backend builds
+paths from the backend's directory, or keeps them absolute:
+
+```lua
+local dir = tostring(sh.pwd())
+local f   = assert(io.open(dir .. "/file"))
+```
+
 [init]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua
 [index_module]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L445
 [ignore]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L349

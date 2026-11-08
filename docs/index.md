@@ -47,7 +47,8 @@ luarocks install luaposix   # or: luarocks install luv
 - [Examples](examples.md): nine short scripts, from the first call to a
   backend of your own, with their output.
 - How it works, one page per topic, each linking the
-  [design document](DESIGN.md) and the code on GitHub:
+  [design document](DESIGN.md) and the code on GitHub and ending with
+  a *How to* section of recipes:
   [architecture](how-it-works/architecture.md),
   [pipes in each backend](how-it-works/pipes.md),
   [backend resolution](how-it-works/backends.md),
