@@ -4,10 +4,12 @@
 --     lua tests/test_backend.lua <posix|luv|popen|fake> [strategy]
 --
 -- Prints "SKIP: <reason>" and exits 0 when the backend cannot run on this
--- interpreter. Exits 1 when a check fails or the module does not load.
--- Required from another test file (`require("test_backend")`) it starts
--- nothing and returns run_contract(B, name, strategy), which runs the
--- checks with the caller's gambiarra reporter.
+-- interpreter. Exits 1 when a check fails or the module does not load;
+-- under popen's basic strategy, the 340 KB stdin check may fail where the
+-- system refuses a command line that long (see main). Required from
+-- another test file (`require("test_backend")`) it starts nothing and
+-- returns run_contract(B, name, strategy), which runs the checks with the
+-- caller's gambiarra reporter.
 
 --------------------------------------------------------------------------------
 -- INITIALIZE PROJECT PATHS
@@ -192,6 +194,25 @@ end
 --------------------------------------------------------------------------------
 -- SCRIPT MODE
 --------------------------------------------------------------------------------
+local function quote(s)
+    return "'" .. (s:gsub("'", "'\\''")) .. "'"
+end
+
+-- Whether io.popen alone runs a command line that holds input and 8 KiB
+-- more. The 8 KiB covers what basic adds around the input and the margin
+-- the backend keeps below the system's limit.
+local function system_accepts(input)
+    local cmd = (
+        "printf '%s' " .. quote(input) .. " | wc -c # "
+        .. string.rep("x", 8192)
+    )
+    local h = io.popen(cmd, "r")
+    if not h then return false end
+    local out = h:read("*a") or ""
+    h:close()
+    return tonumber(out:match("%d+")) == #input
+end
+
 local function main(name, strategy)
     if not name then
         io.stderr:write(
@@ -216,15 +237,30 @@ local function main(name, strategy)
     end
 
     local passed, failed = 0, 0
+    -- checks that may fail: test name -> start of the message
+    local allowed = {}
     test(function(e, t, msg)
+        local prefix = allowed[t]
         if e == "pass" then
             passed = passed + 1
             print("\27[32m✔\27[0m " .. t .. ": " .. msg)
+        elseif e == "fail" and prefix and msg:sub(1, #prefix) == prefix then
+            print("note: allowed to fail here: " .. t .. ": " .. msg)
         elseif e == "fail" or e == "except" then
             failed = failed + 1
             print("\27[31m✘\27[0m " .. t .. ": " .. msg)
         end
     end)
+
+    -- popen's basic puts the input on the command line, which Linux caps
+    -- at 32 pages per argument (128 KiB with 4 KiB pages). The 340 KB
+    -- check may fail for basic, but only where io.popen alone cannot run
+    -- a command line that long; tests/test_popen.lua checks that the
+    -- backend then reports a start failure.
+    local basic = (name == "popen" and B.capabilities().strategy == "basic")
+    if basic and not system_accepts(BIG) then
+        allowed.stdin = "cat echoes 340 KB input: "
+    end
 
     run_contract(B, name, strategy)
 
