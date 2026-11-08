@@ -65,7 +65,9 @@ the stream name (`"stdout"`, `"stderr"` or `"trace"`) and the chunk. The
 Result holds the whole output in any case; streaming never consumes it.
 
 Chunk sizes depend on the backend ([pipes](pipes.md)); under popen, stderr
-arrives in one piece after the program has exited.
+arrives in one piece after the program has exited. [Streaming](streaming.md)
+follows a chunk from the backend's pump to the writer, and says what a sink
+may do while the program runs.
 
 ## How to
 

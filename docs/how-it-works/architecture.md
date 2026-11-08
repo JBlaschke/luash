@@ -61,7 +61,9 @@ them. `run()` on either calls the runner that `init` installs with
 `command.lua` free of process code.
 
 The other pages follow this path. [Pipes](pipes.md) is step 5 in each
-backend, [backend resolution](backends.md) is how step 4 found its backend,
+backend, and [streaming](streaming.md) follows one chunk of output from
+the backend's pump to the verbose callbacks of step 4;
+[backend resolution](backends.md) is how step 4 found its backend,
 [results](results.md) is step 6, and [configuration](configuration.md)
 covers `sh.config` and the bundled single file.
 
@@ -120,7 +122,7 @@ step 3. [Commands as data](commands.md#how-to) has the recipes.
 |---|---|
 | a wrong word or flag on the rendered command line | [`sh/command.lua`][command]: `walk_table`, `format_flag`, `quote`; [commands](commands.md) |
 | a setting that has no effect | [`sh/init.lua`][init]: `apply_config`, `set_backend`; [configuration](configuration.md) |
-| output in the wrong stream, merged, or arriving late | the backend in use, `sh.backend_name()`, under [`sh/backend/`][backends_dir]; [pipes](pipes.md) |
+| output in the wrong stream, merged, or arriving late | the backend in use, `sh.backend_name()`, under [`sh/backend/`][backends_dir]; [pipes](pipes.md), [streaming](streaming.md) |
 | a `cd` that the programs follow but `io.open` does not | [`sh/backend/popen.lua`][popen]; [working directory](cwd.md) |
 | an unexpected error message or exit status | [`sh/init.lua`][init]: `failure`, `execute`; [results](results.md) |
 
