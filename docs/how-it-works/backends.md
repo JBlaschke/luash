@@ -121,8 +121,11 @@ The variables replace a value of `"auto"` only: a script that calls
 
 ### Get a faster backend
 
-Install one library for the interpreter in use; the next `require("sh")`
-finds it:
+luaposix and luv are weak dependencies: nothing requires them, and
+whichever is present is resolved when `sh` loads or a backend is
+selected. Install one for the interpreter in use, and the next
+`require("sh")` runs commands on pipes alone, with stderr apart and
+signals reported:
 
 ```bash
 luarocks install luaposix      # or: luarocks install luv

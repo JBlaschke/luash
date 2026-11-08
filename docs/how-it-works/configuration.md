@@ -49,8 +49,10 @@ Three ways, each giving `require("sh")`:
 - **luarocks**: `luarocks install sh` installs the module directory from
   [`rockspec/sh-2.0-1.rockspec`][rockspec]; in a clone,
   `luarocks make rockspec/sh-scm-3.rockspec`. The only dependency is Lua
-  itself; luaposix and luv are optional rocks that unlock the faster
-  backends.
+  itself. luaposix and luv are weak dependencies: the rockspec does not
+  list them, and whichever is present is resolved when `sh` loads or a
+  backend is changed, for the faster and more secure backends
+  ([backend resolution](backends.md#get-a-faster-backend)).
 - **One file**: copy [`standalone/sh.lua`][standalone] anywhere on
   `package.path`. Every [release](https://github.com/JBlaschke/luash/releases)
   carries it as the asset `sh.lua`, so a specific version is one download:
