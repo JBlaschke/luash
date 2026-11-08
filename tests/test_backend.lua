@@ -239,6 +239,14 @@ local function system_accepts(input)
     return tonumber(out:match("%d+")) == #input
 end
 
+-- Exits once the backend has removed its temp files: os.exit(code) alone
+-- skips the finalizer that does so, and `true` closes the state first on
+-- Lua 5.2 and newer and on LuaJIT.
+local function finish(B, code)
+    if type(B.cleanup_all) == "function" then B.cleanup_all() end
+    os.exit(code, true)
+end
+
 local function main(name, strategy)
     if not name then
         io.stderr:write(
@@ -259,7 +267,7 @@ local function main(name, strategy)
         print(
             "SKIP: backend " .. name .. " unavailable: " .. tostring(reason)
         )
-        os.exit(0)
+        finish(B, 0)
     end
 
     local passed, failed = 0, 0
@@ -292,7 +300,7 @@ local function main(name, strategy)
 
     local label = strategy and (name .. "/" .. strategy) or name
     print(("%d passed, %d failed (backend %s)"):format(passed, failed, label))
-    os.exit(failed == 0 and 0 or 1)
+    finish(B, failed == 0 and 0 or 1)
 end
 
 if arg and arg[0] and arg[0]:match("test_backend%.lua$") then
