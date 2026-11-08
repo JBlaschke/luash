@@ -67,15 +67,15 @@ missing reports `SKIP` rather than failing the job. The examples run there
 too, on the default backend. [Section 9](../DESIGN.md#9-interpreter-compatibility)
 lists what differs between the interpreters and how the code copes.
 
-[CONTRACT]: https://github.com/JBlaschke/luash/blob/master/sh/backend/init.lua#L41
-[test_backend]: https://github.com/JBlaschke/luash/blob/master/tests/test_backend.lua
-[run_contract]: https://github.com/JBlaschke/luash/blob/master/tests/test_backend.lua#L71
-[backend_fake]: https://github.com/JBlaschke/luash/blob/master/tests/backend_fake.lua
-[example09]: https://github.com/JBlaschke/luash/blob/master/examples/09_custom_backend.lua
-[current]: https://github.com/JBlaschke/luash/blob/master/sh/backend/init.lua#L226
-[test_install]: https://github.com/JBlaschke/luash/blob/master/tests/test_install.lua
-[run_all]: https://github.com/JBlaschke/luash/blob/master/tests/run_all.sh
-[test]: https://github.com/JBlaschke/luash/blob/master/tests/test.lua
-[test_command]: https://github.com/JBlaschke/luash/blob/master/tests/test_command.lua
-[test_popen]: https://github.com/JBlaschke/luash/blob/master/tests/test_popen.lua
-[ci]: https://github.com/JBlaschke/luash/blob/master/.github/workflows/test.yml
+[CONTRACT]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L41
+[test_backend]: https://github.com/JBlaschke/luash/blob/main/tests/test_backend.lua
+[run_contract]: https://github.com/JBlaschke/luash/blob/main/tests/test_backend.lua#L71
+[backend_fake]: https://github.com/JBlaschke/luash/blob/main/tests/backend_fake.lua
+[example09]: https://github.com/JBlaschke/luash/blob/main/examples/09_custom_backend.lua
+[current]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L226
+[test_install]: https://github.com/JBlaschke/luash/blob/main/tests/test_install.lua
+[run_all]: https://github.com/JBlaschke/luash/blob/main/tests/run_all.sh
+[test]: https://github.com/JBlaschke/luash/blob/main/tests/test.lua
+[test_command]: https://github.com/JBlaschke/luash/blob/main/tests/test_command.lua
+[test_popen]: https://github.com/JBlaschke/luash/blob/main/tests/test_popen.lua
+[ci]: https://github.com/JBlaschke/luash/blob/main/.github/workflows/test.yml

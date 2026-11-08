@@ -53,20 +53,20 @@ adds the `cd` prefix. A directory that cannot be entered is a start
 failure, exit status 127 with a message, like a program that is not found.
 The contract test exercises this ([testing](testing.md)).
 
-[init]: https://github.com/JBlaschke/luash/blob/master/sh/init.lua
-[index_module]: https://github.com/JBlaschke/luash/blob/master/sh/init.lua#L445
-[ignore]: https://github.com/JBlaschke/luash/blob/master/sh/init.lua#L349
-[parse]: https://github.com/JBlaschke/luash/blob/master/sh/command.lua#L257
-[passthrough]: https://github.com/JBlaschke/luash/blob/master/sh/init.lua#L265
-[cd]: https://github.com/JBlaschke/luash/blob/master/sh/init.lua#L287
-[stack]: https://github.com/JBlaschke/luash/blob/master/sh/stack.lua
-[pushd]: https://github.com/JBlaschke/luash/blob/master/sh/init.lua#L307
-[popd]: https://github.com/JBlaschke/luash/blob/master/sh/init.lua#L322
-[backend_chdir]: https://github.com/JBlaschke/luash/blob/master/sh/backend/init.lua#L257
-[posix_chdir]: https://github.com/JBlaschke/luash/blob/master/sh/backend/posix.lua#L316
-[luv_chdir]: https://github.com/JBlaschke/luash/blob/master/sh/backend/luv.lua#L189
-[popen_chdir]: https://github.com/JBlaschke/luash/blob/master/sh/backend/popen.lua#L911
-[resolve_dir]: https://github.com/JBlaschke/luash/blob/master/sh/backend/popen.lua#L267
-[popen_run]: https://github.com/JBlaschke/luash/blob/master/sh/backend/popen.lua#L972
-[popen_getcwd]: https://github.com/JBlaschke/luash/blob/master/sh/backend/popen.lua#L927
-[exec_child]: https://github.com/JBlaschke/luash/blob/master/sh/backend/posix.lua#L114
+[init]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua
+[index_module]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L445
+[ignore]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L349
+[parse]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L257
+[passthrough]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L265
+[cd]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L287
+[stack]: https://github.com/JBlaschke/luash/blob/main/sh/stack.lua
+[pushd]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L307
+[popd]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L322
+[backend_chdir]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L257
+[posix_chdir]: https://github.com/JBlaschke/luash/blob/main/sh/backend/posix.lua#L316
+[luv_chdir]: https://github.com/JBlaschke/luash/blob/main/sh/backend/luv.lua#L189
+[popen_chdir]: https://github.com/JBlaschke/luash/blob/main/sh/backend/popen.lua#L911
+[resolve_dir]: https://github.com/JBlaschke/luash/blob/main/sh/backend/popen.lua#L267
+[popen_run]: https://github.com/JBlaschke/luash/blob/main/sh/backend/popen.lua#L972
+[popen_getcwd]: https://github.com/JBlaschke/luash/blob/main/sh/backend/popen.lua#L927
+[exec_child]: https://github.com/JBlaschke/luash/blob/main/sh/backend/posix.lua#L114

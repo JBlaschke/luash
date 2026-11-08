@@ -70,23 +70,23 @@ from its file after exit, in one piece. Design:
 ([section 5](../DESIGN.md#5-capabilities)); [`pipe.run`][pipe_run] refuses
 input for a backend whose `stdin` capability is false.
 
-[pipeline_run]: https://github.com/JBlaschke/luash/blob/master/sh/command.lua#L531
-[runner]: https://github.com/JBlaschke/luash/blob/master/sh/init.lua#L212
-[open_pipes]: https://github.com/JBlaschke/luash/blob/master/sh/backend/posix.lua#L97
-[spawn]: https://github.com/JBlaschke/luash/blob/master/sh/backend/posix.lua#L140
-[exec_child]: https://github.com/JBlaschke/luash/blob/master/sh/backend/posix.lua#L114
-[pump]: https://github.com/JBlaschke/luash/blob/master/sh/backend/posix.lua#L190
-[posix_run]: https://github.com/JBlaschke/luash/blob/master/sh/backend/posix.lua#L342
-[reap]: https://github.com/JBlaschke/luash/blob/master/sh/backend/posix.lua#L254
-[luv_run]: https://github.com/JBlaschke/luash/blob/master/sh/backend/luv.lua#L216
-[uv_spawn]: https://github.com/JBlaschke/luash/blob/master/sh/backend/luv.lua#L250
-[feed]: https://github.com/JBlaschke/luash/blob/master/sh/backend/luv.lua#L130
-[drain]: https://github.com/JBlaschke/luash/blob/master/sh/backend/luv.lua#L147
-[uv_run_once]: https://github.com/JBlaschke/luash/blob/master/sh/backend/luv.lua#L310
-[catch_sigpipe]: https://github.com/JBlaschke/luash/blob/master/sh/backend/luv.lua#L108
-[popen_execute]: https://github.com/JBlaschke/luash/blob/master/sh/backend/popen.lua#L702
-[render_sh]: https://github.com/JBlaschke/luash/blob/master/sh/backend/popen.lua#L323
-[strategies]: https://github.com/JBlaschke/luash/blob/master/sh/backend/popen.lua#L74
-[printf_input]: https://github.com/JBlaschke/luash/blob/master/sh/backend/popen.lua#L302
-[private_dir]: https://github.com/JBlaschke/luash/blob/master/sh/backend/popen.lua#L591
-[pipe_run]: https://github.com/JBlaschke/luash/blob/master/sh/pipe.lua#L63
+[pipeline_run]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L531
+[runner]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L212
+[open_pipes]: https://github.com/JBlaschke/luash/blob/main/sh/backend/posix.lua#L97
+[spawn]: https://github.com/JBlaschke/luash/blob/main/sh/backend/posix.lua#L140
+[exec_child]: https://github.com/JBlaschke/luash/blob/main/sh/backend/posix.lua#L114
+[pump]: https://github.com/JBlaschke/luash/blob/main/sh/backend/posix.lua#L190
+[posix_run]: https://github.com/JBlaschke/luash/blob/main/sh/backend/posix.lua#L342
+[reap]: https://github.com/JBlaschke/luash/blob/main/sh/backend/posix.lua#L254
+[luv_run]: https://github.com/JBlaschke/luash/blob/main/sh/backend/luv.lua#L216
+[uv_spawn]: https://github.com/JBlaschke/luash/blob/main/sh/backend/luv.lua#L250
+[feed]: https://github.com/JBlaschke/luash/blob/main/sh/backend/luv.lua#L130
+[drain]: https://github.com/JBlaschke/luash/blob/main/sh/backend/luv.lua#L147
+[uv_run_once]: https://github.com/JBlaschke/luash/blob/main/sh/backend/luv.lua#L310
+[catch_sigpipe]: https://github.com/JBlaschke/luash/blob/main/sh/backend/luv.lua#L108
+[popen_execute]: https://github.com/JBlaschke/luash/blob/main/sh/backend/popen.lua#L702
+[render_sh]: https://github.com/JBlaschke/luash/blob/main/sh/backend/popen.lua#L323
+[strategies]: https://github.com/JBlaschke/luash/blob/main/sh/backend/popen.lua#L74
+[printf_input]: https://github.com/JBlaschke/luash/blob/main/sh/backend/popen.lua#L302
+[private_dir]: https://github.com/JBlaschke/luash/blob/main/sh/backend/popen.lua#L591
+[pipe_run]: https://github.com/JBlaschke/luash/blob/main/sh/pipe.lua#L63

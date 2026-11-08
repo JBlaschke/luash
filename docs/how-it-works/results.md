@@ -67,16 +67,16 @@ Result holds the whole output in any case; streaming never consumes it.
 Chunk sizes depend on the backend ([pipes](pipes.md)); under popen, stderr
 arrives in one piece after the program has exited.
 
-[make_result]: https://github.com/JBlaschke/luash/blob/master/sh/init.lua#L136
-[result_tostring]: https://github.com/JBlaschke/luash/blob/master/sh/init.lua#L99
-[result_concat]: https://github.com/JBlaschke/luash/blob/master/sh/init.lua#L117
-[result_index]: https://github.com/JBlaschke/luash/blob/master/sh/init.lua#L123
-[reap]: https://github.com/JBlaschke/luash/blob/master/sh/backend/posix.lua#L254
-[luv_run]: https://github.com/JBlaschke/luash/blob/master/sh/backend/luv.lua#L216
-[execute]: https://github.com/JBlaschke/luash/blob/master/sh/init.lua#L196
-[failure]: https://github.com/JBlaschke/luash/blob/master/sh/init.lua#L181
-[runner]: https://github.com/JBlaschke/luash/blob/master/sh/init.lua#L212
-[fail]: https://github.com/JBlaschke/luash/blob/master/sh/init.lua#L277
-[pipe_run]: https://github.com/JBlaschke/luash/blob/master/sh/pipe.lua#L63
-[writer]: https://github.com/JBlaschke/luash/blob/master/sh/pipe.lua#L25
-[trace]: https://github.com/JBlaschke/luash/blob/master/sh/pipe.lua#L36
+[make_result]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L136
+[result_tostring]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L99
+[result_concat]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L117
+[result_index]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L123
+[reap]: https://github.com/JBlaschke/luash/blob/main/sh/backend/posix.lua#L254
+[luv_run]: https://github.com/JBlaschke/luash/blob/main/sh/backend/luv.lua#L216
+[execute]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L196
+[failure]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L181
+[runner]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L212
+[fail]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L277
+[pipe_run]: https://github.com/JBlaschke/luash/blob/main/sh/pipe.lua#L63
+[writer]: https://github.com/JBlaschke/luash/blob/main/sh/pipe.lua#L25
+[trace]: https://github.com/JBlaschke/luash/blob/main/sh/pipe.lua#L36
