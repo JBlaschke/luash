@@ -15,14 +15,6 @@
 #   LUASH_LOG_DIR       directory that keeps the output of every run;
 #                       default: a temporary directory, removed when no
 #                       run failed
-#   LUA_PATH, LUA_CPATH module paths from the environment (luarocks path,
-#                       or luarocks in CI). An interpreter gets the entries
-#                       for its own Lua version (.../lua/5.4/?.lua is for
-#                       5.4) and those that name no version, after the
-#                       runner's own entries and before its default paths.
-#                       Entries of another version are left out: LuaJIT
-#                       cannot load the C modules of Lua 5.4, say, and
-#                       would stop at them instead of finding its own.
 #
 # Each run prints one line. PASS: exit status 0. SKIP: exit status 0 and a
 # line of output that starts with "SKIP:". FAIL: any other exit status, or
@@ -47,8 +39,6 @@ NO_C_MODULES='package.cpath = ""; package.preload.posix = nil; package.preload.l
 PROBE='io.write(jit and jit.version or _VERSION,
     pcall(require, "posix") and ", luaposix" or "",
     pcall(require, "luv") and ", luv" or "", "\n")'
-# Prints the Lua version the interpreter implements: "5.4"; LuaJIT: "5.1".
-VERSION='io.write((_VERSION:gsub("^Lua ", "")))'
 
 timeout="${LUASH_TIMEOUT:-120}"
 if ! [[ "$timeout" =~ ^[0-9]+$ ]]; then
@@ -75,19 +65,14 @@ fi
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$root"
 
-# PLAN.md 1.2. The runner's own module path; lua_paths() puts the entries
-# from the environment that an interpreter gets behind it.
-OWN_PATH="./?/init.lua;./?.lua;./tests/?.lua"
-env_path="${LUA_PATH:-}"
-env_cpath="${LUA_CPATH:-}"
+# PLAN.md 1.2. A LUA_PATH from the environment (luarocks in CI) follows
+# ours; an unset one becomes ";;", which stands for the default path.
+export LUA_PATH="./?/init.lua;./?.lua;./tests/?.lua;${LUA_PATH:-;}"
 # Each run sets the variables it needs; none leaks in from the caller.
-unset LUASH_BACKEND LUASH_POPEN_STRATEGY LUASH_STANDALONE LUA_PATH LUA_CPATH
+unset LUASH_BACKEND LUASH_POPEN_STRATEGY LUASH_STANDALONE
 
 interps=()   # usable interpreters, one column of the matrix each
 infos=()     # version and optional modules of each, for the legend
-paths=()     # LUA_PATH of each, from lua_paths()
-cpaths=()    # LUA_CPATH of each, from lua_paths()
-left_out=()  # how many environment entries of another version each lacks
 notes=()     # interpreters that were left out, and why
 rows=()      # run labels, the rows of the matrix, in order of first use
 cells=()     # result of row r in column c at index r * ${#interps[@]} + c
@@ -110,52 +95,8 @@ on_interrupt() {
 }
 trap on_interrupt INT TERM
 
-# Sets kept to the entries of LIST (a LUA_PATH or LUA_CPATH value) that
-# are for Lua VERSION ("5.4") or for no version in particular, joined by
-# ";", and dropped to the number of the others. An entry is for the
-# version named by its directory lua/<version>: /usr/share/lua/5.4/?.lua
-# is for 5.4.
-for_version() {
-    local list="$1"
-    local version="$2"
-    local re='(^|/)lua/([0-9]+\.[0-9]+)(/|$)'
-    local entries=()
-    local entry=""
-    kept=""
-    dropped=0
-    IFS=';' read -r -a entries <<< "$list"
-    for entry in ${entries[@]+"${entries[@]}"}; do
-        if [ -z "$entry" ]; then
-            continue
-        fi
-        if [[ "$entry" =~ $re ]]; then
-            if [ "${BASH_REMATCH[2]}" != "$version" ]; then
-                dropped=$(( dropped + 1 ))
-                continue
-            fi
-        fi
-        kept="${kept:+$kept;}$entry"
-    done
-}
-
-# Sets lua_path and lua_cpath for an interpreter of Lua VERSION: the
-# runner's own entries, then those from the environment that for_version
-# keeps, then ";;", which stands for the interpreter's default paths, so
-# that it finds the modules installed for it even where the environment
-# replaces those paths. left_out_count is the number of entries of another
-# version.
-lua_paths() {
-    local version="$1"
-    for_version "$env_path" "$version"
-    lua_path="$OWN_PATH${kept:+;$kept};;"
-    left_out_count="$dropped"
-    for_version "$env_cpath" "$version"
-    lua_cpath="$kept;;"
-    left_out_count=$(( left_out_count + dropped ))
-}
-
-# Adds each candidate that runs to interps, infos, paths, cpaths and
-# left_out, and each one that does not to notes.
+# Adds each candidate that runs to interps and infos, and each one that
+# does not to notes.
 find_interpreters() {
     local candidates=()
     if [ -n "${LUASH_INTERPRETERS:-}" ]; then
@@ -163,37 +104,20 @@ find_interpreters() {
     else
         candidates=("${DEFAULT_INTERPRETERS[@]}")
     fi
-    local ver_re='^[0-9]+\.[0-9]+$'
     local candidate=""
     local resolved=""
-    local version=""
     local info=""
     for candidate in ${candidates[@]+"${candidates[@]}"}; do
         if ! resolved="$(command -v "$candidate")"; then
             notes+=("$candidate: not found, or not executable")
             continue
         fi
-        if ! version="$("$resolved" -e "$VERSION" 2>/dev/null < /dev/null)"
-        then
-            version=""
-        fi
-        if ! [[ "$version" =~ $ver_re ]]; then
-            notes+=("$resolved: does not run Lua code")
-            continue
-        fi
-        lua_paths "$version"
-        if ! info="$(
-            env LUA_PATH="$lua_path" LUA_CPATH="$lua_cpath" \
-                "$resolved" -e "$PROBE" 2>/dev/null < /dev/null
-        )"; then
+        if ! info="$("$resolved" -e "$PROBE" 2>/dev/null < /dev/null)"; then
             notes+=("$resolved: does not run Lua code")
             continue
         fi
         interps+=("$resolved")
         infos+=("$info")
-        paths+=("$lua_path")
-        cpaths+=("$lua_cpath")
-        left_out+=("$left_out_count")
     done
 }
 
@@ -310,8 +234,7 @@ run_case() {
     local started="$SECONDS"
     local status=0
     run_logged "$log" \
-        env LUA_PATH="${paths[col]}" LUA_CPATH="${cpaths[col]}" \
-        ${vars[@]+"${vars[@]}"} \
+        env ${vars[@]+"${vars[@]}"} \
         "$interp" ${pre[@]+"${pre[@]}"} "$file" "$@" \
         || status=$?
     local elapsed=$(( SECONDS - started ))
@@ -405,10 +328,6 @@ fi
 for (( col = 0; col < ${#interps[@]}; col++ )); do
     interp="${interps[col]}"
     printf '\n== #%d %s (%s)\n' "$(( col + 1 ))" "$interp" "${infos[col]}"
-    if [ "${left_out[col]}" -gt 0 ]; then
-        printf '   without %d LUA_PATH/LUA_CPATH entries of another Lua version\n' \
-            "${left_out[col]}"
-    fi
     run_interpreter
 done
 
