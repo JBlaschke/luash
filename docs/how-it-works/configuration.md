@@ -183,12 +183,12 @@ matrix ([testing](testing.md#run-the-tests)).
 [settings]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L42
 [pipe_run]: https://github.com/JBlaschke/luash/blob/main/sh/pipe.lua#L63
 [execute]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L196
-[index_module]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L445
-[newindex_module]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L456
+[index_module]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L501
+[newindex_module]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L512
 [apply_config]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L70
 [set_config]: https://github.com/JBlaschke/luash/blob/main/sh/pipe.lua#L49
 [ALIASES]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L56
-[set_backend]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L414
+[set_backend]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L470
 [rockspec]: https://github.com/JBlaschke/luash/blob/main/rockspec/sh-2.0-1.rockspec
 [standalone]: https://github.com/JBlaschke/luash/blob/main/standalone/sh.lua
 [examples_run]: https://github.com/JBlaschke/luash/blob/main/examples/run_all.sh

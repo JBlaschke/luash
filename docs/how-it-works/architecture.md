@@ -9,10 +9,10 @@ API is [section 3](../DESIGN.md#3-public-api).
 | [`sh/init.lua`][init] | the public API: Results, the builtins, `sh.config`, `sh.install()` and backend control |
 | [`sh/command.lua`][command] | `Command` and `Pipeline`, argument flattening, quoting and rendering; starts no process |
 | [`sh/pipe.lua`][pipe] | the run path: one command through the backend in use, with verbose and trace |
-| [`sh/backend/init.lua`][registry] | the registry: selects one backend and routes `run`, `chdir` and `getcwd` to it |
+| [`sh/backend/init.lua`][registry] | the registry: selects one backend and routes `run`, `chdir`, `getcwd`, `setenv` and `getenv` to it |
 | [`posix.lua`][posix], [`luv.lua`][luv], [`popen.lua`][popen] | the backends, each a complete implementation of the [contract](../DESIGN.md#4-backend-contract) |
 | [`sh/sys.lua`][sys] | platform detection and `load_pcall`, the guard around library loads |
-| [`sh/stack.lua`][stack] | the stack behind `pushd` and `popd` |
+| [`sh/stack.lua`][stack] | the stack behind `pushd` and `popd`, and behind `pushenv` and `popenv` |
 
 Dependencies point one way: `init` requires `command`, `pipe`, `backend`
 and `sys`; `pipe` requires `backend`; `backend` requires `sys`; the
@@ -143,6 +143,7 @@ step 3. [Commands as data](commands.md#how-to) has the recipes.
 | a setting that has no effect | [`sh/init.lua`][init]: `apply_config`, `set_backend`; [configuration](configuration.md) |
 | output in the wrong stream, merged, or arriving late | the backend in use, `sh.backend_name()`, under [`sh/backend/`][backends_dir]; [pipes](pipes.md), [streaming](streaming.md) |
 | a `cd` that the programs follow but `io.open` does not | [`sh/backend/popen.lua`][popen]; [working directory](cwd.md) |
+| a variable that the programs get but `os.getenv` does not | [`sh/backend/popen.lua`][popen]; [environment variables](environment.md) |
 | an unexpected error message or exit status | [`sh/init.lua`][init]: `failure`, `execute`; [results](results.md) |
 
 [init]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua
@@ -154,17 +155,17 @@ step 3. [Commands as data](commands.md#how-to) has the recipes.
 [popen]: https://github.com/JBlaschke/luash/blob/main/sh/backend/popen.lua
 [sys]: https://github.com/JBlaschke/luash/blob/main/sh/sys.lua
 [stack]: https://github.com/JBlaschke/luash/blob/main/sh/stack.lua
-[index_module]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L445
+[index_module]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L501
 [command_fn]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L247
-[Command]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L371
+[Command]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L498
 [execute]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L196
 [pipe_run]: https://github.com/JBlaschke/luash/blob/main/sh/pipe.lua#L63
-[backend_run]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L249
+[backend_run]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L252
 [make_result]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L136
 [result_index]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L123
-[install]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L374
-[preload]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L292
+[install]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L430
+[preload]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L331
 [load_pcall]: https://github.com/JBlaschke/luash/blob/main/sh/sys.lua#L26
-[set_runner]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L341
+[set_runner]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L468
 [backends_dir]: https://github.com/JBlaschke/luash/tree/main/sh/backend
 [test]: https://github.com/JBlaschke/luash/blob/main/tests/test.lua

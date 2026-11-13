@@ -71,6 +71,7 @@ nav:
       - Commands as data: how-it-works/commands.md
       - Results, errors and output: how-it-works/results.md
       - Working directory: how-it-works/cwd.md
+      - Environment variables: how-it-works/environment.md
       - Testing and your own backend: how-it-works/testing.md
   - Design:
       - Design document: DESIGN.md

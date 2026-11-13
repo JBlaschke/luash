@@ -191,3 +191,22 @@ logging
 
 [Testing and your own backend](how-it-works/testing.md) explains the
 contract this backend implements and how to test one.
+
+## 10. Environment variables
+
+```lua
+--8<-- "examples/10_environment.lua"
+```
+
+```text
+unset unset
+red 3
+blue unset
+red 3
+unset unset
+UTC
+1	popenv: the environment stack is empty
+```
+
+[Environment variables](how-it-works/environment.md) says what each
+backend does with a variable, and what the popen backend cannot do.

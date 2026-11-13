@@ -6,8 +6,12 @@ local backend = require("sh.backend")   -- the registry
 local real    = backend.current()
 local logging = { name = "logging" }
 
--- The directory and the options stay with the real backend.
-for _, f in ipairs({ "available", "configure", "chdir", "getcwd" }) do
+-- The directory, the options and the environment stay with the real
+-- backend. setenv and getenv are optional: pushenv needs them.
+local forwarded = {
+    "available", "configure", "chdir", "getcwd", "setenv", "getenv",
+}
+for _, f in ipairs(forwarded) do
     logging[f] = real[f]
 end
 

@@ -163,8 +163,8 @@ middle of a line: a sink that works by lines buffers until the newline.
 [result_tostring]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L99
 [result_concat]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L117
 [result_index]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L123
-[reap]: https://github.com/JBlaschke/luash/blob/main/sh/backend/posix.lua#L254
-[luv_run]: https://github.com/JBlaschke/luash/blob/main/sh/backend/luv.lua#L216
+[reap]: https://github.com/JBlaschke/luash/blob/main/sh/backend/posix.lua#L261
+[luv_run]: https://github.com/JBlaschke/luash/blob/main/sh/backend/luv.lua#L266
 [execute]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L196
 [failure]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L181
 [runner]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L212

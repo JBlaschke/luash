@@ -19,13 +19,21 @@
 -- before it returns.
 --
 -- chdir() and getcwd() are uv.chdir and uv.cwd: `cd` changes the directory
--- of the process.
+-- of the process. setenv() is uv.os_setenv and uv.os_unsetenv, and getenv()
+-- is uv.os_getenv: `pushenv` changes the environment of the process, which
+-- every program started afterwards inherits. Lua's os.getenv reads it too,
+-- except on Windows, where the C library keeps a copy of its own.
 --
 -- luv is loaded with pcall, so this module also loads on an interpreter
 -- without it; available() then returns false and the reason.
 local M = { name = "luv" }
 
 local ok, uv = pcall(require, "luv")
+
+-- The buffer sizes getenv() tries when uv.os_getenv reports that a value
+-- does not fit its default buffer: 64 KiB, 1 MiB and 16 MiB.
+local GETENV_SIZE  = 65536
+local GETENV_LIMIT = 16777216
 
 -- require's message names the problem on its first line. When the C library
 -- exists but failed to load, the second line holds the cause; otherwise the
@@ -205,6 +213,48 @@ function M.getcwd()
         error(msg .. load_error, 2)
     end
     return uv.cwd()
+end
+
+---Sets variable `name` in the environment of the process, or removes it
+---when `value` is nil.
+---@param name string
+---@param value string|nil
+---@return true|nil ok
+---@return string|nil err  "EINVAL: invalid argument" for a refused name
+function M.setenv(name, value)
+    if not ok then
+        local msg = "sh.backend.luv.setenv: luv cannot be loaded: "
+        error(msg .. load_error, 2)
+    end
+    if not (uv.os_setenv and uv.os_unsetenv) then
+        return nil, "luv has no uv.os_setenv"
+    end
+    local done, err
+    if value == nil then
+        done, err = uv.os_unsetenv(name)
+    else
+        done, err = uv.os_setenv(name, value)
+    end
+    if done then return true end
+    return nil, tostring(err)
+end
+
+---The value of variable `name` in the environment of the process.
+---@param name string
+---@return string|nil value  nil when the variable is not set
+function M.getenv(name)
+    if not (ok and uv.os_getenv) then return os.getenv(name) end
+    -- uv.os_getenv copies the value into a buffer whose size is its second
+    -- argument. luv 1.52 and 1.53 return a value longer than the default
+    -- buffer all the same; a version that fails with ENOBUFS instead is
+    -- asked again with larger buffers.
+    local value, _, code = uv.os_getenv(name)
+    local size = GETENV_SIZE
+    while value == nil and code == "ENOBUFS" and size <= GETENV_LIMIT do
+        value, _, code = uv.os_getenv(name, size)
+        size = size * 16
+    end
+    return value
 end
 
 ---Runs argv[1], found on PATH, with the rest as its arguments (the module

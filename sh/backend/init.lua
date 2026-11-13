@@ -2,12 +2,15 @@
 --- sh.backend: the backend registry (DESIGN.md section 6.6).
 ---
 --- A backend is a module sh/backend/<name>.lua that implements the contract
---- of DESIGN.md section 4: it runs programs and owns the working directory.
---- The registry selects one backend, configures it, and keeps it as the
---- backend in use until select() is called again; nothing about a backend
---- is probed at a run or a cd. sh/init.lua selects the default when it
---- loads, and sh.set_backend() selects another one. run, chdir, getcwd and
---- capabilities go to the backend in use: the frontend sees one interface.
+--- of DESIGN.md section 4: it runs programs and owns the working directory
+--- and the environment. The registry selects one backend, configures it,
+--- and keeps it as the backend in use until select() is called again;
+--- nothing about a backend is probed at a run or a cd. sh/init.lua selects
+--- the default when it loads, and sh.set_backend() selects another one.
+--- run, chdir, getcwd, setenv, getenv and capabilities go to the backend
+--- in use: the frontend sees one interface. setenv and getenv are not
+--- part of the contract: a backend without setenv cannot change the
+--- environment, and setenv() here says so.
 ---
 --- A choice is a backend table of your own, a name ("posix", "luv",
 --- "popen") or "auto": LUASH_BACKEND when set, otherwise the first backend
@@ -266,6 +269,42 @@ end
 ---@return string|nil err
 function M.getcwd()
     return M.current().getcwd()
+end
+
+--- Set variable `name` to `value` for the programs that the backend in use
+--- runs, or remove it for them when `value` is nil. posix and luv change
+--- the environment of the process; popen remembers the change for its
+--- runs. A backend without setenv() cannot do either.
+---@param name string not empty, without "=" and NUL bytes
+---@param value string|nil without NUL bytes
+---@return true|nil ok
+---@return string|nil err
+function M.setenv(name, value)
+    local named = type(name) == "string" and name ~= ""
+    if not named or name:find("[=%z]") then
+        return nil, "sh.backend.setenv: expected a variable name"
+    end
+    if value ~= nil and (type(value) ~= "string" or value:find("%z")) then
+        return nil, "sh.backend.setenv: expected a string or nil as value"
+    end
+    local mod = M.current()
+    if type(mod.setenv) ~= "function" then
+        return nil, "backend " .. mod.name .. " cannot change the environment"
+    end
+    local done, err = mod.setenv(name, value)
+    if done then return true end
+    return nil, tostring(err or "cannot change the variable")
+end
+
+--- The value of variable `name` for the programs that the backend in use
+--- runs, nil when it is not set: what the backend's getenv() says, else
+--- the environment of the process.
+---@param name string
+---@return string|nil value
+function M.getenv(name)
+    local mod = M.current()
+    if type(mod.getenv) ~= "function" then return os.getenv(name) end
+    return mod.getenv(name)
 end
 
 --- The names of the available backends, in the order of the platform:

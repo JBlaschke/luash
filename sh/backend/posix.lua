@@ -12,7 +12,9 @@
 -- started (cause "failed") apart from one that exits with status 127.
 --
 -- chdir() and getcwd() are posix.chdir and posix.getcwd: `cd` changes the
--- directory of the process.
+-- directory of the process. setenv() is posix.stdlib.setenv and getenv()
+-- is os.getenv: `pushenv` changes the environment of the process, which
+-- every program started afterwards inherits, and Lua's os.getenv reads.
 --
 -- luaposix is loaded with pcall: without it this module still loads and
 -- available() returns false with the reason.
@@ -24,11 +26,16 @@ local ok, posix = pcall(require, "posix")
 -- kept for compatibility with luaposix 32 and earlier, and luaposix 38
 -- replaced it with a function that only raises an error. The wrapper
 -- called posix.unistd.execp, which takes the same (path, argt) arguments
--- in luaposix 36.3 and 38.
-local execp = nil
+-- in luaposix 36.3 and 38. setenv comes from posix.stdlib in the same
+-- way; without it the backend still runs programs, and setenv() says that
+-- it cannot change the environment.
+local execp  = nil
+local setenv = nil
 if ok then
     local found, unistd = pcall(require, "posix.unistd")
     if found and type(unistd) == "table" then execp = unistd.execp end
+    local has, stdlib = pcall(require, "posix.stdlib")
+    if has and type(stdlib) == "table" then setenv = stdlib.setenv end
 end
 
 local READ_SIZE  = 4096    -- bytes per read from stdout or stderr
@@ -330,6 +337,32 @@ function M.getcwd()
         error("sh.backend.posix.getcwd: " .. unavailable, 2)
     end
     return posix.getcwd()
+end
+
+---Sets variable `name` in the environment of the process, or removes it
+---when `value` is nil.
+---@param name string
+---@param value string|nil
+---@return true|nil ok
+---@return string|nil err  "Invalid argument" for a name the system refuses
+function M.setenv(name, value)
+    if unavailable then
+        error("sh.backend.posix.setenv: " .. unavailable, 2)
+    end
+    if type(setenv) ~= "function" then
+        return nil, "luaposix has no posix.stdlib.setenv"
+    end
+    -- 0 when done; nil and the reason otherwise
+    local done, err = setenv(name, value)
+    if done then return true end
+    return nil, err
+end
+
+---The value of variable `name` in the environment of the process.
+---@param name string
+---@return string|nil value  nil when the variable is not set
+function M.getenv(name)
+    return os.getenv(name)
 end
 
 ---Runs argv[1], found on PATH, with argv[2], ... as its arguments. A

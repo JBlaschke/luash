@@ -2,14 +2,17 @@
 
 ## The builtins
 
-`cd`, `pushd`, `popd` and `print` are not programs: [`sh/init.lua`][init]
-implements them, and [`index_module`][index_module] returns them for those
-names (the list is [`__index_ignore_function`][ignore]; `sh.install()`
-consults the same list for globals). Each parses its arguments with
-[`command.parse`][parse] and returns a [`passthrough`][passthrough] Result:
-the stdout, stderr and status of the Results it was given, with the last
-one's Pipeline. That is why a builtin is a neutral stage: in
-`sh.echo("x"):cd("tests"):cat()`, `cat` still reads `x`.
+`cd`, `pushd`, `popd`, `pushenv`, `popenv` and `print` are not programs:
+[`sh/init.lua`][init] implements them, and [`index_module`][index_module]
+returns them for those names (the list is
+[`__index_ignore_function`][ignore]; `sh.install()` consults the same list
+for globals). Each parses its arguments with [`command.parse`][parse]
+(`pushenv` with `parse_env`) and returns a [`passthrough`][passthrough]
+Result: the stdout, stderr and status of the Results it was given, with
+the last one's Pipeline. That is why a builtin is a neutral stage: in
+`sh.echo("x"):cd("tests"):cat()`, `cat` still reads `x`. This page is
+about the directory; `pushenv` and `popenv` have
+[their own](environment.md).
 
 [`cd(dir)`][cd] asks the backend to change directory and, when that fails,
 returns the Result with `cd: The directory '...' does not exist` in
@@ -117,19 +120,19 @@ local f   = assert(io.open(dir .. "/file"))
 ```
 
 [init]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua
-[index_module]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L445
-[ignore]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L349
+[index_module]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L501
+[ignore]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L405
 [parse]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L257
 [passthrough]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L265
 [cd]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L287
 [stack]: https://github.com/JBlaschke/luash/blob/main/sh/stack.lua
 [pushd]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L307
 [popd]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L322
-[backend_chdir]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L257
-[posix_chdir]: https://github.com/JBlaschke/luash/blob/main/sh/backend/posix.lua#L316
-[luv_chdir]: https://github.com/JBlaschke/luash/blob/main/sh/backend/luv.lua#L189
-[popen_chdir]: https://github.com/JBlaschke/luash/blob/main/sh/backend/popen.lua#L911
-[resolve_dir]: https://github.com/JBlaschke/luash/blob/main/sh/backend/popen.lua#L267
-[popen_run]: https://github.com/JBlaschke/luash/blob/main/sh/backend/popen.lua#L972
-[popen_getcwd]: https://github.com/JBlaschke/luash/blob/main/sh/backend/popen.lua#L927
-[exec_child]: https://github.com/JBlaschke/luash/blob/main/sh/backend/posix.lua#L114
+[backend_chdir]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L260
+[posix_chdir]: https://github.com/JBlaschke/luash/blob/main/sh/backend/posix.lua#L323
+[luv_chdir]: https://github.com/JBlaschke/luash/blob/main/sh/backend/luv.lua#L197
+[popen_chdir]: https://github.com/JBlaschke/luash/blob/main/sh/backend/popen.lua#L999
+[resolve_dir]: https://github.com/JBlaschke/luash/blob/main/sh/backend/popen.lua#L329
+[popen_run]: https://github.com/JBlaschke/luash/blob/main/sh/backend/popen.lua#L1111
+[popen_getcwd]: https://github.com/JBlaschke/luash/blob/main/sh/backend/popen.lua#L1015
+[exec_child]: https://github.com/JBlaschke/luash/blob/main/sh/backend/posix.lua#L121

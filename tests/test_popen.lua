@@ -235,6 +235,18 @@ local BASIC_FORM =
 local BASIC_NUL_FORM =
     [[{ set +eux; } 2>/dev/null; unset -f cd echo printf; { trap '' PIPE; printf '%b' 'a\0000b\\c\0200\0377' || :; } 2>/dev/null | ( ( cd -P './-' || exit 127; exec 'cat' ) 2>&1; exit $? ) 2>/dev/null]]
 
+-- The same forms with variables to change (emulated pushenv): `unset -v`
+-- removes those that are false, and env sets the others.
+local ENV_VARS = { B = "it's", A = "1", Z = false, Y = false }
+local ENV_FILE_FORM =
+    [[{ set +eux; } 2>/dev/null; unset -f cd echo printf; ( ( cd -P '/w' || exit 127; unset -v Y Z || exit 127; exec env 'A=1' 'B=it'\''s' 'a b' 'x' ) < '/t/in-1' 2> '/t/err-1' 3>&-; echo "$?" >&3 ) 2>/dev/null 3> '/t/st-1']]
+local ENV_UNSET_FORM =
+    [[{ set +eux; } 2>/dev/null; unset -f cd echo printf; ( ( unset -v HOME || exit 127; exec 'pwd' ) < /dev/null 2> '/t/err-2' 3>&-; echo "$?" >&3 ) 2>/dev/null 3> '/t/st-2']]
+local ENV_MINIMAL_FORM =
+    [[{ set +eux; } 2>/dev/null; unset -f cd echo printf; ( ( exec env 'LC_ALL=C' 'sort' '-r' ) < /dev/null 2>&1; exit $? ) 2>/dev/null]]
+local ENV_BASIC_FORM =
+    [[{ set +eux; } 2>/dev/null; unset -f cd echo printf; { trap '' PIPE; printf '%s' 'it'\''s' || :; } 2>/dev/null | ( ( cd -P './w' || exit 127; exec env 'A=' 'cat' ) 2>&1; exit $? ) 2>/dev/null]]
+
 --------------------------------------------------------------------------------
 -- CONTRACT, ONCE PER STRATEGY
 --------------------------------------------------------------------------------
@@ -405,6 +417,30 @@ test("shell strings", function()
         "a program path starting with - gets ./"
     )
 
+    local with_vars = B._render({"a b", "x"}, FILES, "/w", "sh", ENV_VARS)
+    ok(
+        with_vars == ENV_FILE_FORM,
+        "variables: unset -v removes and env sets, each in byte order"
+    )
+    local removal = B._render(
+        {"pwd"}, { stderr = "/t/err-2", status = "/t/st-2" }, nil, "sh",
+        { HOME = false }
+    )
+    ok(removal == ENV_UNSET_FORM, "variables: a removal alone needs no env")
+    local sorted = B._render({"sort", "-r"}, nil, nil, "sh", { LC_ALL = "C" })
+    ok(sorted == ENV_MINIMAL_FORM, "variables: minimal string")
+    local empty = B._render({"cat"}, { data = "it's" }, "w", "sh", { A = "" })
+    ok(empty == ENV_BASIC_FORM, "variables: basic string, an empty value")
+    ok(
+        B._render({"sort", "-r"}, nil, nil, "sh", {}) == MINIMAL_FORM,
+        "no variables: the string is as without them"
+    )
+    local dashed_env = B._render({"-x/prog"}, nil, nil, "sh", { A = "1" })
+    ok(
+        dashed_env:find("exec env 'A=1' './-x/prog' )", 1, true) ~= nil,
+        "variables: a program path starting with - gets ./"
+    )
+
     -- Windows: rendered only, never run here
     local cmd = B._render({'say "hi"', "x"}, FILES, "C:\\w", "cmd")
     ok(
@@ -416,6 +452,15 @@ test("shell strings", function()
         B._render({"x"}, nil, nil, "cmd"):find("< NUL 2>&1", 1, true) ~= nil,
         "cmd variant reads NUL"
     )
+    local cmd_vars = B._render(
+        {"prog"}, nil, nil, "cmd", { B = "two words", A = "1", Z = false }
+    )
+    ok(
+        cmd_vars:find(
+            [["set "Z=" & set "A=1" & set "B=two words" & "prog"]], 1, true
+        ) == 1,
+        "cmd variant changes variables with set, in front of the program"
+    )
 end)
 
 test("shellcheck", function()
@@ -425,11 +470,15 @@ test("shellcheck", function()
         return
     end
     local cases = {
-        { "file",          FILE_FORM      },
-        { "file-no-input", NO_INPUT_FORM  },
-        { "minimal",       MINIMAL_FORM   },
-        { "basic",         BASIC_FORM     },
-        { "basic-nul",     BASIC_NUL_FORM },
+        { "file",          FILE_FORM        },
+        { "file-no-input", NO_INPUT_FORM    },
+        { "minimal",       MINIMAL_FORM     },
+        { "basic",         BASIC_FORM       },
+        { "basic-nul",     BASIC_NUL_FORM   },
+        { "env-file",      ENV_FILE_FORM    },
+        { "env-unset",     ENV_UNSET_FORM   },
+        { "env-minimal",   ENV_MINIMAL_FORM },
+        { "env-basic",     ENV_BASIC_FORM   },
     }
     for _, case in ipairs(cases) do
         local path = scratch .. "/" .. case[1] .. ".sh"
@@ -515,6 +564,222 @@ test("cwd", function()
     local raised, err = pcall(B.run, {"pwd"}, "", { cwd = "/\0" })
     ok(not raised, "a NUL byte in cwd raises: " .. tostring(err))
     B.configure({})
+end)
+
+--------------------------------------------------------------------------------
+-- EMULATED ENVIRONMENT
+--------------------------------------------------------------------------------
+-- The environment of a program that B runs, as env prints it, with a line
+-- break in front, so that "\nNAME=value\n" finds a variable.
+local function environment()
+    return "\n" .. B.run({"env"}, "", {}).stdout
+end
+
+-- Whether a program gets variable `name` with `value`; with value nil,
+-- whether it gets the variable at all.
+local function inherits(name, value)
+    local line = "\n" .. name .. "=" .. (value and (value .. "\n") or "")
+    return environment():find(line, 1, true) ~= nil
+end
+
+test("environment", function()
+    B.configure({ strategy = "standard", tmpdir = root })
+    local name    = "LUASH_TEST_VARIABLE"
+    local changed = { name, "PATH", "HOME" }
+    local done, err = pcall(function()
+        -- Names that a shell treats in its own way: as an assignment of
+        -- the shell, bash would not pass RANDOM on and would refuse UID,
+        -- and dash would reject the value of OPTIND.
+        local special = {
+            { "UID",    "luash-uid"    }, { "RANDOM", "luash-random" },
+            { "OPTIND", "abc"          }, { "IFS",    "luash-ifs"    },
+            { "LINENO", "luash-lineno" }, { "PPID",   "luash-ppid"   },
+        }
+        for _, pair in ipairs(special) do
+            changed[#changed + 1] = pair[1]
+            ok(B.setenv(pair[1], pair[2]) == true, "setenv " .. pair[1])
+        end
+        local listing = environment()
+        for _, pair in ipairs(special) do
+            local line = "\n" .. pair[1] .. "=" .. pair[2] .. "\n"
+            ok(
+                listing:find(line, 1, true) ~= nil,
+                "a program gets " .. pair[1] .. " as set"
+            )
+            ok(B.getenv(pair[1]) == pair[2], "getenv gives " .. pair[1])
+            B.setenv(pair[1], os.getenv(pair[1]))
+        end
+
+        ok(B.setenv(name, "for programs") == true, "setenv")
+        ok(B.getenv(name) == "for programs", "getenv answers for the programs")
+        ok(os.getenv(name) == nil, "os.getenv: the process is unchanged")
+        ok(inherits(name, "for programs"), "a program gets the variable")
+        ok(B.setenv(name, nil) == true, "setenv(name, nil)")
+        ok(B.getenv(name) == nil and not inherits(name), "the variable is gone")
+
+        local refused = { "", "1A", "A.B", "A B", "A-B", "A=B", "\195\137" }
+        for _, bad in ipairs(refused) do
+            local set, why = B.setenv(bad, "x")
+            ok(
+                set == nil and type(why) == "string",
+                ("the name %q is refused: %s"):format(bad, tostring(why))
+            )
+        end
+        ok(B.setenv(5, "x") == nil, "a number as name is refused")
+        local set, why = B.setenv(name, "a\0b")
+        ok(
+            set == nil and tostring(why):find("NUL", 1, true) ~= nil,
+            "a NUL byte in the value is refused: " .. tostring(why)
+        )
+        ok(B.setenv(name, 5) == nil, "a number as value is refused")
+        ok(B.getenv(name) == nil, "a refused value changes nothing")
+
+        -- env reports a program that cannot be started as the shell does
+        ok(B.setenv(name, "x") == true, "a variable is set")
+        local r = B.run({"luash-no-such-program-xyz"}, "", {})
+        ok(
+            r.exitcode == 127 and r.stdout == "" and r.stderr ~= "",
+            "with a variable set, a missing program gives 127: "
+            .. one_line(r.stderr)
+        )
+        local script = scratch .. "/not-executable"
+        write_file(script, "#!/bin/sh\necho hi\n")
+        r = B.run({script}, "", {})
+        ok(
+            r.exitcode == 127 and r.stdout == "" and r.stderr ~= "",
+            "and a program that is not executable gives 127: "
+            .. one_line(r.stderr)
+        )
+
+        -- env would read a program name with = as one more variable
+        local named = scratch .. "/name=value"
+        write_file(named, "#!/bin/sh\necho ran\n")
+        os.execute("chmod +x " .. quote(named))
+        r = B.run({named}, "", {})
+        ok(
+            r.cause == "failed" and r.exitcode == 127 and r.stdout == "",
+            "with a variable set, a program name with = is a start failure: "
+            .. one_line(r.stderr)
+        )
+        B.setenv(name, nil)
+        ok(
+            B.run({named}, "", {}).stdout == "ran\n",
+            "it runs once the variable is as the process has it"
+        )
+
+        -- the program is looked up in the PATH that setenv() gave
+        local bin = scratch .. "/bin"
+        os.execute("mkdir " .. quote(bin))
+        write_file(bin .. "/luash-test-program", "#!/bin/sh\necho found\n")
+        os.execute("chmod +x " .. quote(bin .. "/luash-test-program"))
+        r = B.run({"luash-test-program"}, "", {})
+        ok(r.exitcode == 127, "a program that is not on PATH gives 127")
+        local path = os.getenv("PATH") or "/usr/bin:/bin"
+        ok(B.setenv("PATH", bin .. ":" .. path) == true, "setenv PATH")
+        r = B.run({"luash-test-program"}, "", {})
+        ok(
+            r.stdout == "found\n" and r.exitcode == 0,
+            "the program is found on the PATH that setenv() gave"
+        )
+        ok(B.setenv("PATH", "/luash-no-such-directory") == true, "a bad PATH")
+        r = B.run({"sh", "-c", "exit 0"}, "", {})
+        ok(r.exitcode == 127, "sh is not found on a PATH without it")
+        B.setenv("PATH", os.getenv("PATH"))
+        ok(
+            B.run({"sh", "-c", "exit 0"}, "", {}).exitcode == 0,
+            "and is found again with the PATH of the process"
+        )
+
+        -- without PATH, bash and dash would look in the current directory
+        local removed, reason = B.setenv("PATH", nil)
+        if os.getenv("PATH") then
+            ok(
+                removed == nil and tostring(reason):find("PATH", 1, true) ~= nil,
+                "removing PATH is refused: " .. tostring(reason)
+            )
+            ok(
+                B.getenv("PATH") == os.getenv("PATH")
+                and B.run({"sh", "-c", "exit 0"}, "", {}).exitcode == 0,
+                "which leaves PATH as it was"
+            )
+        else
+            ok(removed == true, "a process without PATH has none to remove")
+        end
+
+        -- the variables are part of the command line, whose length is
+        -- checked: 3 MiB is far above ARG_MAX on every system
+        local big = string.rep("x", 3 * 1024 * 1024)
+        ok(B.setenv(name, big) == true, "setenv takes a value of 3 MiB")
+        r = B.run({"sh", "-c", "exit 0"}, "", {})
+        ok(
+            r.cause == "failed" and r.exitcode == 127 and r.stdout == ""
+            and r.stderr:find("longer than the system accepts", 1, true) ~= nil,
+            "a variable of 3 MiB is a start failure: " .. one_line(r.stderr)
+        )
+        B.setenv(name, nil)
+        ok(
+            B.run({"sh", "-c", "exit 0"}, "", {}).exitcode == 0,
+            "and a program starts again once the variable is gone"
+        )
+
+        -- a variable of the process: removed with unset -v, without env
+        local home = os.getenv("HOME")
+        if home then
+            ok(B.setenv("HOME", nil) == true, "removing HOME")
+            ok(B.getenv("HOME") == nil, "getenv: the programs have no HOME")
+            ok(os.getenv("HOME") == home, "os.getenv: the process keeps it")
+            ok(not inherits("HOME"), "a program gets no HOME")
+            ok(
+                B.run({named}, "", {}).stdout == "ran\n",
+                "a removal alone runs a program name with ="
+            )
+            B.setenv(name, "v")
+            r = B.run({"sh", "-c", "pwd -P; env"}, "", { cwd = "/" })
+            local listing = "\n" .. r.stdout
+            ok(
+                r.stdout:sub(1, 2) == "/\n"
+                and listing:find("\n" .. name .. "=v\n", 1, true) ~= nil
+                and listing:find("\nHOME=", 1, true) == nil,
+                "cwd, a removal and a variable to set in one run"
+            )
+            B.setenv(name, nil)
+            ok(B.setenv("HOME", home) == true, "setting HOME as it was")
+            ok(inherits("HOME", home), "a program gets HOME again")
+        else
+            print("note: HOME is not set, removal of a variable not checked")
+        end
+    end)
+    for _, var in ipairs(changed) do
+        B.setenv(var, os.getenv(var))
+    end
+    B.configure({})
+    if not done then error(err, 0) end
+end)
+
+-- bash holds SHELLOPTS and BASHOPTS read-only, also when they come from
+-- the environment, so a /bin/sh that is bash cannot unset them; dash can.
+test("environment: a variable the shell cannot unset", function()
+    if not interpreter() then
+        print("note: interpreter path unknown, child check skipped")
+        ok(true, "child check skipped")
+        return
+    end
+    local tmp = string.format("%q", child)
+    local out = run_child("env SHELLOPTS=braceexpand ", {
+        "B.configure({ strategy = 'standard', tmpdir = " .. tmp .. " })",
+        "B.setenv('SHELLOPTS', nil)",
+        "local r = B.run({'env'}, '', {})",
+        "local found = ('\\n' .. r.stdout):find('\\nSHELLOPTS=', 1, true)",
+        "io.write(r.exitcode, ' ', tostring(found ~= nil), ' ', r.stderr)",
+    })
+    local code, listed, message = out:match("^(%d+) (%a+) (.*)$")
+    local removed = (code == "0" and listed == "false")
+    local failed  = (code == "127" and listed == "false" and message ~= "")
+    ok(
+        removed or failed,
+        "SHELLOPTS is removed, or the run fails with exit code 127: "
+        .. one_line(out)
+    )
 end)
 
 --------------------------------------------------------------------------------

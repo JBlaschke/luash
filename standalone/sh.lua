@@ -5,12 +5,15 @@ package.preload[ "sh.backend" ] = function( ... ) local arg = _G.arg;
 --- sh.backend: the backend registry (DESIGN.md section 6.6).
 ---
 --- A backend is a module sh/backend/<name>.lua that implements the contract
---- of DESIGN.md section 4: it runs programs and owns the working directory.
---- The registry selects one backend, configures it, and keeps it as the
---- backend in use until select() is called again; nothing about a backend
---- is probed at a run or a cd. sh/init.lua selects the default when it
---- loads, and sh.set_backend() selects another one. run, chdir, getcwd and
---- capabilities go to the backend in use: the frontend sees one interface.
+--- of DESIGN.md section 4: it runs programs and owns the working directory
+--- and the environment. The registry selects one backend, configures it,
+--- and keeps it as the backend in use until select() is called again;
+--- nothing about a backend is probed at a run or a cd. sh/init.lua selects
+--- the default when it loads, and sh.set_backend() selects another one.
+--- run, chdir, getcwd, setenv, getenv and capabilities go to the backend
+--- in use: the frontend sees one interface. setenv and getenv are not
+--- part of the contract: a backend without setenv cannot change the
+--- environment, and setenv() here says so.
 ---
 --- A choice is a backend table of your own, a name ("posix", "luv",
 --- "popen") or "auto": LUASH_BACKEND when set, otherwise the first backend
@@ -271,6 +274,42 @@ function M.getcwd()
     return M.current().getcwd()
 end
 
+--- Set variable `name` to `value` for the programs that the backend in use
+--- runs, or remove it for them when `value` is nil. posix and luv change
+--- the environment of the process; popen remembers the change for its
+--- runs. A backend without setenv() cannot do either.
+---@param name string not empty, without "=" and NUL bytes
+---@param value string|nil without NUL bytes
+---@return true|nil ok
+---@return string|nil err
+function M.setenv(name, value)
+    local named = type(name) == "string" and name ~= ""
+    if not named or name:find("[=%z]") then
+        return nil, "sh.backend.setenv: expected a variable name"
+    end
+    if value ~= nil and (type(value) ~= "string" or value:find("%z")) then
+        return nil, "sh.backend.setenv: expected a string or nil as value"
+    end
+    local mod = M.current()
+    if type(mod.setenv) ~= "function" then
+        return nil, "backend " .. mod.name .. " cannot change the environment"
+    end
+    local done, err = mod.setenv(name, value)
+    if done then return true end
+    return nil, tostring(err or "cannot change the variable")
+end
+
+--- The value of variable `name` for the programs that the backend in use
+--- runs, nil when it is not set: what the backend's getenv() says, else
+--- the environment of the process.
+---@param name string
+---@return string|nil value
+function M.getenv(name)
+    local mod = M.current()
+    if type(mod.getenv) ~= "function" then return os.getenv(name) end
+    return mod.getenv(name)
+end
+
 --- The names of the available backends, in the order of the platform:
 --- those that load, are complete and are available with the options of
 --- the backend in use. Found once per selection.
@@ -326,13 +365,21 @@ package.preload[ "sh.backend.luv" ] = function( ... ) local arg = _G.arg;
 -- before it returns.
 --
 -- chdir() and getcwd() are uv.chdir and uv.cwd: `cd` changes the directory
--- of the process.
+-- of the process. setenv() is uv.os_setenv and uv.os_unsetenv, and getenv()
+-- is uv.os_getenv: `pushenv` changes the environment of the process, which
+-- every program started afterwards inherits. Lua's os.getenv reads it too,
+-- except on Windows, where the C library keeps a copy of its own.
 --
 -- luv is loaded with pcall, so this module also loads on an interpreter
 -- without it; available() then returns false and the reason.
 local M = { name = "luv" }
 
 local ok, uv = pcall(require, "luv")
+
+-- The buffer sizes getenv() tries when uv.os_getenv reports that a value
+-- does not fit its default buffer: 64 KiB, 1 MiB and 16 MiB.
+local GETENV_SIZE  = 65536
+local GETENV_LIMIT = 16777216
 
 -- require's message names the problem on its first line. When the C library
 -- exists but failed to load, the second line holds the cause; otherwise the
@@ -514,6 +561,48 @@ function M.getcwd()
     return uv.cwd()
 end
 
+---Sets variable `name` in the environment of the process, or removes it
+---when `value` is nil.
+---@param name string
+---@param value string|nil
+---@return true|nil ok
+---@return string|nil err  "EINVAL: invalid argument" for a refused name
+function M.setenv(name, value)
+    if not ok then
+        local msg = "sh.backend.luv.setenv: luv cannot be loaded: "
+        error(msg .. load_error, 2)
+    end
+    if not (uv.os_setenv and uv.os_unsetenv) then
+        return nil, "luv has no uv.os_setenv"
+    end
+    local done, err
+    if value == nil then
+        done, err = uv.os_unsetenv(name)
+    else
+        done, err = uv.os_setenv(name, value)
+    end
+    if done then return true end
+    return nil, tostring(err)
+end
+
+---The value of variable `name` in the environment of the process.
+---@param name string
+---@return string|nil value  nil when the variable is not set
+function M.getenv(name)
+    if not (ok and uv.os_getenv) then return os.getenv(name) end
+    -- uv.os_getenv copies the value into a buffer whose size is its second
+    -- argument. luv 1.52 and 1.53 return a value longer than the default
+    -- buffer all the same; a version that fails with ENOBUFS instead is
+    -- asked again with larger buffers.
+    local value, _, code = uv.os_getenv(name)
+    local size = GETENV_SIZE
+    while value == nil and code == "ENOBUFS" and size <= GETENV_LIMIT do
+        value, _, code = uv.os_getenv(name, size)
+        size = size * 16
+    end
+    return value
+end
+
 ---Runs argv[1], found on PATH, with the rest as its arguments (the module
 ---comment at the top says when it raises).
 ---@param argv string[]  program and arguments, passed verbatim
@@ -693,6 +782,25 @@ package.preload[ "sh.backend.popen" ] = function( ... ) local arg = _G.arg;
 -- is nil, and getcwd() returns it. The emulated directory applies to the
 -- programs this backend runs only, not to Lua's own io functions.
 --
+-- io.popen cannot change the environment either, so `pushenv` is emulated
+-- as well: setenv() remembers each variable it changes, and run() gives
+-- them to the program. The subshell removes a variable with `unset -v`
+-- and sets the others through env (`exec env NAME=value ... <argv>`),
+-- because a shell does not pass on every assignment of its own: bash
+-- keeps RANDOM and refuses UID. getenv() answers for the programs: the
+-- remembered value, else that of the process. Like the directory, this
+-- environment applies to the programs this backend runs only, not to
+-- Lua's os.getenv. setenv() takes a name that the shell can unset:
+-- letters, digits and "_", not starting with a digit. A variable that
+-- the shell still refuses to unset (bash: an exported SHELLOPTS) fails
+-- every run with exit code 127 and the shell's message, like a missing
+-- cwd. While a variable is set this way, a program whose name contains
+-- "=" is a start failure, since env would read the name as one more
+-- variable, and a program that cannot be started is reported by env
+-- instead of the shell. setenv() refuses to remove PATH: bash and dash
+-- look for a program in the current directory once PATH is unset, where
+-- the execvp() of the other backends searches a default path.
+--
 -- The private directory <root>/luash-<pid>-<random> is made once per
 -- process and root with `mkdir -m 700`, which fails when the name exists,
 -- so no other user can read it or plant a file or symlink in it. Lua
@@ -747,6 +855,16 @@ local config = { strategy = "auto", tmpdir = nil }
 -- it when opts.cwd is nil (emulated `cd`, see the module comment).
 local emulated = nil
 
+-- The variables setenv() changed, by name: the value that run() gives the
+-- programs, or false for a variable it removes (emulated `pushenv`, see
+-- the module comment). A variable that is as the process has it again has
+-- no entry.
+local overrides = {}
+
+-- A name that the shell can unset and env can set. The classes are spelled
+-- out: %a and %w follow the locale.
+local VARIABLE = "^[A-Za-z_][A-Za-z0-9_]*$"
+
 local resolved     = nil   -- strategy name that config.strategy resolves to
 local probed       = {}    -- root -> result of the writable check
 local dirs         = {}    -- root -> { path, marker } in use under it
@@ -794,6 +912,39 @@ end
 
 local function has_nul(s)
     return s:find("%z") ~= nil
+end
+
+-- Whether string `a` sorts before `b` in byte order. Lua's `<` on strings
+-- follows the collation locale on PUC Lua.
+local function byte_less(a, b)
+    local n = math.min(#a, #b)
+    for i = 1, n do
+        local x, y = a:byte(i), b:byte(i)
+        if x ~= y then return x < y end
+    end
+    return #a < #b
+end
+
+-- The names in `vars` (name -> value, or false for a variable to remove;
+-- nil for none) in byte order: those to set, and those to remove.
+local function variable_names(vars)
+    local set   = {}
+    local unset = {}
+    for name, value in pairs(vars or {}) do
+        local list = (value == false) and unset or set
+        list[#list + 1] = name
+    end
+    table.sort(set, byte_less)
+    table.sort(unset, byte_less)
+    return set, unset
+end
+
+-- Whether setenv() has set a variable, which run() passes through env.
+local function sets_variable()
+    for _, value in pairs(overrides) do
+        if value ~= false then return true end
+    end
+    return false
 end
 
 local function env(name)
@@ -975,8 +1126,11 @@ end
 -- write that line into the captured stderr either. A failed cd or a
 -- missing program reports to the captured stderr. The status goes to fd
 -- 3, which the outer subshell opens before the program starts and the
--- program does not inherit.
-local function render_sh(argv, files, cwd)
+-- program does not inherit. The variables in `vars` change in the inner
+-- subshell as well: `unset -v` removes those that are false, and the
+-- program runs through env, which sets the others. A failed unset reports
+-- like a failed cd.
+local function render_sh(argv, files, cwd, vars)
     local words = {}
     for i, a in ipairs(argv) do
         words[i] = quote(a)
@@ -985,7 +1139,19 @@ local function render_sh(argv, files, cwd)
         -- exec would read "-x/prog" as an option; "./-x/prog" is the same
         words[1] = quote("./" .. argv[1])
     end
-    local s = "exec " .. table.concat(words, " ")
+    local set, unset = variable_names(vars)
+    local program    = table.concat(words, " ")
+    if #set > 0 then
+        local assignments = {}
+        for i, name in ipairs(set) do
+            assignments[i] = quote(name .. "=" .. vars[name])
+        end
+        program = "env " .. table.concat(assignments, " ") .. " " .. program
+    end
+    local s = "exec " .. program
+    if #unset > 0 then
+        s = "unset -v " .. table.concat(unset, " ") .. " || exit 127; " .. s
+    end
     if cwd then
         s = "cd -P " .. quote(cd_target(cwd)) .. " || exit 127; " .. s
     end
@@ -1024,8 +1190,11 @@ end
 -- /dev/null. `call echo %^errorlevel%` expands errorlevel when the echo
 -- runs, not when the line is read. The line gets one more pair of quotes
 -- because `cmd /c` strips the first and the last quote of a line that
--- starts with one. There is no inline-input form (strategy basic).
-local function render_cmd(argv, files, cwd)
+-- starts with one. There is no inline-input form (strategy basic). The
+-- variables in `vars` change with `set "NAME=value"` in front of the
+-- program, and `set "NAME="` removes one; setenv() refuses a value that
+-- cmd.exe would not set as it is.
+local function render_cmd(argv, files, cwd, vars)
     local function q(s)
         return '"' .. (s:gsub('"', '""')) .. '"'
     end
@@ -1049,14 +1218,22 @@ local function render_cmd(argv, files, cwd)
     if files.status then
         s = s .. " & call echo %^errorlevel% > " .. q(files.status)
     end
-    return '"' .. s .. '"'
+    local set, unset = variable_names(vars)
+    local changes    = {}
+    for _, name in ipairs(unset) do
+        changes[#changes + 1] = 'set "' .. name .. '=" & '
+    end
+    for _, name in ipairs(set) do
+        changes[#changes + 1] = 'set "' .. name .. "=" .. vars[name] .. '" & '
+    end
+    return '"' .. table.concat(changes) .. s .. '"'
 end
 
-local function render(argv, files, cwd, mode)
+local function render(argv, files, cwd, mode, vars)
     if (mode or MODE) == "cmd" then
-        return render_cmd(argv, files or {}, cwd)
+        return render_cmd(argv, files or {}, cwd, vars)
     end
-    return render_sh(argv, files or {}, cwd)
+    return render_sh(argv, files or {}, cwd, vars)
 end
 
 --------------------------------------------------------------------------------
@@ -1413,7 +1590,7 @@ local function run_with_files(entry, argv, input, opts, files)
             return failure(argv, why, opts), true
         end
     end
-    local cmd = render(argv, files, opts.cwd, MODE)
+    local cmd = render(argv, files, opts.cwd, MODE, opts.vars)
     local stdout, how, code = execute(cmd, opts.on_stdout)
     if not stdout then
         return failure(argv, how, opts), true
@@ -1486,7 +1663,7 @@ local function run_merged(argv, input, opts)
     if input ~= "" then
         files.data = input
     end
-    local cmd = render(argv, files, opts.cwd, MODE)
+    local cmd = render(argv, files, opts.cwd, MODE, opts.vars)
     local stdout, how, code = execute(cmd, opts.on_stdout)
     if not stdout then
         return failure(argv, how, opts)
@@ -1589,6 +1766,56 @@ function M.getcwd()
     return path
 end
 
+---Changes variable `name` for the programs that run() starts, or removes
+---it for them when `value` is nil (emulated `pushenv`: io.popen cannot
+---change the environment of the process).
+---@param name string  letters, digits and "_", not starting with a digit
+---@param value string|nil
+---@return true|nil ok
+---@return string|nil err  when the shell cannot change the variable
+function M.setenv(name, value)
+    if type(name) ~= "string" or not name:find(VARIABLE) then
+        return nil, (
+            "sh.popen.setenv: the shell takes a name of letters, digits"
+            .. " and _ that does not start with a digit"
+        )
+    end
+    if value ~= nil and (type(value) ~= "string" or has_nul(value)) then
+        return nil, "sh.popen.setenv: expected a value without NUL bytes"
+    end
+    -- cmd.exe: `set "NAME="` removes the variable, %NAME% expands inside
+    -- the quotes, and a quote or a line break ends them
+    local altered = value == "" or (value and value:find('["%%\r\n]'))
+    if MODE == "cmd" and altered then
+        return nil, (
+            "sh.popen.setenv: cmd.exe cannot set an empty value, or one that"
+            .. " holds a double quote, a percent sign or a line break"
+        )
+    end
+    if value == os.getenv(name) then
+        overrides[name] = nil   -- as the process has it: nothing to change
+        return true
+    end
+    if name == "PATH" and value == nil then
+        return nil, (
+            "sh.popen.setenv: PATH cannot be removed, since the shell would"
+            .. " look for programs in the current directory; give it a value"
+        )
+    end
+    overrides[name] = value or false
+    return true
+end
+
+---The value of variable `name` for the programs that run() starts: the
+---one setenv() gave it, else that of the process.
+---@param name string
+---@return string|nil value  nil when the programs do not get the variable
+function M.getenv(name)
+    local value = overrides[name]
+    if value == nil then return os.getenv(name) end
+    return value or nil
+end
+
 ---Lists the strategies that can run here, most capable first.
 ---@return string[] names
 function M.available_strategies()
@@ -1619,7 +1846,8 @@ function M.cleanup_all()
     dirs = {}
 end
 
----Runs argv[1], found on PATH, with the remaining elements as arguments.
+---Runs argv[1], found on PATH, with the remaining elements as arguments,
+---in the environment of the process with the changes of setenv().
 ---@param argv string[]  program and arguments, passed verbatim
 ---@param input string|nil  stdin for the child; "" or nil for none
 ---@param opts table|nil  on_stdout(chunk), on_stderr(chunk), cwd (default:
@@ -1652,12 +1880,20 @@ function M.run(argv, input, opts)
     end
     if cwd == nil then cwd = emulated end
     opts = {
-        on_stdout = opts.on_stdout, on_stderr = opts.on_stderr, cwd = cwd,
+        on_stdout = opts.on_stdout, on_stderr = opts.on_stderr,
+        cwd       = cwd,            vars      = overrides,
     }
     if argv[1]:sub(1, 1) == "-" and not argv[1]:find("/", 1, true) then
         -- exec would read it as an option, and has no portable "--"
         return failure(
             argv, "a program name starting with - cannot be run by sh", opts
+        )
+    end
+    if MODE == "sh" and argv[1]:find("=", 1, true) and sets_variable() then
+        -- env would read the name as one more variable to set
+        return failure(
+            argv, "a program name with = cannot be run by env, which sets"
+            .. " the variables of setenv()", opts
         )
     end
     if not STRATEGIES[name].files then
@@ -1678,9 +1914,11 @@ end
 ---@param cwd string|nil  directory to cd into first
 ---@param mode string|nil  "sh" (POSIX) or "cmd" (Windows); default: this
 ---                        platform
+---@param vars table|nil  variables to change: name -> value, or false for
+---                       one to remove
 ---@return string command
-function M._render(argv, files, cwd, mode)
-    return render(argv, files, cwd, mode)
+function M._render(argv, files, cwd, mode, vars)
+    return render(argv, files, cwd, mode, vars)
 end
 
 return M
@@ -1704,7 +1942,9 @@ package.preload[ "sh.backend.posix" ] = function( ... ) local arg = _G.arg;
 -- started (cause "failed") apart from one that exits with status 127.
 --
 -- chdir() and getcwd() are posix.chdir and posix.getcwd: `cd` changes the
--- directory of the process.
+-- directory of the process. setenv() is posix.stdlib.setenv and getenv()
+-- is os.getenv: `pushenv` changes the environment of the process, which
+-- every program started afterwards inherits, and Lua's os.getenv reads.
 --
 -- luaposix is loaded with pcall: without it this module still loads and
 -- available() returns false with the reason.
@@ -1716,11 +1956,16 @@ local ok, posix = pcall(require, "posix")
 -- kept for compatibility with luaposix 32 and earlier, and luaposix 38
 -- replaced it with a function that only raises an error. The wrapper
 -- called posix.unistd.execp, which takes the same (path, argt) arguments
--- in luaposix 36.3 and 38.
-local execp = nil
+-- in luaposix 36.3 and 38. setenv comes from posix.stdlib in the same
+-- way; without it the backend still runs programs, and setenv() says that
+-- it cannot change the environment.
+local execp  = nil
+local setenv = nil
 if ok then
     local found, unistd = pcall(require, "posix.unistd")
     if found and type(unistd) == "table" then execp = unistd.execp end
+    local has, stdlib = pcall(require, "posix.stdlib")
+    if has and type(stdlib) == "table" then setenv = stdlib.setenv end
 end
 
 local READ_SIZE  = 4096    -- bytes per read from stdout or stderr
@@ -2022,6 +2267,32 @@ function M.getcwd()
         error("sh.backend.posix.getcwd: " .. unavailable, 2)
     end
     return posix.getcwd()
+end
+
+---Sets variable `name` in the environment of the process, or removes it
+---when `value` is nil.
+---@param name string
+---@param value string|nil
+---@return true|nil ok
+---@return string|nil err  "Invalid argument" for a name the system refuses
+function M.setenv(name, value)
+    if unavailable then
+        error("sh.backend.posix.setenv: " .. unavailable, 2)
+    end
+    if type(setenv) ~= "function" then
+        return nil, "luaposix has no posix.stdlib.setenv"
+    end
+    -- 0 when done; nil and the reason otherwise
+    local done, err = setenv(name, value)
+    if done then return true end
+    return nil, err
+end
+
+---The value of variable `name` in the environment of the process.
+---@param name string
+---@return string|nil value  nil when the variable is not set
+function M.getenv(name)
+    return os.getenv(name)
 end
 
 ---Runs argv[1], found on PATH, with argv[2], ... as its arguments. A
@@ -2327,6 +2598,133 @@ end
 ---@return table parsed { args, input, sources, fields }
 function M.parse(...)
     local parsed = guard(flatten, select("#", ...), { ... })
+    return parsed
+end
+
+-- Record in `vars` that variable `name` is to get `value`: a string or a
+-- number, or false for a variable to remove.
+local function add_variable(vars, name, value)
+    local kind = type(value)
+    if name == "" then
+        error("sh.command: empty variable name", 0)
+    elseif name:find("%z") then
+        error("sh.command: a variable name contains a NUL byte", 0)
+    elseif name:find("=", 1, true) then
+        error("sh.command: the variable name '" .. name .. "' contains =", 0)
+    elseif kind == "number" then
+        value = _tostring(value)
+    elseif value == true then
+        local hint = "; give a value, or false to remove it"
+        error("sh.command: variable '" .. name .. "' is true" .. hint, 0)
+    elseif value ~= false and kind ~= "string" then
+        local what = "bad " .. kind .. " value for variable '"
+        error("sh.command: " .. what .. name .. "'", 0)
+    elseif value and value:find("%z") then
+        local what = "the value of variable '" .. name
+        error("sh.command: " .. what .. "' contains a NUL byte", 0)
+    end
+    vars[name] = value
+end
+
+local collect  -- forward declaration; it and collect_table call each other
+
+-- Collect from table `t`: its array entries, then its string keys as
+-- variable names, in sorted order.
+local function collect_table(t, out, active)
+    local n = #t
+    for i = 1, n do
+        collect(t[i], out, active)
+    end
+
+    local extra  = {}
+    local names  = {}
+    local values = {}
+    for k, v in pairs(t) do
+        local kind = type(k)
+        if kind == "number" and k > n and k % 1 == 0 then
+            extra[#extra + 1] = k
+            values[k]         = v
+        elseif kind == "string" then
+            names[#names + 1] = k
+            values[k]         = v
+        end
+    end
+    table.sort(extra)
+    for _, k in ipairs(extra) do
+        collect(values[k], out, active)
+    end
+    table.sort(names, byte_less)
+    for _, name in ipairs(names) do
+        add_variable(out.vars, name, values[name])
+    end
+end
+
+-- Add one argument of `pushenv` to `out`: the variables it names go to
+-- `out.vars`, and a Result is walked like any argument.
+function collect(value, out, active)
+    local kind = type(value)
+    if value == nil or value == false then
+        return
+    elseif kind == "string" then
+        local name, text = value:match("^([^=]*)=(.*)$")
+        if not name then
+            error("sh.command: expected NAME=value, got '" .. value .. "'", 0)
+        end
+        add_variable(out.vars, name, text)
+    elseif kind ~= "table" then
+        error("sh.command: a " .. kind .. " names no variable", 0)
+    elseif is_command(value) or is_pipeline(value) then
+        error("sh.command: a Command is not an argument; use :pipe()", 0)
+    elseif active[value] then
+        error("sh.command: an argument table contains itself", 0)
+    elseif type(rawget(value, "__stdout")) == "string" then
+        walk(value, out, active)
+    else
+        active[value] = true
+        collect_table(value, out, active)
+        active[value] = nil
+    end
+end
+
+-- Collect the `n` argument values of `pushenv` in `values`.
+local function collect_env(n, values)
+    local out = {
+        args    = {},
+        input   = "",
+        sources = {},
+        fields  = { __stdout = "", __stderr = "" },
+        vars    = {},
+    }
+    local active = {}
+    for i = 1, n do
+        collect(values[i], out, active)
+    end
+
+    local names = {}
+    for name in pairs(out.vars) do
+        names[#names + 1] = name
+    end
+    table.sort(names, byte_less)
+    out.env = {}
+    for i, name in ipairs(names) do
+        out.env[i] = { name = name, value = out.vars[name] }
+    end
+    out.vars = nil
+    return out
+end
+
+--- Read the arguments of `pushenv`: the environment variables they name.
+--- A string is `"NAME=value"`. A table gives one variable per string key:
+--- a string or a number is its value, and `false` removes the variable;
+--- its array entries are read as arguments. `nil` and `false` are skipped,
+--- and where a variable is named twice the later one counts. A Result is
+--- not read for variables: it passes through, as parse() has it.
+---@param ... any
+---@return table parsed { env, args, input, sources, fields }, where `env`
+---                     lists { name, value } in byte order of the names;
+---                     `value` is a string, or false to remove the variable
+function M.parse_env(...)
+    local parsed = guard(collect_env, select("#", ...), { ... })
     return parsed
 end
 
@@ -2851,9 +3249,9 @@ end
 --- Every command returns a Result: a table with the fields `__input`,
 --- `__stdout`, `__stderr`, `__exitcode`, `__signal` and `__pipeline`.
 --- Indexing a Result falls back to this module, which is what makes
---- `r:grep(...)` work. Processes run, and `cd` happens, through the backend
---- that sh.backend selects when this module loads (DESIGN.md sections 3, 4
---- and 6.6).
+--- `r:grep(...)` work. Processes run, and `cd` and `pushenv` happen,
+--- through the backend that sh.backend selects when this module loads
+--- (DESIGN.md sections 3, 4 and 6.6).
 ---
 
 local command_mod = require("sh.command")
@@ -3170,6 +3568,61 @@ local function popd(...)
     return result
 end
 
+--- The frames of `pushenv`: each lists, as { name, value }, the variables
+--- that one call changed with the value each had before; false for a
+--- variable that was not set.
+M.PUSHENV_STACK = Stack:new()
+
+-- Give the variables of `frame` their values again, the last one changed
+-- first. Returns true, or nil and why the first one that failed did, after
+-- trying the others.
+local function restore_env(frame)
+    local reason = nil
+    for i = #frame, 1, -1 do
+        local var       = frame[i]
+        local done, why = backend.setenv(var.name, var.value or nil)
+        if not done and not reason then
+            reason = var.name .. ": " .. _tostring(why)
+        end
+    end
+    if reason then return nil, reason end
+    return true
+end
+
+-- Change the environment that the commands run in, through the backend, and
+-- remember what the variables were; `popenv` puts them back. When a
+-- variable cannot be changed, those changed before it are put back and
+-- nothing is remembered.
+local function pushenv(...)
+    local parsed = checked(command_mod.parse_env, ...)
+    local result = passthrough(parsed)
+    local frame  = {}
+    for _, var in ipairs(parsed.env) do
+        local old       = backend.getenv(var.name)
+        local done, why = backend.setenv(var.name, var.value or nil)
+        if not done then
+            restore_env(frame)
+            local message = var.name .. ": " .. _tostring(why)
+            return fail(result, "pushenv: " .. message)
+        end
+        frame[#frame + 1] = { name = var.name, value = old or false }
+    end
+    M.PUSHENV_STACK:push(frame)
+    return result
+end
+
+local function popenv(...)
+    local parsed = checked(command_mod.parse, ...)
+    local result = passthrough(parsed)
+    local frame  = M.PUSHENV_STACK:pop()
+    if frame == nil then
+        return fail(result, "popenv: the environment stack is empty")
+    end
+    local done, why = restore_env(frame)
+    if not done then return fail(result, "popenv: " .. why) end
+    return result
+end
+
 local function print(...)
     local result = passthrough(checked(command_mod.parse, ...))
     _print(result_tostring(result))
@@ -3178,8 +3631,9 @@ end
 
 --- The builtins, consulted for the names in __index_ignore_function.
 M.FUNCTIONS = {
-    cd    = cd,    stdout = stdout, stderr = stderr,
-    pushd = pushd, popd   = popd,   print  = print,
+    cd      = cd,      stdout = stdout, stderr = stderr,
+    pushd   = pushd,   popd   = popd,   print  = print,
+    pushenv = pushenv, popenv = popenv,
 }
 
 --------------------------------------------------------------------------------
@@ -3189,7 +3643,7 @@ M.FUNCTIONS = {
 M.__index_ignore_prefix   = { "_G", "_PROMPT" }
 M.__index_ignore_exact    = {}
 M.__index_ignore_function = {
-    "cd", "pushd", "popd", "stdout", "stderr", "print",
+    "cd", "pushd", "popd", "pushenv", "popenv", "stdout", "stderr", "print",
 }
 
 local function strcmp(a, b)
