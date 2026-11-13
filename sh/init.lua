@@ -9,9 +9,9 @@
 --- Every command returns a Result: a table with the fields `__input`,
 --- `__stdout`, `__stderr`, `__exitcode`, `__signal` and `__pipeline`.
 --- Indexing a Result falls back to this module, which is what makes
---- `r:grep(...)` work. Processes run, and `cd` happens, through the backend
---- that sh.backend selects when this module loads (DESIGN.md sections 3, 4
---- and 6.6).
+--- `r:grep(...)` work. Processes run, and `cd` and `pushenv` happen,
+--- through the backend that sh.backend selects when this module loads
+--- (DESIGN.md sections 3, 4 and 6.6).
 ---
 
 local command_mod = require("sh.command")
@@ -328,6 +328,61 @@ local function popd(...)
     return result
 end
 
+--- The frames of `pushenv`: each lists, as { name, value }, the variables
+--- that one call changed with the value each had before; false for a
+--- variable that was not set.
+M.PUSHENV_STACK = Stack:new()
+
+-- Give the variables of `frame` their values again, the last one changed
+-- first. Returns true, or nil and why the first one that failed did, after
+-- trying the others.
+local function restore_env(frame)
+    local reason = nil
+    for i = #frame, 1, -1 do
+        local var       = frame[i]
+        local done, why = backend.setenv(var.name, var.value or nil)
+        if not done and not reason then
+            reason = var.name .. ": " .. _tostring(why)
+        end
+    end
+    if reason then return nil, reason end
+    return true
+end
+
+-- Change the environment that the commands run in, through the backend, and
+-- remember what the variables were; `popenv` puts them back. When a
+-- variable cannot be changed, those changed before it are put back and
+-- nothing is remembered.
+local function pushenv(...)
+    local parsed = checked(command_mod.parse_env, ...)
+    local result = passthrough(parsed)
+    local frame  = {}
+    for _, var in ipairs(parsed.env) do
+        local old       = backend.getenv(var.name)
+        local done, why = backend.setenv(var.name, var.value or nil)
+        if not done then
+            restore_env(frame)
+            local message = var.name .. ": " .. _tostring(why)
+            return fail(result, "pushenv: " .. message)
+        end
+        frame[#frame + 1] = { name = var.name, value = old or false }
+    end
+    M.PUSHENV_STACK:push(frame)
+    return result
+end
+
+local function popenv(...)
+    local parsed = checked(command_mod.parse, ...)
+    local result = passthrough(parsed)
+    local frame  = M.PUSHENV_STACK:pop()
+    if frame == nil then
+        return fail(result, "popenv: the environment stack is empty")
+    end
+    local done, why = restore_env(frame)
+    if not done then return fail(result, "popenv: " .. why) end
+    return result
+end
+
 local function print(...)
     local result = passthrough(checked(command_mod.parse, ...))
     _print(result_tostring(result))
@@ -336,8 +391,9 @@ end
 
 --- The builtins, consulted for the names in __index_ignore_function.
 M.FUNCTIONS = {
-    cd    = cd,    stdout = stdout, stderr = stderr,
-    pushd = pushd, popd   = popd,   print  = print,
+    cd      = cd,      stdout = stdout, stderr = stderr,
+    pushd   = pushd,   popd   = popd,   print  = print,
+    pushenv = pushenv, popenv = popenv,
 }
 
 --------------------------------------------------------------------------------
@@ -347,7 +403,7 @@ M.FUNCTIONS = {
 M.__index_ignore_prefix   = { "_G", "_PROMPT" }
 M.__index_ignore_exact    = {}
 M.__index_ignore_function = {
-    "cd", "pushd", "popd", "stdout", "stderr", "print",
+    "cd", "pushd", "popd", "pushenv", "popenv", "stdout", "stderr", "print",
 }
 
 local function strcmp(a, b)

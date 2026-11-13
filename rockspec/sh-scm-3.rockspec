@@ -12,8 +12,8 @@ description = {
         Python's sh module): every program on PATH is a function, its output
         is a value, and chains read like shell pipelines. It keeps stdout and
         stderr apart, reports exit status and signals, and implements cd,
-        pushd and popd. Runs on Lua 5.1 to 5.5 and LuaJIT and needs no C
-        module.
+        pushd and popd, and pushenv and popenv for environment variables.
+        Runs on Lua 5.1 to 5.5 and LuaJIT and needs no C module.
 
         Optional dependencies: programs are started through luaposix or luv
         when one of them is installed, and through Lua's own io.popen

@@ -56,8 +56,8 @@ with `download/v2.0.0` for a pinned version, and put the file anywhere on
 
 ## Where to look
 
-- [Examples](examples.md): nine short scripts, from the first call to a
-  backend of your own, with their output.
+- [Examples](examples.md): ten short scripts, from the first call to a
+  backend of your own and environment variables, with their output.
 - How it works, one page per topic, each linking the
   [design document](DESIGN.md) and the code on GitHub and ending with
   a *How to* section of recipes:
@@ -68,7 +68,8 @@ with `download/v2.0.0` for a pinned version, and put the file anywhere on
   [configuration and bundling](how-it-works/configuration.md),
   [commands as data](how-it-works/commands.md),
   [results, errors and output](how-it-works/results.md),
-  [working directory](how-it-works/cwd.md), and
+  [working directory](how-it-works/cwd.md),
+  [environment variables](how-it-works/environment.md), and
   [testing and your own backend](how-it-works/testing.md).
 - The [design document](DESIGN.md) and the
   [implementation plan](PLAN.md) that LuaSH 2.0 was built from.

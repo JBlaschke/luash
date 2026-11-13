@@ -146,10 +146,25 @@ for k in pairs(package.loaded) do
 end
 table.sort(new_loaded)
 
-local Command  = command.Command
-local Pipeline = command.Pipeline
-local parse    = command.parse
-local quote    = command.quote
+local Command   = command.Command
+local Pipeline  = command.Pipeline
+local parse     = command.parse
+local parse_env = command.parse_env
+local quote     = command.quote
+
+-- The variables of a parse_env() result in one line: NAME="value" for a
+-- variable to set and -NAME for one to remove.
+local function show_env(parsed)
+    local parts = {}
+    for i, var in ipairs(parsed.env) do
+        if var.value == false then
+            parts[i] = "-" .. var.name
+        else
+            parts[i] = var.name .. "=" .. show(var.value)
+        end
+    end
+    return table.concat(parts, " ")
+end
 
 --------------------------------------------------------------------------------
 -- RUN TESTS
@@ -162,8 +177,8 @@ test("Module shape", function()
         "loading requires no other module"
     )
     local functions = {
-        "parse", "quote", "Command", "Pipeline", "set_runner", "render",
-        "is_command", "is_pipeline",
+        "parse", "parse_env", "quote", "Command", "Pipeline", "set_runner",
+        "render", "is_command", "is_pipeline",
     }
     for _, name in ipairs(functions) do
         ok(type(command[name]) == "function", "command." .. name)
@@ -332,6 +347,165 @@ test("parse: input, sources and fields", function()
     ok(
         contains(raises(parse, { __input = {} }), "__input"),
         "a table __input raises"
+    )
+end)
+
+test("parse_env: variables", function()
+    local p = parse_env({ B = "x", A = 1, C = false, D = "", N = -2.5 })
+    ok(
+        eq(show_env(p), 'A="1" B="x" -C D="" N="-2.5"'),
+        "a table: sorted names, numbers as strings, false removes"
+    )
+    ok(p.vars == nil, "the result has no field vars")
+    ok(
+        eq(show(p.args), "{}") and eq(p.input, "") and eq(#p.sources, 0),
+        "no arguments, input or sources"
+    )
+    ok(
+        eq(p.fields.__stdout, "") and eq(p.fields.__stderr, ""),
+        "fields as parse() gives them"
+    )
+
+    local p = parse_env("A=1", "B=x=y", "C=", "D=two words")
+    ok(
+        eq(show_env(p), 'A="1" B="x=y" C="" D="two words"'),
+        "strings: the value follows the first ="
+    )
+    local p = parse_env("A=line one\nline two")
+    ok(eq(p.env[1].value, "line one\nline two"), "a value with a line break")
+
+    ok(
+        eq(show_env(parse_env("A=1", { A = 2 })), 'A="2"'),
+        "named twice: the later one counts"
+    )
+    ok(
+        eq(show_env(parse_env({ A = 2 }, "A=1")), 'A="1"'),
+        "named twice, in the other order"
+    )
+    ok(
+        eq(show_env(parse_env({ "A=1", "B=1", A = 2 })), 'A="2" B="1"'),
+        "the keys of a table follow its array entries"
+    )
+    ok(
+        eq(show_env(parse_env("A=1", { A = false })), "-A"),
+        "set, then removed"
+    )
+
+    local p = parse_env(nil, "A=1", false, { false, "B=2" }, nil)
+    ok(eq(show_env(p), 'A="1" B="2"'), "nil and false skipped")
+    ok(eq(#parse_env().env, 0), "no arguments: no variables")
+    ok(eq(#parse_env({}).env, 0), "an empty table: no variables")
+
+    local p = parse_env({ b = 1, a1 = 1, _a = 1, B = 1, __b = 1 })
+    ok(
+        eq(show_env(p), 'B="1" __b="1" _a="1" a1="1" b="1"'),
+        "byte order; a name starting with _ is a variable too"
+    )
+    local collate = os.setlocale(nil, "collate")
+    local locale  = os.setlocale("en_US.UTF-8", "collate")
+    local sorted  = show_env(parse_env({ b = 1, a1 = 1, _a = 1, B = 1 }))
+    os.setlocale(collate, "collate")
+    if locale then
+        ok(
+            eq(sorted, 'B="1" _a="1" a1="1" b="1"'),
+            "byte order under " .. locale .. " collation"
+        )
+    else
+        ok(true, "note: no en_US.UTF-8 locale; collation not checked")
+    end
+
+    local p = parse_env({ { "A=1", { B = 2 } }, C = 3 })
+    ok(eq(show_env(p), 'A="1" B="2" C="3"'), "nested tables")
+    local sparse = {}
+    sparse[5] = "E=5"
+    sparse[1] = "A=1"
+    sparse[3] = "C=3"
+    ok(
+        eq(show_env(parse_env(sparse)), 'A="1" C="3" E="5"'),
+        "entries after a hole are read"
+    )
+    local shared = { A = 1 }
+    ok(
+        eq(show_env(parse_env(shared, { shared })), 'A="1"'),
+        "the same table twice is not a cycle"
+    )
+
+    if HONOURS_PAIRS then
+        local backing = { B = "x", A = 1 }
+        local proxy   = setmetatable({}, {
+            __pairs = function() return next, backing, nil end,
+        })
+        ok(
+            eq(show_env(parse_env(proxy)), 'A="1" B="x"'),
+            "variables of a __pairs proxy"
+        )
+    end
+end)
+
+test("parse_env: Results", function()
+    local pl = Pipeline(Command("seq", 1, 3))
+    local r  = result("out", pl)
+    r.__stderr   = "err"
+    r.__exitcode = 2
+    local p = parse_env(r, { A = 1 })
+    ok(eq(show_env(p), 'A="1"'), "a Result names no variable")
+    ok(eq(p.input, "out"), "Result input")
+    ok(#p.sources == 1 and rawequal(p.sources[1], pl), "Result source")
+    ok(
+        eq(p.fields.__stdout, "out") and eq(p.fields.__stderr, "err")
+            and eq(p.fields.__exitcode, 2) and eq(p.fields.__signal, 0),
+        "Result fields pass through"
+    )
+    ok(eq(show(p.args), "{}"), "a Result gives no arguments")
+
+    local pl2 = Pipeline(Command("seq", 4, 6))
+    local p   = parse_env({ r, B = 2 }, result("more", pl2))
+    ok(eq(show_env(p), 'B="2"'), "a Result inside a table of variables")
+    ok(eq(p.input, "outmore"), "two Results: input in order")
+    ok(
+        #p.sources == 2 and rawequal(p.sources[1], pl)
+            and rawequal(p.sources[2], pl2),
+        "two Results: sources in order"
+    )
+    ok(eq(p.fields.__exitcode, 0), "fields.__exitcode is the last seen")
+end)
+
+test("parse_env: invalid arguments", function()
+    -- { what, the argument, a part of the message }
+    local cases = {
+        { "a string without =",   "A",                 "expected NAME=value" },
+        { "a string that is =x",  "=x",                "empty variable name" },
+        { "an empty key",         { [""] = "x" },      "empty variable name" },
+        { "a key with =",         { ["A=B"] = "x" },   "'A=B' contains =" },
+        { "a key with NUL",       { ["A\0B"] = "x" },  "name contains a NUL" },
+        { "a name with NUL",      "A\0B=x",            "name contains a NUL" },
+        { "true as value",        { A = true },        "false to remove it" },
+        { "a table as value",     { A = {} },          "bad table value" },
+        { "a function as value",  { A = print },       "bad function value" },
+        { "NUL in a table value", { A = "x\0y" },      "NUL byte" },
+        { "NUL in a string",      "A=x\0y",            "NUL byte" },
+        { "a number",             5,                   "number names no" },
+        { "true",                 true,                "boolean names no" },
+        { "a function",           print,               "function names no" },
+    }
+    for _, case in ipairs(cases) do
+        local err = raises(parse_env, case[2])
+        ok(contains(err, case[3]), case[1] .. " raises: " .. tostring(err))
+    end
+    local err = raises(parse_env, { LUASH_X = {} })
+    ok(contains(err, "'LUASH_X'"), "the message names the variable")
+
+    ok(raises(parse_env, Command("ls")) ~= nil, "a Command raises")
+    ok(raises(parse_env, { Pipeline(Command("ls")) }) ~= nil, "a Pipeline raises")
+    local t = { "A=1" }
+    t[2] = t
+    ok(
+        contains(raises(parse_env, t), "contains itself"),
+        "a cyclic table raises"
+    )
+    ok(
+        contains(raises(parse_env, { __stdout = "", __input = {} }), "__input"),
+        "a Result with a table __input raises"
     )
 end)
 
@@ -701,6 +875,8 @@ test("Error positions", function()
     -- position with the line that defines it.
     local cases = {
         { "parse(true)", function() parse(true) end },
+        { "parse_env('A')", function() parse_env("A") end },
+        { "parse_env({A = true})", function() parse_env({ A = true }) end },
         { "Command with a bad flag", function() Command("x", { k = {} }) end },
         { "Command(5)", function() Command(5) end },
         { "arg(true)", function() a:arg(true) end },

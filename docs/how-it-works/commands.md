@@ -21,6 +21,10 @@ points at `:pipe()`, and a table that contains itself is caught.
 
 [`parse`][parse] exposes the same flattening for the builtins, which also
 need the Results' `__stdout`, `__stderr` and exit status to pass through.
+[`parse_env`][parse_env] reads the arguments of `pushenv` instead: there
+a string is `NAME=value` and every string key of a table names a
+variable, also one that starts with `_`
+([environment variables](environment.md#the-builtins)).
 
 ## Command and Pipeline
 
@@ -136,19 +140,20 @@ With `sh.config.trace = true` each stage is printed as it runs
 [walk_table]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L154
 [format_flag]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L119
 [parse]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L257
-[Command]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L371
-[arg]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L382
-[flag]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L396
-[input]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L412
-[copy]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L438
-[argv]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L448
-[Pipeline]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L495
-[cmd_pipe]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L503
-[pipe_pipe]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L511
-[bor]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L555
-[pipeline_run]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L531
-[set_runner]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L341
-[render]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L326
-[quote]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L270
-[render_feed]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L293
+[parse_env]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L384
+[Command]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L498
+[arg]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L509
+[flag]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L523
+[input]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L539
+[copy]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L565
+[argv]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L575
+[Pipeline]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L622
+[cmd_pipe]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L630
+[pipe_pipe]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L638
+[bor]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L682
+[pipeline_run]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L658
+[set_runner]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L468
+[render]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L453
+[quote]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L397
+[render_feed]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L420
 [provenance]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L163

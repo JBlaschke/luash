@@ -181,9 +181,9 @@ sh.seq(1, 3):cat():wc("-l")
 A stage that fails with `raise_errors` on has streamed its output by the
 time the error is raised: the pump ran to the end before
 [`failure`][failure] looked at the exit status. The builtins (`cd`,
-`pushd`, `popd`, `print`) start no program and run no pump, so a chain
-through one of them shows neither a trace line nor output for that
-stage.
+`pushd`, `popd`, `pushenv`, `popenv`, `print`) start no program and run
+no pump, so a chain through one of them shows neither a trace line nor
+output for that stage.
 
 ## How to
 
@@ -280,23 +280,23 @@ saw before the error are all it keeps.
 [pipe_run]: https://github.com/JBlaschke/luash/blob/main/sh/pipe.lua#L63
 [writer]: https://github.com/JBlaschke/luash/blob/main/sh/pipe.lua#L25
 [trace]: https://github.com/JBlaschke/luash/blob/main/sh/pipe.lua#L36
-[pump]: https://github.com/JBlaschke/luash/blob/main/sh/backend/posix.lua#L190
-[spawn]: https://github.com/JBlaschke/luash/blob/main/sh/backend/posix.lua#L140
-[poll]: https://github.com/JBlaschke/luash/blob/main/sh/backend/posix.lua#L233
-[feed]: https://github.com/JBlaschke/luash/blob/main/sh/backend/posix.lua#L200
-[drain]: https://github.com/JBlaschke/luash/blob/main/sh/backend/posix.lua#L211
-[posix_run]: https://github.com/JBlaschke/luash/blob/main/sh/backend/posix.lua#L342
-[reap]: https://github.com/JBlaschke/luash/blob/main/sh/backend/posix.lua#L254
-[luv_run]: https://github.com/JBlaschke/luash/blob/main/sh/backend/luv.lua#L216
-[luv_feed]: https://github.com/JBlaschke/luash/blob/main/sh/backend/luv.lua#L130
-[luv_drain]: https://github.com/JBlaschke/luash/blob/main/sh/backend/luv.lua#L147
-[uv_run_once]: https://github.com/JBlaschke/luash/blob/main/sh/backend/luv.lua#L310
-[deliver_to]: https://github.com/JBlaschke/luash/blob/main/sh/backend/luv.lua#L295
-[abort]: https://github.com/JBlaschke/luash/blob/main/sh/backend/luv.lua#L285
-[loop_mode]: https://github.com/JBlaschke/luash/blob/main/sh/backend/luv.lua#L221
-[popen_execute]: https://github.com/JBlaschke/luash/blob/main/sh/backend/popen.lua#L702
-[run_with_files]: https://github.com/JBlaschke/luash/blob/main/sh/backend/popen.lua#L753
+[pump]: https://github.com/JBlaschke/luash/blob/main/sh/backend/posix.lua#L197
+[spawn]: https://github.com/JBlaschke/luash/blob/main/sh/backend/posix.lua#L147
+[poll]: https://github.com/JBlaschke/luash/blob/main/sh/backend/posix.lua#L240
+[feed]: https://github.com/JBlaschke/luash/blob/main/sh/backend/posix.lua#L207
+[drain]: https://github.com/JBlaschke/luash/blob/main/sh/backend/posix.lua#L218
+[posix_run]: https://github.com/JBlaschke/luash/blob/main/sh/backend/posix.lua#L375
+[reap]: https://github.com/JBlaschke/luash/blob/main/sh/backend/posix.lua#L261
+[luv_run]: https://github.com/JBlaschke/luash/blob/main/sh/backend/luv.lua#L266
+[luv_feed]: https://github.com/JBlaschke/luash/blob/main/sh/backend/luv.lua#L138
+[luv_drain]: https://github.com/JBlaschke/luash/blob/main/sh/backend/luv.lua#L155
+[uv_run_once]: https://github.com/JBlaschke/luash/blob/main/sh/backend/luv.lua#L360
+[deliver_to]: https://github.com/JBlaschke/luash/blob/main/sh/backend/luv.lua#L345
+[abort]: https://github.com/JBlaschke/luash/blob/main/sh/backend/luv.lua#L335
+[loop_mode]: https://github.com/JBlaschke/luash/blob/main/sh/backend/luv.lua#L271
+[popen_execute]: https://github.com/JBlaschke/luash/blob/main/sh/backend/popen.lua#L790
+[run_with_files]: https://github.com/JBlaschke/luash/blob/main/sh/backend/popen.lua#L841
 [execute]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L196
 [runner]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L212
 [failure]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L181
-[pipeline_run]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L531
+[pipeline_run]: https://github.com/JBlaschke/luash/blob/main/sh/command.lua#L658

@@ -68,6 +68,81 @@ local function run_collecting(B, argv)
     return r, table.concat(outs), table.concat(errs), #outs
 end
 
+-- The checks of setenv() and getenv(), for a backend that has setenv().
+-- posix and luv change the environment of the process; the test changes it
+-- back.
+local function run_environment(B)
+    local getenv = B.getenv or os.getenv
+    local name   = "LUASH_TEST_VARIABLE"
+
+    -- What a program gets for variable `var`, "<unset>" for none. Only
+    -- for a name that is no variable of the shell itself.
+    local function child(var)
+        local script = 'printf %s "${' .. var .. '-<unset>}"'
+        return B.run({"sh", "-c", script}, "", {}).stdout
+    end
+
+    -- Whether env, run as the program, lists variable `var`.
+    local function listed(var)
+        local listing = "\n" .. B.run({"env"}, "", {}).stdout
+        return listing:find("\n" .. var .. "=", 1, true) ~= nil
+    end
+
+    test("setenv and getenv", function()
+        ok(
+            getenv(name) == nil and child(name) == "<unset>",
+            "the test variable is not set at the start"
+        )
+        local done, err = pcall(function()
+            ok(B.setenv(name, "one two") == true, "setenv succeeds")
+            ok(getenv(name) == "one two", "getenv gives the value")
+            ok(child(name) == "one two", "a program gets the value")
+
+            local awkward = "it's a=b $HOME `x` \"q\" \\ * ;\nline two"
+            ok(B.setenv(name, awkward) == true, "a value with shell syntax")
+            ok(getenv(name) == awkward, "getenv gives it as it is")
+            ok(child(name) == awkward, "a program gets it as it is")
+
+            ok(B.setenv(name, "") == true, "an empty value")
+            ok(getenv(name) == "", "getenv gives the empty value")
+            ok(child(name) == "", "a program gets the variable, empty")
+
+            ok(B.setenv(name, nil) == true, "setenv(name, nil) removes")
+            ok(getenv(name) == nil, "getenv gives nil")
+            ok(child(name) == "<unset>", "a program gets no variable")
+            ok(B.setenv(name, nil) == true, "removing it again succeeds")
+        end)
+        B.setenv(name, nil)
+        if not done then error(err, 0) end
+
+        local set, why = B.setenv("LUASH=X", "x")
+        ok(
+            set == nil and type(why) == "string",
+            "a name with =: nil, reason (" .. tostring(why) .. ")"
+        )
+    end)
+
+    -- A variable that the process has from its start.
+    local home = getenv("HOME")
+    if not home then
+        print("note: HOME is not set, its removal is not checked")
+        return
+    end
+    test("setenv of a variable of the process", function()
+        local done, err = pcall(function()
+            ok(B.setenv("HOME", nil) == true, "removing HOME")
+            ok(getenv("HOME") == nil, "getenv gives nil")
+            ok(not listed("HOME"), "a program gets no HOME")
+            ok(B.setenv("HOME", "/luash-test-home") == true, "another value")
+            ok(child("HOME") == "/luash-test-home", "a program gets it")
+        end)
+        ok(B.setenv("HOME", home) == true, "setting HOME as it was")
+        ok(getenv("HOME") == home, "getenv gives it")
+        ok(child("HOME") == home, "a program gets it")
+        if not done then error(err, 0) end
+    end)
+end
+
 local function run_contract(B, name, strategy)
     local caps = B.capabilities()
     print("backend " .. name .. ": " .. describe(caps))
@@ -215,6 +290,14 @@ local function run_contract(B, name, strategy)
         ok(not pcall(B.run, {}, "", {}), "empty argv raises")
         ok(not pcall(B.run, {"echo", 1}, "", {}), "non-string element raises")
     end)
+
+    -- setenv() and getenv() are no part of the contract: a backend without
+    -- setenv() cannot change the environment (`pushenv` then fails).
+    if type(B.setenv) == "function" then
+        run_environment(B)
+    else
+        print("note: no setenv(), environment checks skipped")
+    end
 end
 
 --------------------------------------------------------------------------------

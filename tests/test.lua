@@ -252,6 +252,12 @@ test('Check no global is written while a command runs', function()
             local r = sh.cat(sh.echo('piped'))
             ok(tostring(r) == 'piped', 'a pipeline under a strict _G')
         end
+        local pushed = sh.pushenv({LUASH_TEST_STRICT = 'x'})
+        local popped = sh.popenv()
+        ok(
+            pushed.__exitcode == 0 and popped.__exitcode == 0,
+            'pushenv and popenv under a strict _G'
+        )
     end)
     setmetatable(_G, gmt)
     if not done then error(err, 0) end
@@ -566,6 +572,299 @@ test('Check sh.__verbose and sh.__raise_errors aliases', function()
         ok(rawget(sh, '__verbose') == nil, 'no raw sh.__verbose')
         ok(rawget(sh, '__raise_errors') == nil, 'no raw sh.__raise_errors')
     end)
+end)
+
+-- What a program gets for variable `name`, '<unset>' for none. Only for a
+-- name that is no variable of the shell itself.
+local function child_env(name)
+    local script = 'printf %s "${' .. name .. '-<unset>}"'
+    return sh.sh('-c', script).__stdout
+end
+
+-- Whether env, run as the program, lists variable `name`.
+local function child_has(name)
+    local listing = '\n' .. sh.env().__stdout
+    return listing:find('\n' .. name .. '=', 1, true) ~= nil
+end
+
+-- It changes the environment, and restores it.
+test('Check pushenv and popenv', function()
+    local stack = sh.PUSHENV_STACK
+    local depth = stack:size()
+    local done, err = pcall(function()
+        ok(eq(depth, 0), 'sh.PUSHENV_STACK is empty at the start')
+        ok(eq(child_env('LUASH_TEST_A'), '<unset>'), 'no variable yet')
+
+        local r = sh.pushenv({LUASH_TEST_A = 'one two', LUASH_TEST_N = 5})
+        ok(eq(r.__exitcode, 0) and eq(r.__stderr, ''), 'pushenv succeeds')
+        ok(eq(stack:size(), 1), 'one frame on sh.PUSHENV_STACK')
+        ok(eq(child_env('LUASH_TEST_A'), 'one two'), 'a program gets the value')
+        ok(eq(child_env('LUASH_TEST_N'), '5'), 'a number is set as text')
+
+        -- a second frame: a value with shell syntax, an empty value and a
+        -- removal
+        local awkward = "it's a=b $HOME `x` \"q\" \\ * ;\nline two"
+        r = sh.pushenv(
+            'LUASH_TEST_A=' .. awkward,
+            {LUASH_TEST_E = '', LUASH_TEST_N = false}
+        )
+        ok(eq(r.__exitcode, 0), 'pushenv of a string and a table')
+        ok(eq(stack:size(), 2), 'a second frame')
+        ok(eq(child_env('LUASH_TEST_A'), awkward), 'a value arrives as it is')
+        ok(eq(child_env('LUASH_TEST_E'), ''), 'an empty value is set')
+        ok(eq(child_env('LUASH_TEST_N'), '<unset>'), 'false removes')
+
+        ok(eq(sh.popenv().__exitcode, 0), 'popenv succeeds')
+        ok(eq(stack:size(), 1), 'popenv takes one frame')
+        ok(eq(child_env('LUASH_TEST_A'), 'one two'), 'the value before it')
+        ok(eq(child_env('LUASH_TEST_E'), '<unset>'), 'a new variable is gone')
+        ok(eq(child_env('LUASH_TEST_N'), '5'), 'a removed variable is back')
+        sh.popenv()
+        ok(eq(child_env('LUASH_TEST_A'), '<unset>'), 'unset after the last')
+        ok(eq(stack:size(), 0), 'the stack is empty again')
+
+        -- posix and luv change the environment of the process; popen keeps
+        -- the change for the programs it runs
+        sh.pushenv('LUASH_TEST_A=x')
+        local own = os.getenv('LUASH_TEST_A')
+        sh.popenv()
+        if sh.backend_name() == 'popen' then
+            ok(own == nil, 'popen: os.getenv does not see the variable')
+        else
+            ok(eq(own, 'x'), 'os.getenv sees the variable')
+        end
+        ok(os.getenv('LUASH_TEST_A') == nil, 'os.getenv after popenv')
+
+        -- a variable that the process has from its start
+        local home = os.getenv('HOME')
+        if home then
+            sh.pushenv({HOME = false})
+            ok(not child_has('HOME'), 'a variable of the process is removed')
+            sh.pushenv({HOME = '/luash-test-home'})
+            ok(eq(child_env('HOME'), '/luash-test-home'), 'set on top of that')
+            sh.popenv()
+            ok(not child_has('HOME'), 'removed again after one popenv')
+            sh.popenv()
+            ok(eq(child_env('HOME'), home), 'as at the start after two')
+        else
+            skip('Check pushenv and popenv: HOME', 'HOME is not set')
+        end
+
+        -- a program is looked up in the PATH that pushenv gave
+        sh.pushenv({PATH = '/luash-no-such-directory'})
+        r = sh.sh('-c', 'exit 0')
+        sh.popenv()
+        if caps.exitcode then
+            ok(eq(r.__exitcode, 127), 'sh is not found on a PATH without it')
+        end
+        ok(eq(sh.sh('-c', 'printf ok').__stdout, 'ok'), 'found after popenv')
+
+        -- Without PATH, the shell of popen would look for programs in the
+        -- current directory, so popen refuses; posix and luv remove it.
+        if os.getenv('PATH') then
+            r = sh.pushenv({LUASH_TEST_A = 'x', PATH = false})
+            if sh.backend_name() == 'popen' then
+                ok(
+                    eq(r.__exitcode, 1)
+                    and r.__stderr:find('pushenv: PATH: ', 1, true) == 1,
+                    'popen: removing PATH fails: ' .. r.__stderr
+                )
+                ok(eq(stack:size(), 0), 'no frame is pushed')
+                ok(eq(child_env('LUASH_TEST_A'), '<unset>'), 'nothing is set')
+            else
+                ok(eq(r.__exitcode, 0), 'PATH is removed')
+                -- env is found where exec looks without PATH, if anywhere
+                local listed = sh.env()
+                if listed.__exitcode == 0 then
+                    local listing = '\n' .. listed.__stdout
+                    ok(
+                        listing:find('\nPATH=', 1, true) == nil,
+                        'a program gets no PATH'
+                    )
+                end
+                sh.popenv()
+                ok(child_has('PATH'), 'popenv gives PATH back')
+            end
+        end
+
+        -- both pass a Result on, so they chain
+        r = sh.echo('kept'):pushenv({LUASH_TEST_A = 'x'})
+        ok(eq(r.__stdout, 'kept\n'), 'pushenv passes a Result through')
+        ok(eq(tostring(r.__pipeline), 'echo kept'), 'with its pipeline')
+        r = r:popenv()
+        ok(eq(r.__stdout, 'kept\n'), 'popenv passes a Result through')
+        r = sh.pushenv({LUASH_TEST_A = 'chained'})
+            :sh('-c', 'printf %s "$LUASH_TEST_A"'):popenv()
+        ok(eq(r.__stdout, 'chained'), 'pushenv(...):sh(...):popenv()')
+        ok(eq(stack:size(), 0), 'the chain leaves the stack empty')
+        ok(eq(child_env('LUASH_TEST_A'), '<unset>'), 'and the variable unset')
+
+        ok(
+            rawequal(pushenv, sh.pushenv) and rawequal(popenv, sh.popenv),
+            'pushenv and popenv are globals after sh.install()'
+        )
+
+        ok(eq(sh.pushenv().__exitcode, 0), 'pushenv without variables')
+        ok(eq(stack:size(), 1), 'pushes an empty frame')
+        ok(eq(sh.popenv().__exitcode, 0), 'which popenv takes')
+        r = sh.popenv()
+        ok(
+            eq(r.__exitcode, 1)
+            and eq(r.__stderr, 'popenv: the environment stack is empty'),
+            'popenv on an empty stack fails: ' .. r.__stderr
+        )
+
+        -- an argument that names no variable raises, and changes nothing
+        local err = raised(function() sh.pushenv({LUASH_TEST_A = true}) end)
+        ok(tostring(err):match(
+            "test%.lua:%d+: sh%.command: variable 'LUASH_TEST_A' is true"
+        ) ~= nil, 'true as value raises at the caller: ' .. tostring(err))
+        err = raised(function() sh.pushenv({LUASH_TEST_A = 'x'}, 'bad') end)
+        ok(tostring(err):match(
+            "test%.lua:%d+: sh%.command: expected NAME=value, got 'bad'"
+        ) ~= nil, 'a string without = raises at the caller: ' .. tostring(err))
+        ok(eq(stack:size(), 0), 'nothing is pushed')
+        ok(eq(child_env('LUASH_TEST_A'), '<unset>'), 'no variable is set')
+
+        -- A name that a shell cannot set: popen refuses it, and puts back
+        -- the variable it changed before; posix and luv set it.
+        r = sh.pushenv({LUASH_TEST_A = 'y', ['LUASH_TEST_A.x'] = 'x'})
+        if sh.backend_name() == 'popen' then
+            ok(
+                eq(r.__exitcode, 1)
+                and r.__stderr:find('pushenv: LUASH_TEST_A.x: ', 1, true) == 1,
+                'popen: a name the shell cannot set fails: ' .. r.__stderr
+            )
+            ok(eq(stack:size(), 0), 'no frame is pushed')
+            ok(eq(child_env('LUASH_TEST_A'), '<unset>'), 'the other is undone')
+        else
+            ok(eq(r.__exitcode, 0), 'a name with a dot is set')
+            ok(child_has('LUASH_TEST_A.x'), 'a program gets it')
+            sh.popenv()
+            ok(not child_has('LUASH_TEST_A.x'), 'popenv removes it')
+        end
+    end)
+    while stack:size() > depth do
+        sh.popenv()
+    end
+    if not done then error(err, 0) end
+end)
+
+-- A backend table that forwards the contract to the backend in use and
+-- holds the fields of `extra` besides.
+local function wrapped_backend(extra)
+    local registry = require('sh.backend')
+    local inner    = registry.current()
+    local wrapper  = {name = 'wrapped'}
+    for _, key in ipairs(registry.CONTRACT) do
+        wrapper[key] = inner[key]
+    end
+    for key, value in pairs(extra) do
+        wrapper[key] = value
+    end
+    return wrapper
+end
+
+-- It selects backends of its own, and the one from the start again.
+test('Check pushenv on a backend of your own', function()
+    local name  = sh.backend_name()
+    local saved = sh.config.backend
+    local stack = sh.PUSHENV_STACK
+    local depth = stack:size()
+    -- eq() looks up the keys of its first argument only.
+    local function same(a, b)
+        return eq(a, b) and eq(b, a)
+    end
+    local done, err = pcall(function()
+        -- a backend written for LuaSH 2.0 has no setenv()
+        sh.set_backend(wrapped_backend({}))
+        ok(eq(sh.backend_name(), 'wrapped'), 'a backend without setenv()')
+        local r = sh.pushenv({LUASH_TEST_A = 'x'})
+        ok(eq(r.__exitcode, 1) and eq(
+            r.__stderr,
+            'pushenv: LUASH_TEST_A: backend wrapped cannot change the environment'
+        ), 'pushenv fails and says why: ' .. r.__stderr)
+        ok(eq(stack:size(), depth), 'no frame is pushed')
+        ok(eq(sh.pushenv().__exitcode, 0), 'pushenv without variables works')
+        ok(eq(sh.popenv().__exitcode, 0), 'and popenv takes its frame')
+        ok(eq(tostring(sh.echo('runs')), 'runs'), 'commands run')
+        sh.set_backend(saved)
+
+        -- a backend with an environment of its own, which refuses names
+        local env     = {}
+        local calls   = {}
+        local refused = {LUASH_TEST_B = true}
+        sh.set_backend(wrapped_backend({
+            setenv = function(var, value)
+                calls[#calls + 1] = var .. '=' .. tostring(value)
+                if refused[var] then return nil, 'refused' end
+                env[var] = value
+                return true
+            end,
+            getenv = function(var) return env[var] end,
+        }))
+        r = sh.pushenv({LUASH_TEST_C = 'c', LUASH_TEST_A = 'a'})
+        ok(eq(r.__exitcode, 0), 'pushenv through setenv() of the backend')
+        ok(
+            eq(calls, {'LUASH_TEST_A=a', 'LUASH_TEST_C=c'}),
+            'the variables are set in byte order of their names'
+        )
+        ok(same(env, {LUASH_TEST_A = 'a', LUASH_TEST_C = 'c'}), 'both are set')
+
+        calls = {}
+        r = sh.pushenv(
+            {LUASH_TEST_A = 'A', LUASH_TEST_B = 'b', LUASH_TEST_C = 'C'}
+        )
+        ok(
+            eq(r.__exitcode, 1)
+            and eq(r.__stderr, 'pushenv: LUASH_TEST_B: refused'),
+            'a variable that setenv() refuses fails pushenv: ' .. r.__stderr
+        )
+        ok(
+            eq(calls, {'LUASH_TEST_A=A', 'LUASH_TEST_B=b', 'LUASH_TEST_A=a'}),
+            'the one before it is put back, the one after it is not tried'
+        )
+        ok(eq(stack:size(), depth + 1), 'the failed pushenv pushes no frame')
+        ok(same(env, {LUASH_TEST_A = 'a', LUASH_TEST_C = 'c'}), 'as before it')
+
+        -- popenv restores in reverse; a variable that was not set is
+        -- removed, and a failure does not stop the others
+        calls = {}
+        refused.LUASH_TEST_C = true
+        r = sh.popenv()
+        ok(
+            eq(r.__exitcode, 1)
+            and eq(r.__stderr, 'popenv: LUASH_TEST_C: refused'),
+            'a variable that cannot be restored fails popenv: ' .. r.__stderr
+        )
+        ok(
+            eq(calls, {'LUASH_TEST_C=nil', 'LUASH_TEST_A=nil'}),
+            'popenv goes on to the variables before it'
+        )
+        ok(eq(stack:size(), depth), 'its frame is gone')
+        ok(same(env, {LUASH_TEST_C = 'c'}), 'the others are restored')
+        sh.set_backend(saved)
+
+        -- without getenv(), the value to restore is that of the process
+        calls = {}
+        sh.set_backend(wrapped_backend({
+            setenv = function(var, value)
+                calls[#calls + 1] = var .. '=' .. tostring(value)
+                return true
+            end,
+        }))
+        sh.pushenv({HOME = '/luash-test-home'})
+        sh.popenv()
+        ok(eq(calls, {
+            'HOME=/luash-test-home', 'HOME=' .. tostring(os.getenv('HOME')),
+        }), 'a backend without getenv(): popenv restores os.getenv')
+    end)
+    sh.set_backend(saved)
+    while stack:size() > depth do
+        sh.popenv()
+    end
+    ok(eq(sh.backend_name(), name), 'the backend of the start is in use again')
+    if not done then error(err, 0) end
 end)
 
 -- Last: it changes the working directory, and restores it.

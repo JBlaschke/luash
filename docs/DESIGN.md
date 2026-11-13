@@ -8,6 +8,8 @@
 > is no longer in the repository (it is in the git history under
 > `handoff/reference/`). The [How it works](how-it-works/architecture.md)
 > pages describe what was built and link the sections here to the code.
+> `pushenv` and `popenv` came after 2.0: section 3.8 and the paragraphs on
+> the environment in sections 4 and 6 describe them as built.
 
 This document is the design for the next version of `sh` (LuaSH). It is
 written for an implementer who has not seen the discussion that led to it.
@@ -58,13 +60,15 @@ sh/
 ├── pipe.lua          -- the run path: verbose/trace plumbing over the
 │                        backend in use
 ├── sys.lua           -- platform detection, load_pcall
-├── stack.lua         -- LIFO stack used by pushd/popd
+├── stack.lua         -- LIFO stack used by pushd/popd and pushenv/popenv
 └── backend/
     ├── init.lua      -- registry: platform table, selection once, the
     │                    unified interface (run, chdir, getcwd, ...)
-    ├── posix.lua     -- luaposix: fork, execp, poll loop; chdir
-    ├── luv.lua       -- luv: uv.spawn, pipes, uv.run("once") loop; chdir
+    ├── posix.lua     -- luaposix: fork, execp, poll loop; chdir, setenv
+    ├── luv.lua       -- luv: uv.spawn, pipes, uv.run("once") loop; chdir,
+    │                    setenv
     └── popen.lua     -- io.popen plus temp-file strategies; emulated cd
+                         and environment
 standalone/sh.lua     -- GENERATED single-file library; never edit by hand
 opt/bin/build.lua     -- amalgamation driver (make standalone)
 opt/bin/build/amalg.lua -- vendored amalg.lua, copied verbatim from
@@ -232,8 +236,8 @@ Result built from literal input only).
 `__pipeline` is the Pipeline that produced the Result: for
 `sh.seq(1, 10):wc("-l")` the `wc` Result has
 `tostring(r.__pipeline) == "seq 1 10 | wc -l"`. A builtin (`cd`, `pushd`,
-`popd`, `print`) passes `__pipeline` through unchanged; builtins are not
-processes and never appear in a rendering.
+`popd`, `pushenv`, `popenv`, `print`) passes `__pipeline` through
+unchanged; builtins are not processes and never appear in a rendering.
 
 Exit mapping (unchanged): `__exitcode` is the exit status when the child
 exited, `127` when it was killed; `__signal` is the signal number when it
@@ -283,6 +287,45 @@ New behaviour:
   for stderr. Backends that cannot stream (popen with stderr in a temp file)
   deliver that stream in one chunk at the end.
 
+### 3.8 Environment variables
+
+Added after 2.0, on the pattern of `pushd` and `popd`.
+
+| Call | Behaviour |
+|---|---|
+| `sh.pushenv(...)` | builtin: change environment variables for the commands that follow, and push what they were |
+| `sh.popenv()` | builtin: put the variables of the last `pushenv` back |
+| `sh.PUSHENV_STACK` | the stack object; one frame per `pushenv` |
+
+Arguments of `pushenv`, read by `command.parse_env`: a string is
+`"NAME=value"`, split at the first `=`; a table gives one variable per
+string key, where a string or a number is the value and `false` removes
+the variable, and its array entries are read as arguments again; `nil` and
+`false` are skipped; a variable named twice gets the later value; a Result
+passes through as for every builtin. Unlike in section 7, every string key
+is a name, also one starting with `_`. A string without `=`, an empty
+name, a NUL byte in a name or value, and `true` or a table as a value are
+argument errors, raised at the caller like those of a command.
+
+The variables change one by one through the backend (section 4), in byte
+order of the names, so that the order does not depend on the table. A
+frame lists `{ name, value }` with the value each variable had before,
+`false` for one that was not set. When the backend refuses a variable, the
+ones already changed are put back, no frame is pushed, and the Result
+reports `pushenv: <name>: <reason>` with `__exitcode` 1: a `pushenv` takes
+effect whole or not at all. `popenv` restores the top frame in reverse
+order, goes on past a variable that fails and reports the first such
+failure; with an empty stack it reports
+`popenv: the environment stack is empty`. A `pushenv` without variables
+pushes an empty frame, so that the calls stay paired.
+
+Decided against: `sh.with_env(vars):cmd(...)`, because nothing says where
+along a chain the variables stop applying, and a public `sh.getenv`,
+because a command answers for what the commands get, and the registry's
+`getenv` does for code that needs it. A block form `with_env(vars, f)`
+that pops under an error as well can be built on the two builtins; the
+how-it-works page shows it.
+
 ## 4. Backend contract
 
 Each backend is a module returning a table with this shape. Nothing else is
@@ -311,6 +354,21 @@ function B.getcwd()           -- -> path | nil, reason
 -- no chdir, resolves `dir` through the shell, remembers it and enters it
 -- at each run (section 6.3). `dir` is a non-empty string, checked by the
 -- registry.
+```
+
+Two more functions are optional. They are not part of the contract, so
+that a backend written for the six above is still selected:
+
+```lua
+function B.setenv(name, value) -- -> true | nil, reason; nil removes
+function B.getenv(name)        -- -> value | nil
+-- The environment of the programs run() starts (section 3.8): posix and
+-- luv change the environment of the process; popen, which cannot,
+-- remembers the variables and hands them to each run (section 6.3).
+-- `name` is a non-empty string without "=" and NUL, `value` a string
+-- without NUL or nil; the registry checks both. Without setenv(), the
+-- registry answers "backend <name> cannot change the environment";
+-- without getenv(), it asks os.getenv.
 ```
 
 `run` arguments:
@@ -410,6 +468,10 @@ Based on `reference/sh/pipe_posix.lua` with these changes.
 - Lua 5.1: use `table.unpack or unpack` if unpack is needed at all.
 - `B.name = "posix"` (the reference module lacks it, so
   `backend_name()` returned nil for posix).
+- `setenv` is `posix.stdlib.setenv(name, value)`, which removes the
+  variable for a nil value, and `getenv` is `os.getenv`. The function is
+  taken from `posix.stdlib` like `execp` from `posix.unistd`; without it
+  `setenv` returns nil and the reason.
 
 ### 6.2 luv (`sh/backend/luv.lua`)
 
@@ -430,6 +492,11 @@ closure-scope bug and the `uv.run("default")` hang).
 - Windows: `uv.spawn` resolves `argv[1]` on PATH and quotes arguments
   itself; nothing platform-specific is needed here.
 - Use `opts.cwd` as the `cwd` option of `uv.spawn` when given.
+- `setenv` is `uv.os_setenv`, or `uv.os_unsetenv` for a nil value, and
+  `getenv` is `uv.os_getenv`, not `os.getenv`: on Windows the C library
+  keeps a copy of the environment that `uv.os_setenv` does not change.
+  `uv.os_getenv` takes a buffer size; a value that does not fit
+  (`ENOBUFS`) is asked for again with a larger one.
 
 ### 6.3 popen (`sh/backend/popen.lua`)
 
@@ -501,6 +568,31 @@ returns it (else `pwd -P`), and `run` enters it when `opts.cwd` is nil. The
 emulated directory applies to the programs this backend runs only, not to
 Lua's own `io` functions; the README says so.
 
+Emulated environment: standard Lua cannot set a variable either, so
+`B.setenv(name, value)` records the change in a table, and each `run`
+applies the table inside the subshell that runs the program:
+`unset -v <names> || exit 127;` for the variables to remove, and
+`exec env '<NAME>=<value>' ... <argv>` for those to set. The assignments go
+through `env` because a shell does not hand every assignment of its own to
+a child: bash takes one to `RANDOM` as a seed and refuses one to `UID`.
+A value equal to what the process has drops the entry, so that a run
+without changes uses the same string as before. `B.getenv` answers with
+the recorded value, else `os.getenv`. Limits, which `setenv` reports
+instead of running into them: a name is letters, digits and `_`, not
+starting with a digit (what `unset -v` takes); `PATH` cannot be removed,
+because bash and dash look for a program in the current directory once it
+is unset, where `execvp` searches a default path. While a variable is set,
+a program name with `=` is a start failure, since `env` would read it as
+an assignment. A variable that the shell refuses to unset (bash: an
+exported `SHELLOPTS`) fails the run with 127 and the shell's message, like
+a directory that cannot be entered. Under cmd.exe the changes become
+`set "NAME=value" &` in front of the command, and `setenv` refuses an
+empty value and one with `"`, `%` or a line break. The variables that are
+set are part of the command line, so the check of its length before
+`io.popen` covers them: a run whose line is too long is a start failure.
+Like the directory, this environment applies to the programs this backend
+runs only, not to Lua's `os.getenv`.
+
 Streaming: read the popen handle with `h:read(4096)` in a loop and pass
 each chunk to `on_stdout`. After `h:close()`, read the stderr file and pass
 it to `on_stderr` in one chunk.
@@ -547,9 +639,9 @@ selects nothing.
 The one place that knows the backends. Resolve once, look up, never
 re-detect: a backend is loaded, checked against the contract, configured
 and asked whether it is available at a selection only, and the selected
-module answers every later `run`, `chdir`, `getcwd` and `capabilities`
-call through the registry's functions of the same names. Nothing is probed
-at a command or a `cd`.
+module answers every later `run`, `chdir`, `getcwd`, `setenv`, `getenv`
+and `capabilities` call through the registry's functions of the same
+names. Nothing is probed at a command, a `cd` or a `pushenv`.
 
 ```lua
 local ORDER = {
@@ -583,7 +675,10 @@ module still loads, and the first command raises the recorded reason.
 
 `current()`, `name()`, `capabilities()`, `run(argv, input, opts)`,
 `chdir(dir)` and `getcwd()` go to the backend in use; `chdir` checks that
-`dir` is a non-empty string. `available()` lists the platform's backends
+`dir` is a non-empty string. `setenv(name, value)` and `getenv(name)` go
+there too when the backend has them (section 4): `setenv` checks its
+arguments first and returns nil and a reason for a backend without it,
+and `getenv` falls back to `os.getenv`. `available()` lists the platform's backends
 that load, are complete and are available with the options of the backend
 in use, found once per selection. `preload()` loads the platform's
 backends for `sh.install()`. Modules load, are configured and are asked

@@ -3,7 +3,8 @@
 Tiny library for shell scripting with Lua (inspired by
 [Python's sh module](https://pypi.org/project/sh/)). This is a rewrite of
 [luash](https://github.com/zserge/luash) that keeps stdout and stderr apart,
-reports exit status and signals, and implements `cd`, `pushd`, and `popd`.
+reports exit status and signals, and implements `cd`, `pushd`, and `popd`,
+as well as `pushenv` and `popenv` for environment variables.
 
 It runs on Lua 5.1 to 5.5 and LuaJIT and needs no C module. Programs are
 started through [luaposix](https://luarocks.org/modules/gvvaughan/luaposix)
@@ -304,8 +305,8 @@ E: sh: asdf: No such file or directory
 127
 ```
 
-The builtins (`cd`, `pushd`, `popd`, `print`) never raise; they report a
-failure through `__exitcode` and `__stderr`.
+The builtins (`cd`, `pushd`, `popd`, `pushenv`, `popenv`, `print`) never
+raise for a failure; they report it through `__exitcode` and `__stderr`.
 
 ## Verbose output and tracing
 
@@ -372,7 +373,9 @@ only), and the booleans `stdin` (input can be passed), `separate_stderr`,
 status is known) and `signals`. `sh.set_backend` also accepts a table that
 implements the backend contract, for a backend of your own: a `name` and
 the functions `available`, `capabilities`, `configure`, `run`, `chdir` and
-`getcwd`, as in `tests/backend_fake.lua`.
+`getcwd`, as in `tests/backend_fake.lua`. Two more are optional: `setenv`
+and `getenv`, which `pushenv` and `popenv` need (see
+[Environment variables](#environment-variables)).
 
 The settings, with their defaults:
 
@@ -471,6 +474,62 @@ the directory, remembers it, and runs every later command in it. The emulated
 directory applies to the commands that sh runs only, not to Lua itself:
 `io.open("file")` still opens `file` in the directory the process started in.
 
+## Environment variables
+
+`sh.pushenv(...)` changes environment variables for the commands that
+follow, and `sh.popenv()` puts them back as they were. Like `pushd` and
+`popd` they keep a stack (`sh.PUSHENV_STACK`), so the calls nest:
+
+```lua
+local sh = require "sh"
+
+sh.pushenv({CC = "clang", MAKEFLAGS = "-j4"})  -- set two variables
+sh.make()
+sh.pushenv("CC=gcc", {MAKEFLAGS = false})      -- set one, remove the other
+sh.make("check")
+sh.popenv()                                    -- clang and -j4 again
+sh.popenv()                                    -- as before the first pushenv
+```
+
+The arguments name the variables:
+
+- A table gives one variable per key: a string or a number is its value,
+  and `false` removes the variable.
+- A string is `"NAME=value"`.
+- Where a variable is named twice, the later one counts, so
+  `sh.pushenv(defaults, overrides)` works.
+
+Both can be chained using the `:` operator, and pass `__input` through.
+This way they bracket commands, as `pushd` and `popd` do:
+
+```lua
+sh.pushenv({LC_ALL = "C"}) : sort("names.txt") : popenv() : print()
+```
+
+A variable that cannot be changed is reported through `__exitcode` and
+`__stderr`, as `pushenv: <name>: <reason>`, and `pushenv` then changes
+nothing at all. A `popenv` with nothing to put back reports
+`popenv: the environment stack is empty`. An argument that names no
+variable, such as a string without `=` or `true` as a value, raises an
+error like a malformed argument of a command. A command that raises
+between a `pushenv` and its `popenv` skips the `popenv`; the
+[documentation](https://jblaschke.github.io/luash/how-it-works/environment/)
+has a helper that pops in that case as well.
+
+The environment belongs to the backend, like the directory: the posix and
+luv backends change the environment of the process, which `os.getenv` and
+every program started afterwards see. The popen backend cannot do that and
+emulates it: it remembers the variables and gives them to every command it
+runs. The emulated environment applies to the commands that sh runs only:
+`os.getenv` still returns what the process started with. Under popen a
+variable name consists of letters, digits and `_` and does not start with a
+digit, and `PATH` can be given another value but cannot be removed.
+
+`pushenv` and `popenv` came after release 2.0.0, so `luarocks install sh`
+and the `v2.0.0` download do not have them yet. Until the next release,
+take `standalone/sh.lua` from a clone of this repository, or run
+`luarocks make rockspec/sh-scm-3.rockspec` there.
+
 ## Upgrading from 1.x
 
 - luaposix is no longer required. `require("sh")` now loads the module
@@ -492,6 +551,8 @@ directory applies to the commands that sh runs only, not to Lua itself:
 - Results have a `__pipeline` field, and `sh.Command`, `sh.Pipeline`,
   `sh.config`, `sh.set_backend`, `sh.backend_name`, `sh.available_backends`
   and `sh.capabilities` are new.
+- `pushenv` and `popenv` are builtins (after 2.0.0). A program of one of
+  these names still runs through `sh.command("pushenv")`.
 - `sh.version` is `"Automatic Shell Bindings for Lua / LuaSH 2.0.0"`.
 
 ## Questions

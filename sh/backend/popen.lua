@@ -37,6 +37,25 @@
 -- is nil, and getcwd() returns it. The emulated directory applies to the
 -- programs this backend runs only, not to Lua's own io functions.
 --
+-- io.popen cannot change the environment either, so `pushenv` is emulated
+-- as well: setenv() remembers each variable it changes, and run() gives
+-- them to the program. The subshell removes a variable with `unset -v`
+-- and sets the others through env (`exec env NAME=value ... <argv>`),
+-- because a shell does not pass on every assignment of its own: bash
+-- keeps RANDOM and refuses UID. getenv() answers for the programs: the
+-- remembered value, else that of the process. Like the directory, this
+-- environment applies to the programs this backend runs only, not to
+-- Lua's os.getenv. setenv() takes a name that the shell can unset:
+-- letters, digits and "_", not starting with a digit. A variable that
+-- the shell still refuses to unset (bash: an exported SHELLOPTS) fails
+-- every run with exit code 127 and the shell's message, like a missing
+-- cwd. While a variable is set this way, a program whose name contains
+-- "=" is a start failure, since env would read the name as one more
+-- variable, and a program that cannot be started is reported by env
+-- instead of the shell. setenv() refuses to remove PATH: bash and dash
+-- look for a program in the current directory once PATH is unset, where
+-- the execvp() of the other backends searches a default path.
+--
 -- The private directory <root>/luash-<pid>-<random> is made once per
 -- process and root with `mkdir -m 700`, which fails when the name exists,
 -- so no other user can read it or plant a file or symlink in it. Lua
@@ -91,6 +110,16 @@ local config = { strategy = "auto", tmpdir = nil }
 -- it when opts.cwd is nil (emulated `cd`, see the module comment).
 local emulated = nil
 
+-- The variables setenv() changed, by name: the value that run() gives the
+-- programs, or false for a variable it removes (emulated `pushenv`, see
+-- the module comment). A variable that is as the process has it again has
+-- no entry.
+local overrides = {}
+
+-- A name that the shell can unset and env can set. The classes are spelled
+-- out: %a and %w follow the locale.
+local VARIABLE = "^[A-Za-z_][A-Za-z0-9_]*$"
+
 local resolved     = nil   -- strategy name that config.strategy resolves to
 local probed       = {}    -- root -> result of the writable check
 local dirs         = {}    -- root -> { path, marker } in use under it
@@ -138,6 +167,39 @@ end
 
 local function has_nul(s)
     return s:find("%z") ~= nil
+end
+
+-- Whether string `a` sorts before `b` in byte order. Lua's `<` on strings
+-- follows the collation locale on PUC Lua.
+local function byte_less(a, b)
+    local n = math.min(#a, #b)
+    for i = 1, n do
+        local x, y = a:byte(i), b:byte(i)
+        if x ~= y then return x < y end
+    end
+    return #a < #b
+end
+
+-- The names in `vars` (name -> value, or false for a variable to remove;
+-- nil for none) in byte order: those to set, and those to remove.
+local function variable_names(vars)
+    local set   = {}
+    local unset = {}
+    for name, value in pairs(vars or {}) do
+        local list = (value == false) and unset or set
+        list[#list + 1] = name
+    end
+    table.sort(set, byte_less)
+    table.sort(unset, byte_less)
+    return set, unset
+end
+
+-- Whether setenv() has set a variable, which run() passes through env.
+local function sets_variable()
+    for _, value in pairs(overrides) do
+        if value ~= false then return true end
+    end
+    return false
 end
 
 local function env(name)
@@ -319,8 +381,11 @@ end
 -- write that line into the captured stderr either. A failed cd or a
 -- missing program reports to the captured stderr. The status goes to fd
 -- 3, which the outer subshell opens before the program starts and the
--- program does not inherit.
-local function render_sh(argv, files, cwd)
+-- program does not inherit. The variables in `vars` change in the inner
+-- subshell as well: `unset -v` removes those that are false, and the
+-- program runs through env, which sets the others. A failed unset reports
+-- like a failed cd.
+local function render_sh(argv, files, cwd, vars)
     local words = {}
     for i, a in ipairs(argv) do
         words[i] = quote(a)
@@ -329,7 +394,19 @@ local function render_sh(argv, files, cwd)
         -- exec would read "-x/prog" as an option; "./-x/prog" is the same
         words[1] = quote("./" .. argv[1])
     end
-    local s = "exec " .. table.concat(words, " ")
+    local set, unset = variable_names(vars)
+    local program    = table.concat(words, " ")
+    if #set > 0 then
+        local assignments = {}
+        for i, name in ipairs(set) do
+            assignments[i] = quote(name .. "=" .. vars[name])
+        end
+        program = "env " .. table.concat(assignments, " ") .. " " .. program
+    end
+    local s = "exec " .. program
+    if #unset > 0 then
+        s = "unset -v " .. table.concat(unset, " ") .. " || exit 127; " .. s
+    end
     if cwd then
         s = "cd -P " .. quote(cd_target(cwd)) .. " || exit 127; " .. s
     end
@@ -368,8 +445,11 @@ end
 -- /dev/null. `call echo %^errorlevel%` expands errorlevel when the echo
 -- runs, not when the line is read. The line gets one more pair of quotes
 -- because `cmd /c` strips the first and the last quote of a line that
--- starts with one. There is no inline-input form (strategy basic).
-local function render_cmd(argv, files, cwd)
+-- starts with one. There is no inline-input form (strategy basic). The
+-- variables in `vars` change with `set "NAME=value"` in front of the
+-- program, and `set "NAME="` removes one; setenv() refuses a value that
+-- cmd.exe would not set as it is.
+local function render_cmd(argv, files, cwd, vars)
     local function q(s)
         return '"' .. (s:gsub('"', '""')) .. '"'
     end
@@ -393,14 +473,22 @@ local function render_cmd(argv, files, cwd)
     if files.status then
         s = s .. " & call echo %^errorlevel% > " .. q(files.status)
     end
-    return '"' .. s .. '"'
+    local set, unset = variable_names(vars)
+    local changes    = {}
+    for _, name in ipairs(unset) do
+        changes[#changes + 1] = 'set "' .. name .. '=" & '
+    end
+    for _, name in ipairs(set) do
+        changes[#changes + 1] = 'set "' .. name .. "=" .. vars[name] .. '" & '
+    end
+    return '"' .. table.concat(changes) .. s .. '"'
 end
 
-local function render(argv, files, cwd, mode)
+local function render(argv, files, cwd, mode, vars)
     if (mode or MODE) == "cmd" then
-        return render_cmd(argv, files or {}, cwd)
+        return render_cmd(argv, files or {}, cwd, vars)
     end
-    return render_sh(argv, files or {}, cwd)
+    return render_sh(argv, files or {}, cwd, vars)
 end
 
 --------------------------------------------------------------------------------
@@ -757,7 +845,7 @@ local function run_with_files(entry, argv, input, opts, files)
             return failure(argv, why, opts), true
         end
     end
-    local cmd = render(argv, files, opts.cwd, MODE)
+    local cmd = render(argv, files, opts.cwd, MODE, opts.vars)
     local stdout, how, code = execute(cmd, opts.on_stdout)
     if not stdout then
         return failure(argv, how, opts), true
@@ -830,7 +918,7 @@ local function run_merged(argv, input, opts)
     if input ~= "" then
         files.data = input
     end
-    local cmd = render(argv, files, opts.cwd, MODE)
+    local cmd = render(argv, files, opts.cwd, MODE, opts.vars)
     local stdout, how, code = execute(cmd, opts.on_stdout)
     if not stdout then
         return failure(argv, how, opts)
@@ -933,6 +1021,56 @@ function M.getcwd()
     return path
 end
 
+---Changes variable `name` for the programs that run() starts, or removes
+---it for them when `value` is nil (emulated `pushenv`: io.popen cannot
+---change the environment of the process).
+---@param name string  letters, digits and "_", not starting with a digit
+---@param value string|nil
+---@return true|nil ok
+---@return string|nil err  when the shell cannot change the variable
+function M.setenv(name, value)
+    if type(name) ~= "string" or not name:find(VARIABLE) then
+        return nil, (
+            "sh.popen.setenv: the shell takes a name of letters, digits"
+            .. " and _ that does not start with a digit"
+        )
+    end
+    if value ~= nil and (type(value) ~= "string" or has_nul(value)) then
+        return nil, "sh.popen.setenv: expected a value without NUL bytes"
+    end
+    -- cmd.exe: `set "NAME="` removes the variable, %NAME% expands inside
+    -- the quotes, and a quote or a line break ends them
+    local altered = value == "" or (value and value:find('["%%\r\n]'))
+    if MODE == "cmd" and altered then
+        return nil, (
+            "sh.popen.setenv: cmd.exe cannot set an empty value, or one that"
+            .. " holds a double quote, a percent sign or a line break"
+        )
+    end
+    if value == os.getenv(name) then
+        overrides[name] = nil   -- as the process has it: nothing to change
+        return true
+    end
+    if name == "PATH" and value == nil then
+        return nil, (
+            "sh.popen.setenv: PATH cannot be removed, since the shell would"
+            .. " look for programs in the current directory; give it a value"
+        )
+    end
+    overrides[name] = value or false
+    return true
+end
+
+---The value of variable `name` for the programs that run() starts: the
+---one setenv() gave it, else that of the process.
+---@param name string
+---@return string|nil value  nil when the programs do not get the variable
+function M.getenv(name)
+    local value = overrides[name]
+    if value == nil then return os.getenv(name) end
+    return value or nil
+end
+
 ---Lists the strategies that can run here, most capable first.
 ---@return string[] names
 function M.available_strategies()
@@ -963,7 +1101,8 @@ function M.cleanup_all()
     dirs = {}
 end
 
----Runs argv[1], found on PATH, with the remaining elements as arguments.
+---Runs argv[1], found on PATH, with the remaining elements as arguments,
+---in the environment of the process with the changes of setenv().
 ---@param argv string[]  program and arguments, passed verbatim
 ---@param input string|nil  stdin for the child; "" or nil for none
 ---@param opts table|nil  on_stdout(chunk), on_stderr(chunk), cwd (default:
@@ -996,12 +1135,20 @@ function M.run(argv, input, opts)
     end
     if cwd == nil then cwd = emulated end
     opts = {
-        on_stdout = opts.on_stdout, on_stderr = opts.on_stderr, cwd = cwd,
+        on_stdout = opts.on_stdout, on_stderr = opts.on_stderr,
+        cwd       = cwd,            vars      = overrides,
     }
     if argv[1]:sub(1, 1) == "-" and not argv[1]:find("/", 1, true) then
         -- exec would read it as an option, and has no portable "--"
         return failure(
             argv, "a program name starting with - cannot be run by sh", opts
+        )
+    end
+    if MODE == "sh" and argv[1]:find("=", 1, true) and sets_variable() then
+        -- env would read the name as one more variable to set
+        return failure(
+            argv, "a program name with = cannot be run by env, which sets"
+            .. " the variables of setenv()", opts
         )
     end
     if not STRATEGIES[name].files then
@@ -1022,9 +1169,11 @@ end
 ---@param cwd string|nil  directory to cd into first
 ---@param mode string|nil  "sh" (POSIX) or "cmd" (Windows); default: this
 ---                        platform
+---@param vars table|nil  variables to change: name -> value, or false for
+---                       one to remove
 ---@return string command
-function M._render(argv, files, cwd, mode)
-    return render(argv, files, cwd, mode)
+function M._render(argv, files, cwd, mode, vars)
+    return render(argv, files, cwd, mode, vars)
 end
 
 return M

@@ -16,8 +16,9 @@ Three moments call [`select`][select]:
 3. an assignment `sh.config = { ... }`, which [`apply_config`][apply_config]
    turns into a selection of the backend the table names.
 
-A command or a `cd` never probes anything: [`run`][backend_run],
-[`chdir`][backend_chdir], [`getcwd`][backend_getcwd] and
+A command, a `cd` or a `pushenv` never probes anything:
+[`run`][backend_run], [`chdir`][backend_chdir], [`getcwd`][backend_getcwd],
+[`setenv`][backend_setenv], [`getenv`][backend_getenv] and
 [`capabilities`][backend_caps] go straight to the backend in use.
 
 ## What a choice means
@@ -47,7 +48,9 @@ inside an app process is unsupported.
    next selection, so a library installed later is found;
 2. it is complete: a string `name` and the six functions of
    [`CONTRACT`][CONTRACT], checked by [`incomplete`][incomplete], which
-   names what is missing;
+   names what is missing. `setenv` and `getenv` are not among them: a
+   backend without `setenv` is selected all the same, and `pushenv`
+   reports that it [cannot change the environment](environment.md#the-backend-owns-the-environment);
 3. [`ready`][ready]: `configure(opts)` is called, then `available()` must
    return true.
 
@@ -166,30 +169,32 @@ and, under popen, `strategy`.
   ([testing](testing.md#test-a-backend-of-your-own)).
 
 [registry]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua
-[select]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L204
-[init_select]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L479
-[current]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L226
-[set_backend]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L414
+[select]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L207
+[init_select]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L535
+[current]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L229
+[set_backend]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L470
 [apply_config]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L70
-[backend_run]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L249
-[backend_chdir]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L257
-[backend_getcwd]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L267
-[backend_caps]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L239
-[resolve]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L188
-[RESOLVE]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L163
-[resolve_table]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L166
-[resolve_string]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L176
-[load]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L98
-[first_available]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L149
-[ORDER]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L33
+[backend_run]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L252
+[backend_chdir]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L260
+[backend_getcwd]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L270
+[backend_setenv]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L282
+[backend_getenv]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L304
+[backend_caps]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L242
+[resolve]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L191
+[RESOLVE]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L166
+[resolve_table]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L169
+[resolve_string]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L179
+[load]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L101
+[first_available]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L152
+[ORDER]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L36
 [platform]: https://github.com/JBlaschke/luash/blob/main/sh/sys.lua#L33
-[candidate]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L134
-[CONTRACT]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L41
-[incomplete]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L110
-[ready]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L124
+[candidate]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L137
+[CONTRACT]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L44
+[incomplete]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L113
+[ready]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L127
 [popen_options]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L80
-[configuration]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L66
-[ENV]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L52
+[configuration]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L69
+[ENV]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L55
 [load_pcall]: https://github.com/JBlaschke/luash/blob/main/sh/sys.lua#L26
-[available]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L275
-[preload]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L292
+[available]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L314
+[preload]: https://github.com/JBlaschke/luash/blob/main/sh/backend/init.lua#L331

@@ -259,6 +259,133 @@ function M.parse(...)
     return parsed
 end
 
+-- Record in `vars` that variable `name` is to get `value`: a string or a
+-- number, or false for a variable to remove.
+local function add_variable(vars, name, value)
+    local kind = type(value)
+    if name == "" then
+        error("sh.command: empty variable name", 0)
+    elseif name:find("%z") then
+        error("sh.command: a variable name contains a NUL byte", 0)
+    elseif name:find("=", 1, true) then
+        error("sh.command: the variable name '" .. name .. "' contains =", 0)
+    elseif kind == "number" then
+        value = _tostring(value)
+    elseif value == true then
+        local hint = "; give a value, or false to remove it"
+        error("sh.command: variable '" .. name .. "' is true" .. hint, 0)
+    elseif value ~= false and kind ~= "string" then
+        local what = "bad " .. kind .. " value for variable '"
+        error("sh.command: " .. what .. name .. "'", 0)
+    elseif value and value:find("%z") then
+        local what = "the value of variable '" .. name
+        error("sh.command: " .. what .. "' contains a NUL byte", 0)
+    end
+    vars[name] = value
+end
+
+local collect  -- forward declaration; it and collect_table call each other
+
+-- Collect from table `t`: its array entries, then its string keys as
+-- variable names, in sorted order.
+local function collect_table(t, out, active)
+    local n = #t
+    for i = 1, n do
+        collect(t[i], out, active)
+    end
+
+    local extra  = {}
+    local names  = {}
+    local values = {}
+    for k, v in pairs(t) do
+        local kind = type(k)
+        if kind == "number" and k > n and k % 1 == 0 then
+            extra[#extra + 1] = k
+            values[k]         = v
+        elseif kind == "string" then
+            names[#names + 1] = k
+            values[k]         = v
+        end
+    end
+    table.sort(extra)
+    for _, k in ipairs(extra) do
+        collect(values[k], out, active)
+    end
+    table.sort(names, byte_less)
+    for _, name in ipairs(names) do
+        add_variable(out.vars, name, values[name])
+    end
+end
+
+-- Add one argument of `pushenv` to `out`: the variables it names go to
+-- `out.vars`, and a Result is walked like any argument.
+function collect(value, out, active)
+    local kind = type(value)
+    if value == nil or value == false then
+        return
+    elseif kind == "string" then
+        local name, text = value:match("^([^=]*)=(.*)$")
+        if not name then
+            error("sh.command: expected NAME=value, got '" .. value .. "'", 0)
+        end
+        add_variable(out.vars, name, text)
+    elseif kind ~= "table" then
+        error("sh.command: a " .. kind .. " names no variable", 0)
+    elseif is_command(value) or is_pipeline(value) then
+        error("sh.command: a Command is not an argument; use :pipe()", 0)
+    elseif active[value] then
+        error("sh.command: an argument table contains itself", 0)
+    elseif type(rawget(value, "__stdout")) == "string" then
+        walk(value, out, active)
+    else
+        active[value] = true
+        collect_table(value, out, active)
+        active[value] = nil
+    end
+end
+
+-- Collect the `n` argument values of `pushenv` in `values`.
+local function collect_env(n, values)
+    local out = {
+        args    = {},
+        input   = "",
+        sources = {},
+        fields  = { __stdout = "", __stderr = "" },
+        vars    = {},
+    }
+    local active = {}
+    for i = 1, n do
+        collect(values[i], out, active)
+    end
+
+    local names = {}
+    for name in pairs(out.vars) do
+        names[#names + 1] = name
+    end
+    table.sort(names, byte_less)
+    out.env = {}
+    for i, name in ipairs(names) do
+        out.env[i] = { name = name, value = out.vars[name] }
+    end
+    out.vars = nil
+    return out
+end
+
+--- Read the arguments of `pushenv`: the environment variables they name.
+--- A string is `"NAME=value"`. A table gives one variable per string key:
+--- a string or a number is its value, and `false` removes the variable;
+--- its array entries are read as arguments. `nil` and `false` are skipped,
+--- and where a variable is named twice the later one counts. A Result is
+--- not read for variables: it passes through, as parse() has it.
+---@param ... any
+---@return table parsed { env, args, input, sources, fields }, where `env`
+---                     lists { name, value } in byte order of the names;
+---                     `value` is a string, or false to remove the variable
+function M.parse_env(...)
+    local parsed = guard(collect_env, select("#", ...), { ... })
+    return parsed
+end
+
 --------------------------------------------------------------------------------
 -- Quoting and rendering (DESIGN.md section 3.4)
 --------------------------------------------------------------------------------
