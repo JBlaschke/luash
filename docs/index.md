@@ -34,7 +34,7 @@ curl -LO https://github.com/JBlaschke/luash/releases/latest/download/sh.lua
 
 The second is the whole library in one file, attached to every
 [release](https://github.com/JBlaschke/luash/releases); replace `latest`
-with `download/v2.0.0` for a pinned version, and put the file anywhere on
+with `download/v2.1.0` for a pinned version, and put the file anywhere on
 `package.path`. In a clone, `standalone/sh.lua` is the same file.
 
 !!! important

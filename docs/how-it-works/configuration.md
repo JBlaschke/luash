@@ -47,7 +47,7 @@ value of `"auto"` and are read once, when the registry loads
 Three ways, each giving `require("sh")`:
 
 - **luarocks**: `luarocks install sh` installs the module directory from
-  [`rockspec/sh-2.0-1.rockspec`][rockspec]; in a clone,
+  [`rockspec/sh-2.1-1.rockspec`][rockspec]; in a clone,
   `luarocks make rockspec/sh-scm-3.rockspec`. The only dependency is Lua
   itself. luaposix and luv are weak dependencies: the rockspec does not
   list them, and whichever is present is resolved when `sh` loads or a
@@ -58,7 +58,7 @@ Three ways, each giving `require("sh")`:
   carries it as the asset `sh.lua`, so a specific version is one download:
 
   ```bash
-  curl -LO https://github.com/JBlaschke/luash/releases/download/v2.0.0/sh.lua
+  curl -LO https://github.com/JBlaschke/luash/releases/download/v2.1.0/sh.lua
   ```
 
 - **A clone**: put `./?/init.lua;./?.lua` in `LUA_PATH`, as
@@ -145,15 +145,15 @@ so that the state closes.
 ### Pin a version
 
 ```bash
-luarocks install sh 2.0-1
+luarocks install sh 2.1-1
 ```
 
 ```bash
-curl -LO https://github.com/JBlaschke/luash/releases/download/v2.0.0/sh.lua
+curl -LO https://github.com/JBlaschke/luash/releases/download/v2.1.0/sh.lua
 ```
 
 `sh.version` names the one that loaded:
-`Automatic Shell Bindings for Lua / LuaSH 2.0.0`.
+`Automatic Shell Bindings for Lua / LuaSH 2.1.0`.
 
 ### Ship the single file with a project
 
@@ -189,7 +189,7 @@ matrix ([testing](testing.md#run-the-tests)).
 [set_config]: https://github.com/JBlaschke/luash/blob/main/sh/pipe.lua#L49
 [ALIASES]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L56
 [set_backend]: https://github.com/JBlaschke/luash/blob/main/sh/init.lua#L470
-[rockspec]: https://github.com/JBlaschke/luash/blob/main/rockspec/sh-2.0-1.rockspec
+[rockspec]: https://github.com/JBlaschke/luash/blob/main/rockspec/sh-2.1-1.rockspec
 [standalone]: https://github.com/JBlaschke/luash/blob/main/standalone/sh.lua
 [examples_run]: https://github.com/JBlaschke/luash/blob/main/examples/run_all.sh
 [build]: https://github.com/JBlaschke/luash/blob/main/opt/bin/build.lua

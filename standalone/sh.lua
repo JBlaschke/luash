@@ -3270,7 +3270,7 @@ local Pipeline = command_mod.Pipeline
 ---@class sh
 local M = {}
 
-M.version = "Automatic Shell Bindings for Lua / LuaSH 2.0.0"
+M.version = "Automatic Shell Bindings for Lua / LuaSH 2.1.0"
 
 -- The configuration behind sh.config (DESIGN.md section 3.2). verbose,
 -- trace, raise_errors and sink are read at every run; backend and popen
