@@ -8,7 +8,7 @@
 > is no longer in the repository (it is in the git history under
 > `handoff/reference/`). The [How it works](how-it-works/architecture.md)
 > pages describe what was built and link the sections here to the code.
-> `pushenv` and `popenv` came after 2.0: section 3.8 and the paragraphs on
+> `pushenv` and `popenv` came with 2.1: section 3.8 and the paragraphs on
 > the environment in sections 4 and 6 describe them as built.
 
 This document is the design for the next version of `sh` (LuaSH). It is
@@ -289,7 +289,7 @@ New behaviour:
 
 ### 3.8 Environment variables
 
-Added after 2.0, on the pattern of `pushd` and `popd`.
+Added in 2.1, on the pattern of `pushd` and `popd`.
 
 | Call | Behaviour |
 |---|---|

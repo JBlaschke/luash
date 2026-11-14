@@ -36,7 +36,7 @@ Every [release](https://github.com/JBlaschke/luash/releases) carries that
 file as the asset `sh.lua`, so one version is one download:
 
 ```bash
-curl -LO https://github.com/JBlaschke/luash/releases/download/v2.0.0/sh.lua
+curl -LO https://github.com/JBlaschke/luash/releases/download/v2.1.0/sh.lua
 ```
 
 `releases/latest/download/sh.lua` is the newest release.
@@ -525,10 +525,8 @@ runs. The emulated environment applies to the commands that sh runs only:
 variable name consists of letters, digits and `_` and does not start with a
 digit, and `PATH` can be given another value but cannot be removed.
 
-`pushenv` and `popenv` came after release 2.0.0, so `luarocks install sh`
-and the `v2.0.0` download do not have them yet. Until the next release,
-take `standalone/sh.lua` from a clone of this repository, or run
-`luarocks make rockspec/sh-scm-3.rockspec` there.
+`pushenv` and `popenv` are new in release 2.1.0: an installation of 2.0.0
+does not have them, and runs a program of that name instead.
 
 ## Upgrading from 1.x
 
@@ -551,9 +549,9 @@ take `standalone/sh.lua` from a clone of this repository, or run
 - Results have a `__pipeline` field, and `sh.Command`, `sh.Pipeline`,
   `sh.config`, `sh.set_backend`, `sh.backend_name`, `sh.available_backends`
   and `sh.capabilities` are new.
-- `pushenv` and `popenv` are builtins (after 2.0.0). A program of one of
+- `pushenv` and `popenv` are builtins (since 2.1.0). A program of one of
   these names still runs through `sh.command("pushenv")`.
-- `sh.version` is `"Automatic Shell Bindings for Lua / LuaSH 2.0.0"`.
+- `sh.version` is `"Automatic Shell Bindings for Lua / LuaSH 2.1.0"`.
 
 ## Questions
 

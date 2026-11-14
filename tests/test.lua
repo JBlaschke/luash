@@ -219,7 +219,7 @@ end
 --------------------------------------------------------------------------------
 test('Check Version', function()
     print(sh.version)
-    ok(sh.version == 'Automatic Shell Bindings for Lua / LuaSH 2.0.0')
+    ok(sh.version == 'Automatic Shell Bindings for Lua / LuaSH 2.1.0')
 end)
 
 test('Check command output', function()
